@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2025/10/04 00:57:16.674,=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 00:58:17.059,D:\personal\GerenciadorOS\Gestao_OS\FormPrincipal.pas=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 00:58:17.059,D:\personal\GerenciadorOS\Gestao_OS\FormPrincipal.dfm=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2025/10/04 00:59:14.751,D:\personal\GerenciadorOS\Gestao_OS\GestaoOS.dproj=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2025/10/04 00:59:59.437,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:01:40.034,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\modelo\Cliente.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:11:14.921,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\Biblioteca.pas</Transaction>
+    <Transaction>2025/10/04 01:11:14.926,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\Constantes.pas</Transaction>
+    <Transaction>2025/10/04 01:41:43.140,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:43:06.781,D:\personal\GerenciadorOS\Gestao_OS\Framework\MotivoCancelamento\modelo\MotivoCancelamento.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:48:13.224,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:49:04.655,D:\personal\GerenciadorOS\Gestao_OS\Framework\OS\modelo\OS.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:54:49.263,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:55:45.271,D:\personal\GerenciadorOS\Gestao_OS\Framework\OSAnexo\modelo\OSAnexo.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:58:51.528,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:59:50.075,D:\personal\GerenciadorOS\Gestao_OS\Framework\OSEquipe\modelo\OSEquipe.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>

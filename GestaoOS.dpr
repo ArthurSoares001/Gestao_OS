@@ -1,0 +1,21 @@
+program GestaoOS;
+
+uses
+  Vcl.Forms,
+  FormPrincipal in 'FormPrincipal.pas' {FrmPrincipal},
+  Cliente in 'Framework\Cliente\modelo\Cliente.pas',
+  Biblioteca in 'Framework\Comunm\Biblioteca.pas',
+  Constantes in 'Framework\Comunm\Constantes.pas',
+  MotivoCancelamento in 'Framework\MotivoCancelamento\modelo\MotivoCancelamento.pas',
+  OS in 'Framework\OS\modelo\OS.pas',
+  OSAnexo in 'Framework\OSAnexo\modelo\OSAnexo.pas',
+  OSEquipe in 'Framework\OSEquipe\modelo\OSEquipe.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+  Application.Run;
+end.
