@@ -10,7 +10,19 @@ object FrmPrincipal: TFrmPrincipal
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object MainMenu1: TMainMenu
+    Left = 248
+    Top = 120
+    object Cadastros1: TMenuItem
+      Caption = 'Cadastros'
+      object Cliente1: TMenuItem
+        Caption = 'Cliente'
+        OnClick = Cliente1Click
+      end
+    end
+  end
 end

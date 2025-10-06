@@ -1,5 +1,4 @@
 unit OSEquipe;
-unit OSEquipe;
 
 interface
 
@@ -110,10 +109,10 @@ function TOSEquipe.validar: Boolean;
 begin
   Result := False;
 
-  if not Assigned(getOs) or ((getOs as TOS).getId = NULL_INTEGER) then
+  if (getOs.getId = NULL_INTEGER) then
     raise Exception.Create('Campo OS é obrigatório!');
 
-  if not Assigned(getTecnico) or ((getTecnico as TTecnico).getId = NULL_INTEGER) then
+  if (getTecnico.getId = NULL_INTEGER) then
     raise Exception.Create('Campo Técnico é obrigatório!');
 
   if getHorasAlocadas < 0 then

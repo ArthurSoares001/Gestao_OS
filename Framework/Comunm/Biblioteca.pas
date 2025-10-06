@@ -513,7 +513,7 @@ type
   function GetExeVersion: string;
 
   //Selecionar tipo do filtro mercadoria
-  function escolherFiltroMercadoria(combo: TOrComboBox; descricao: String): integer;
+  function escolherFiltroMercadoria(combo: TComboBox; descricao: String): integer;
 implementation
 
 uses ShellAPI, HttpApp, CRC32, shlobj, IniFiles, Printers, Registry,
@@ -6492,7 +6492,7 @@ begin
 end;
 
 //Selecionar tipo do filtro mercadoria
-function escolherFiltroMercadoria(combo: TOrComboBox; descricao: String): integer;
+function escolherFiltroMercadoria(combo: TComboBox; descricao: String): integer;
 var
   tipo: String;
 begin

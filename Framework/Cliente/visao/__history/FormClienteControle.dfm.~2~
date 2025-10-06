@@ -1,0 +1,44 @@
+object FrmClienteControle: TFrmClienteControle
+  Left = 0
+  Top = 0
+  Caption = 'FrmClienteControle'
+  ClientHeight = 459
+  ClientWidth = 700
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  inline fraformLabel1: TfraformLabel
+    Left = 0
+    Top = 0
+    Width = 700
+    Height = 25
+    Align = alTop
+    TabOrder = 0
+    ExplicitLeft = -75
+    ExplicitTop = 80
+    inherited pnLabel: TPanel
+      Width = 700
+      inherited lblTitulo: TLabel
+        Width = 602
+      end
+      inherited spdAlterar: TSpeedButton
+        Left = 631
+      end
+      inherited spdConsultar: TSpeedButton
+        Left = 654
+      end
+      inherited spdIncluir: TSpeedButton
+        Left = 608
+      end
+      inherited spdSair: TSpeedButton
+        Left = 677
+      end
+    end
+  end
+end

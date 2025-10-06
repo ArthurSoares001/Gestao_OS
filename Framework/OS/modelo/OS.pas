@@ -415,7 +415,7 @@ begin
   if Length(Trim(getNumero)) > 20 then
     raise Exception.Create('Campo Número não pode exceder 20 caracteres!');
 
-  if not Assigned(getCliente) or ((getCliente as TCliente).getId = NULL_INTEGER) then
+  if (getCliente.getId = NULL_INTEGER) then
     raise Exception.Create('Campo Cliente é obrigatório!');
 
   if Trim(getTitulo) = '' then
@@ -424,10 +424,10 @@ begin
   if Length(Trim(getTitulo)) > 120 then
     raise Exception.Create('Campo Título não pode exceder 120 caracteres!');
 
-  if not Assigned(getStatus) or ((getStatus as TStatusOS).getId = NULL_INTEGER) then
+  if (getStatus.getId = NULL_INTEGER) then
     raise Exception.Create('Campo Status é obrigatório!');
 
-  if not Assigned(getPrioridade) or ((getPrioridade as TPrioridadeOS).getId = NULL_INTEGER) then
+  if (getPrioridade.getId = NULL_INTEGER) then
     raise Exception.Create('Campo Prioridade é obrigatório!');
 
   if (Trim(getOrigem) <> '') and (Length(Trim(getOrigem)) > 20) then
@@ -445,7 +445,7 @@ begin
   if (getDtConclusao <> 0) and (getDtConclusao < getDtAbertura) then
     raise Exception.Create('Campo Data de Conclusão não pode ser anterior à Data de Abertura!');
 
-  if Assigned(getMotivoCancelamento) and ((getMotivoCancelamento as TMotivoCancelamento).getId = NULL_INTEGER) then
+  if (getMotivoCancelamento.getId = NULL_INTEGER) then
     raise Exception.Create('Campo Motivo de Cancelamento inválido!');
 
   if (Trim(getEnderecoExecucao) <> '') and (Length(Trim(getEnderecoExecucao)) > 250) then

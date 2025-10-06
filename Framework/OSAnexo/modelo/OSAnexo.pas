@@ -15,7 +15,7 @@ type
          tipoMime: string;
          tamanhoBytes: Int64;
          armazenamento: string;
-         caminhoChastos: string;
+         caminhoChave: string;
          dtUpload: TDateTime;
          usuarioUpload: string;
       public
@@ -162,7 +162,7 @@ function TOSAnexo.validar: Boolean;
 begin
   Result := False;
 
-  if not Assigned(getOs) or ((getOs as TOS).getId = NULL_INTEGER) then
+  if (getOs.getId = NULL_INTEGER) then
     raise Exception.Create('Campo OS é obrigatório!');
 
   if Trim(getNomeArquivo) = '' then

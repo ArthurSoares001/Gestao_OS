@@ -1,0 +1,38 @@
+unit FormCliente;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TFrmCliente = class(TForm)
+    PnlCliente: TPanel;
+    lblCpfCnpj: TLabel;
+    lblIeRg: TLabel;
+    lblTipo: TLabel;
+    lblNomeRazao: TLabel;
+    lblTelefone1: TLabel;
+    lblTelefone2: TLabel;
+    lblEmail: TLabel;
+    lblCep: TLabel;
+    lblLogradouro: TLabel;
+    lblNumero: TLabel;
+    lblBairro: TLabel;
+    lblCidade: TLabel;
+    lblPontoDeReferencia: TLabel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmCliente: TFrmCliente;
+
+implementation
+
+{$R *.dfm}
+
+end.

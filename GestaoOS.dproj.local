@@ -1,21 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
-    <Transaction>2025/10/04 00:57:16.674,=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 00:58:17.059,D:\personal\GerenciadorOS\Gestao_OS\FormPrincipal.pas=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 00:58:17.059,D:\personal\GerenciadorOS\Gestao_OS\FormPrincipal.dfm=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2025/10/04 00:59:14.751,D:\personal\GerenciadorOS\Gestao_OS\GestaoOS.dproj=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
-    <Transaction>2025/10/04 00:59:59.437,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:01:40.034,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\modelo\Cliente.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:11:14.921,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\Biblioteca.pas</Transaction>
-    <Transaction>2025/10/04 01:11:14.926,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\Constantes.pas</Transaction>
-    <Transaction>2025/10/04 01:41:43.140,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:43:06.781,D:\personal\GerenciadorOS\Gestao_OS\Framework\MotivoCancelamento\modelo\MotivoCancelamento.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:48:13.224,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:49:04.655,D:\personal\GerenciadorOS\Gestao_OS\Framework\OS\modelo\OS.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:54:49.263,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:55:45.271,D:\personal\GerenciadorOS\Gestao_OS\Framework\OSAnexo\modelo\OSAnexo.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:58:51.528,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
-    <Transaction>2025/10/04 01:59:50.075,D:\personal\GerenciadorOS\Gestao_OS\Framework\OSEquipe\modelo\OSEquipe.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+	<Transactions>
+    <Transaction>2025/10/04 00:57:16.000.674,=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 00:58:17.000.059,D:\personal\GerenciadorOS\Gestao_OS\FormPrincipal.pas=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 00:58:17.000.059,D:\personal\GerenciadorOS\Gestao_OS\FormPrincipal.dfm=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2025/10/04 00:59:14.000.751,D:\personal\GerenciadorOS\Gestao_OS\GestaoOS.dproj=C:\Users\DESENVOLVIMENTO\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2025/10/04 00:59:59.000.437,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:01:40.000.034,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\modelo\Cliente.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:11:14.000.926,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\Constantes.pas</Transaction>
+    <Transaction>2025/10/04 01:11:14.000.921,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\Biblioteca.pas</Transaction>
+    <Transaction>2025/10/04 01:41:43.000.140,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:43:06.000.781,D:\personal\GerenciadorOS\Gestao_OS\Framework\MotivoCancelamento\modelo\MotivoCancelamento.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:48:13.000.224,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:49:04.000.655,D:\personal\GerenciadorOS\Gestao_OS\Framework\OS\modelo\OS.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:54:49.000.263,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:55:45.000.271,D:\personal\GerenciadorOS\Gestao_OS\Framework\OSAnexo\modelo\OSAnexo.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:58:51.000.528,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/04 01:59:50.000.075,D:\personal\GerenciadorOS\Gestao_OS\Framework\OSEquipe\modelo\OSEquipe.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 08:18:22.000.558,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 08:21:15.000.795,D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas=D:\personal\GerenciadorOS\Gestao_OS\Framework\OSEvento\modelo\OSEvento.pas</Transaction>
+    <Transaction>2025/10/05 08:26:57.000.932,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 08:27:40.000.034,D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas=D:\personal\GerenciadorOS\Gestao_OS\Framework\OSItem\modelo\OSItem.pas</Transaction>
+    <Transaction>2025/10/05 08:52:50.000.224,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 08:53:47.000.682,D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas=D:\personal\GerenciadorOS\Gestao_OS\Framework\Produto\modelo\Produto.pas</Transaction>
+    <Transaction>2025/10/05 09:00:37.000.273,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 09:04:47.000.715,D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas=D:\personal\GerenciadorOS\Gestao_OS\Framework\PrioridadeOS\modelo\PrioridadeOS.pas</Transaction>
+    <Transaction>2025/10/05 09:35:27.000.360,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 09:36:35.000.421,D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas=D:\personal\GerenciadorOS\Gestao_OS\Framework\StatusOS\modelo\StatusOS.pas</Transaction>
+    <Transaction>2025/10/05 09:38:37.000.036,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 09:39:47.000.210,D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas=D:\personal\GerenciadorOS\Gestao_OS\Framework\Tecnico\modelo\Tecnico.pas</Transaction>
+    <Transaction>2025/10/05 21:47:38.859,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 21:48:38.569,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\visao\FormCliente.dfm=D:\personal\GerenciadorOS\Gestao_OS\Unit1.dfm</Transaction>
+    <Transaction>2025/10/05 21:48:38.569,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\visao\FormCliente.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 22:00:47.219,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\visao\frameformLabel.pas</Transaction>
+    <Transaction>2025/10/05 22:32:34.581,=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 22:32:57.605,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\visao\FormClienteControle.dfm=D:\personal\GerenciadorOS\Gestao_OS\Unit1.dfm</Transaction>
+    <Transaction>2025/10/05 22:32:57.605,D:\personal\GerenciadorOS\Gestao_OS\Framework\Cliente\visao\FormClienteControle.pas=D:\personal\GerenciadorOS\Gestao_OS\Unit1.pas</Transaction>
+    <Transaction>2025/10/05 22:37:27.594,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\visao\frameCabecalhoControle.pas</Transaction>
+    <Transaction>2025/10/05 23:59:40.914,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\visao\frameRodaPeControle.pas</Transaction>
+    <Transaction>2025/10/06 00:37:48.967,=D:\personal\GerenciadorOS\Gestao_OS\Framework\Comunm\visao\frameSalvaCancela.pas</Transaction>
   </Transactions>
 </BorlandProject>

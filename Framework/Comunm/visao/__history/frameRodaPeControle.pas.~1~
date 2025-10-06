@@ -1,0 +1,104 @@
+unit frameRodaPeControle;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.ExtCtrls,
+  Vcl.StdCtrls, OrStringGrid;
+
+type
+  TfraRodaPeControle = class(TFrame)
+    pnRodape: TPanel;
+    spdExcel: TSpeedButton;
+    spdExcluir: TSpeedButton;
+    spdEditar: TSpeedButton;
+    spdFiltro: TSpeedButton;
+    spdImprimir: TSpeedButton;
+    spdClonar: TSpeedButton;
+    lblRegistro: TLabel;
+    spdImportarExcel: TSpeedButton;
+    spdFaturar: TSpeedButton;
+    procedure spdExcelClick(Sender: TObject);
+  private
+    registro: String;
+    form: TForm;
+    grid: TOrStringGrid;
+  public
+    { Public declarations }
+    procedure setRegistro(registros: integer);
+    procedure iniciar(registro: String; form: TForm; grid: TOrStringGrid);
+    procedure setHintFaturar(const AHint: String);
+  end;
+
+implementation
+
+Uses Constantes, Biblioteca, DataModuleView;
+
+{$R *.dfm}
+
+{ TfraRodaPeControle }
+
+procedure TfraRodaPeControle.iniciar(registro: String; form: TForm; grid: TOrStringGrid);
+begin
+  self.form := form;
+  self.grid := grid;
+  lblRegistro.Caption := registro;
+end;
+
+procedure TfraRodaPeControle.setHintFaturar(const AHint: String);
+begin
+  spdFaturar.Hint := AHint;
+end;
+
+
+procedure TfraRodaPeControle.setRegistro(registros: integer);
+var
+  habilita: boolean;
+begin
+  habilita := (registros > 0);
+  if (habilita) then
+    lblRegistro.Caption := 'Registros (' + IntToStr(registros) + ')  '
+  else
+    lblRegistro.Caption := NULL_STRING;
+  form.Refresh;
+
+  spdImprimir.Enabled := habilita;
+  spdImprimir.Hint := 'Imprimir';
+  spdFiltro.Visible := false;
+  //spdFiltro.Enabled := habilita;
+  spdFiltro.Hint := 'Filtro';
+  spdEditar.Enabled := habilita;
+  spdEditar.Hint := 'Editar';
+  spdExcluir.Enabled := habilita;
+  spdExcluir.Hint := 'Excluir';
+  spdClonar.Enabled := habilita;
+  spdClonar.Hint := 'Clonar';
+  spdExcel.Enabled := habilita;
+  spdExcel.Hint := 'Gerar excel';
+  spdImportarExcel.Visible := false;
+  spdImportarExcel.Hint := 'Importar excel';
+
+  spdFaturar.Visible := false;
+  spdFaturar.Hint := 'Faturar';
+end;
+
+procedure TfraRodaPeControle.spdExcelClick(Sender: TObject);
+var
+  arq: String;
+begin
+  processando(form);
+  try
+    arq := GetApplicationPath + 'DADOS.xls';
+    try
+      exportarGridExcel(grid, arq);
+      dtmView.Informacao(form, arq);
+    except
+      dtmView.Erro(form, 'Não foi possivel gerar o arquivo Excel!');
+    end;
+  finally
+    processoFinalizado(form);
+  end;
+end;
+
+end.
