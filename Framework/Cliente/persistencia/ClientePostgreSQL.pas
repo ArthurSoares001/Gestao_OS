@@ -1,0 +1,323 @@
+unit ClientePostgreSQL;
+
+interface
+
+uses
+  Cliente, SysUtils, Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  Filtro, ClienteDB;
+
+type
+  TClientePostgreSQL = class(TInterfacedObject, IClienteDB)
+  private
+    function CreateFDQuery: TFDQuery;
+  public
+    procedure Inserir(Cliente: TCliente);
+    procedure Alterar(Cliente: TCliente);
+    function Procurar(Cliente: TCliente): TCliente;
+    procedure Deletar(Cliente: TCliente);
+    function ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer): TList;
+  end;
+
+implementation
+
+uses
+  DataModule;
+
+{ TClientePostgreSQL }
+
+function TClientePostgreSQL.CreateFDQuery: TFDQuery;
+begin
+  Result := TFDQuery.Create(nil);
+  Result.Connection := DMConexao.Conexao;
+end;
+
+procedure TClientePostgreSQL.Inserir(Cliente: TCliente);
+var
+  FDQuery: TFDQuery;
+begin
+  FDQuery := CreateFDQuery;
+  try
+    try
+      FDQuery.SQL.Text :=
+        'INSERT INTO public."Cliente" ' +
+        '("NomeRazao", "Documento", "InscricaoEstadual", "TipoPessoa", "Email", ' +
+        '"TelefonePrincipal", "TelefoneSecundario", "Contato", "EnderecoRua", ' +
+        '"EnderecoNumero", "EnderecoCompl", "EnderecoBairro", "EnderecoCidade", ' +
+        '"EnderecoUf", "EnderecoCep", "Ativo", "Observacoes", "DtCadastro", "DtAtualizacao") ' +
+        'VALUES ' +
+        '(:NomeRazao, :Documento, :InscricaoEstadual, :TipoPessoa, :Email, ' +
+        ':TelefonePrincipal, :TelefoneSecundario, :Contato, :EnderecoRua, ' +
+        ':EnderecoNumero, :EnderecoCompl, :EnderecoBairro, :EnderecoCidade, ' +
+        ':EnderecoUf, :EnderecoCep, :Ativo, :Observacoes, :DtCadastro, :DtAtualizacao) ' +
+        'RETURNING "Id"';
+      with FDQuery do
+      begin
+        DMConexao.Conexao.StartTransaction;
+        try
+          ParamByName('NomeRazao').AsString := Cliente.getNomeRazao;
+          ParamByName('Documento').AsString := Cliente.getDocumento;
+          ParamByName('InscricaoEstadual').AsString := Cliente.getInscricaoEstadual;
+          ParamByName('TipoPessoa').AsString := Cliente.getTipoPessoa;
+          ParamByName('Email').AsString := Cliente.getEmail;
+          ParamByName('TelefonePrincipal').AsString := Cliente.getTelefonePrincipal;
+          ParamByName('TelefoneSecundario').AsString := Cliente.getTelefoneSecundario;
+          ParamByName('Contato').AsString := Cliente.getContato;
+          ParamByName('EnderecoRua').AsString := Cliente.getEnderecoRua;
+          ParamByName('EnderecoNumero').AsString := Cliente.getEnderecoNumero;
+          ParamByName('EnderecoCompl').AsString := Cliente.getEnderecoCompl;
+          ParamByName('EnderecoBairro').AsString := Cliente.getEnderecoBairro;
+          ParamByName('EnderecoCidade').AsString := Cliente.getEnderecoCidade;
+          ParamByName('EnderecoUf').AsString := Cliente.getEnderecoUf;
+          ParamByName('EnderecoCep').AsString := Cliente.getEnderecoCep;
+          ParamByName('Ativo').AsBoolean := Cliente.getAtivo;
+          ParamByName('Observacoes').AsString := Cliente.getObservacoes;
+          ParamByName('DtCadastro').AsDateTime := Cliente.getDtCadastro;
+          ParamByName('DtAtualizacao').AsDateTime := Cliente.getDtAtualizacao;
+          Open;
+          Cliente.setId(FieldByName('Id').AsInteger);
+          DMConexao.Conexao.Commit;
+          Close;
+        except
+          on E: Exception do
+          begin
+            DMConexao.Conexao.Rollback;
+            raise Exception.CreateFmt('Erro ao inserir cliente: %s', [E.Message]);
+          end;
+        end;
+      end;
+    finally
+      FDQuery.Free;
+    end;
+  except
+    on E: Exception do
+      raise;
+  end;
+end;
+
+procedure TClientePostgreSQL.Alterar(Cliente: TCliente);
+var
+  FDQuery: TFDQuery;
+begin
+  FDQuery := CreateFDQuery;
+  try
+    try
+      FDQuery.SQL.Text :=
+        'UPDATE public."Cliente" SET ' +
+        '"NomeRazao" = :NomeRazao, "Documento" = :Documento, "InscricaoEstadual" = :InscricaoEstadual, ' +
+        '"TipoPessoa" = :TipoPessoa, "Email" = :Email, "TelefonePrincipal" = :TelefonePrincipal, ' +
+        '"TelefoneSecundario" = :TelefoneSecundario, "Contato" = :Contato, "EnderecoRua" = :EnderecoRua, ' +
+        '"EnderecoNumero" = :EnderecoNumero, "EnderecoCompl" = :EnderecoCompl, "EnderecoBairro" = :EnderecoBairro, ' +
+        '"EnderecoCidade" = :EnderecoCidade, "EnderecoUf" = :EnderecoUf, "EnderecoCep" = :EnderecoCep, ' +
+        '"Ativo" = :Ativo, "Observacoes" = :Observacoes, "DtAtualizacao" = :DtAtualizacao ' +
+        'WHERE "Id" = :Id';
+      with FDQuery do
+      begin
+        DMConexao.Conexao.StartTransaction;
+        try
+          ParamByName('NomeRazao').AsString := Cliente.getNomeRazao;
+          ParamByName('Documento').AsString := Cliente.getDocumento;
+          ParamByName('InscricaoEstadual').AsString := Cliente.getInscricaoEstadual;
+          ParamByName('TipoPessoa').AsString := Cliente.getTipoPessoa;
+          ParamByName('Email').AsString := Cliente.getEmail;
+          ParamByName('TelefonePrincipal').AsString := Cliente.getTelefonePrincipal;
+          ParamByName('TelefoneSecundario').AsString := Cliente.getTelefoneSecundario;
+          ParamByName('Contato').AsString := Cliente.getContato;
+          ParamByName('EnderecoRua').AsString := Cliente.getEnderecoRua;
+          ParamByName('EnderecoNumero').AsString := Cliente.getEnderecoNumero;
+          ParamByName('EnderecoCompl').AsString := Cliente.getEnderecoCompl;
+          ParamByName('EnderecoBairro').AsString := Cliente.getEnderecoBairro;
+          ParamByName('EnderecoCidade').AsString := Cliente.getEnderecoCidade;
+          ParamByName('EnderecoUf').AsString := Cliente.getEnderecoUf;
+          ParamByName('EnderecoCep').AsString := Cliente.getEnderecoCep;
+          ParamByName('Ativo').AsBoolean := Cliente.getAtivo;
+          ParamByName('Observacoes').AsString := Cliente.getObservacoes;
+          ParamByName('DtAtualizacao').AsDateTime := Cliente.getDtAtualizacao;
+          ParamByName('Id').AsInteger := Cliente.getId;
+          ExecSQL;
+          DMConexao.Conexao.Commit;
+          Close;
+        except
+          on E: Exception do
+          begin
+            DMConexao.Conexao.Rollback;
+            raise Exception.CreateFmt('Erro ao alterar cliente: %s', [E.Message]);
+          end;
+        end;
+      end;
+    finally
+      FDQuery.Free;
+    end;
+  except
+    on E: Exception do
+      raise;
+  end;
+end;
+
+function TClientePostgreSQL.Procurar(Cliente: TCliente): TCliente;
+var
+  FDQuery: TFDQuery;
+begin
+  Result := nil;
+  FDQuery := CreateFDQuery;
+  try
+    try
+      FDQuery.SQL.Text := 'SELECT * FROM public."Cliente" WHERE "Id" = :Id';
+      FDQuery.ParamByName('Id').AsInteger := Cliente.getId;
+      FDQuery.Open;
+      if not FDQuery.IsEmpty then
+      begin
+        Result := TCliente.Create;
+        Result.setId(FDQuery.FieldByName('Id').AsInteger);
+        Result.setNomeRazao(FDQuery.FieldByName('NomeRazao').AsString);
+        Result.setDocumento(FDQuery.FieldByName('Documento').AsString);
+        Result.setInscricaoEstadual(FDQuery.FieldByName('InscricaoEstadual').AsString);
+        Result.setTipoPessoa(FDQuery.FieldByName('TipoPessoa').AsString);
+        Result.setEmail(FDQuery.FieldByName('Email').AsString);
+        Result.setTelefonePrincipal(FDQuery.FieldByName('TelefonePrincipal').AsString);
+        Result.setTelefoneSecundario(FDQuery.FieldByName('TelefoneSecundario').AsString);
+        Result.setContato(FDQuery.FieldByName('Contato').AsString);
+        Result.setEnderecoRua(FDQuery.FieldByName('EnderecoRua').AsString);
+        Result.setEnderecoNumero(FDQuery.FieldByName('EnderecoNumero').AsString);
+        Result.setEnderecoCompl(FDQuery.FieldByName('EnderecoCompl').AsString);
+        Result.setEnderecoBairro(FDQuery.FieldByName('EnderecoBairro').AsString);
+        Result.setEnderecoCidade(FDQuery.FieldByName('EnderecoCidade').AsString);
+        Result.setEnderecoUf(FDQuery.FieldByName('EnderecoUf').AsString);
+        Result.setEnderecoCep(FDQuery.FieldByName('EnderecoCep').AsString);
+        Result.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
+        Result.setObservacoes(FDQuery.FieldByName('Observacoes').AsString);
+        Result.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
+        Result.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
+      end;
+      FDQuery.Close;
+    finally
+      FDQuery.Free;
+    end;
+  except
+    on E: Exception do
+    begin
+      FreeAndNil(Result);
+      raise Exception.Create('Erro ao procurar cliente: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TClientePostgreSQL.Deletar(Cliente: TCliente);
+var
+  FDQuery: TFDQuery;
+begin
+  FDQuery := CreateFDQuery;
+  try
+    try
+      FDQuery.SQL.Text := 'DELETE FROM public."Cliente" WHERE "Id" = :Id';
+      FDQuery.ParamByName('Id').AsInteger := Cliente.getId;
+      DMConexao.Conexao.StartTransaction;
+      try
+        FDQuery.ExecSQL;
+        DMConexao.Conexao.Commit;
+      except
+        on E: Exception do
+        begin
+          DMConexao.Conexao.Rollback;
+          raise Exception.CreateFmt('Erro ao deletar cliente: %s', [E.Message]);
+        end;
+      end;
+    finally
+      FDQuery.Free;
+    end;
+  except
+    on E: Exception do
+      raise;
+  end;
+end;
+
+function TClientePostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer): TList;
+var
+  FDQuery: TFDQuery;
+  Cliente: TCliente;
+  SQL: string;
+  Condicoes: TStringList;
+  I: Integer;
+begin
+  Result := TList.Create;
+  FDQuery := CreateFDQuery;
+  try
+    try
+      Condicoes := TStringList.Create;
+      try
+        SQL := 'SELECT * FROM public."Cliente"';
+        if Assigned(Filtro) then
+        begin
+          // Filtro por descrição (NomeRazao ou Documento)
+          if Filtro.getDescricao <> '' then
+            Condicoes.Add('("NomeRazao" ILIKE :Descricao OR "Documento" ILIKE :Descricao)');
+          // Filtro por ativo
+          if not Filtro.getAtivo then
+            Condicoes.Add('"Ativo" = :Ativo');
+          // Montar cláusula WHERE
+          if Condicoes.Count > 0 then
+            SQL := SQL + ' WHERE ' + Condicoes.DelimitedText;
+        end;
+
+        // Ordenação
+        case OrdenarPor of
+          0: SQL := SQL + ' ORDER BY "NomeRazao"';
+          1: SQL := SQL + ' ORDER BY "Documento"';
+        end;
+
+        FDQuery.SQL.Text := SQL;
+        if Assigned(Filtro) then
+        begin
+          if Filtro.getDescricao <> '' then
+            FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+          if not Filtro.getAtivo then
+            FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
+        end;
+        FDQuery.Open;
+
+        while not FDQuery.Eof do
+        begin
+          Cliente := TCliente.Create;
+          Cliente.setId(FDQuery.FieldByName('Id').AsInteger);
+          Cliente.setNomeRazao(FDQuery.FieldByName('NomeRazao').AsString);
+          Cliente.setDocumento(FDQuery.FieldByName('Documento').AsString);
+          Cliente.setInscricaoEstadual(FDQuery.FieldByName('InscricaoEstadual').AsString);
+          Cliente.setTipoPessoa(FDQuery.FieldByName('TipoPessoa').AsString);
+          Cliente.setEmail(FDQuery.FieldByName('Email').AsString);
+          Cliente.setTelefonePrincipal(FDQuery.FieldByName('TelefonePrincipal').AsString);
+          Cliente.setTelefoneSecundario(FDQuery.FieldByName('TelefoneSecundario').AsString);
+          Cliente.setContato(FDQuery.FieldByName('Contato').AsString);
+          Cliente.setEnderecoRua(FDQuery.FieldByName('EnderecoRua').AsString);
+          Cliente.setEnderecoNumero(FDQuery.FieldByName('EnderecoNumero').AsString);
+          Cliente.setEnderecoCompl(FDQuery.FieldByName('EnderecoCompl').AsString);
+          Cliente.setEnderecoBairro(FDQuery.FieldByName('EnderecoBairro').AsString);
+          Cliente.setEnderecoCidade(FDQuery.FieldByName('EnderecoCidade').AsString);
+          Cliente.setEnderecoUf(FDQuery.FieldByName('EnderecoUf').AsString);
+          Cliente.setEnderecoCep(FDQuery.FieldByName('EnderecoCep').AsString);
+          Cliente.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
+          Cliente.setObservacoes(FDQuery.FieldByName('Observacoes').AsString);
+          Cliente.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
+          Cliente.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
+          Result.Add(Cliente);
+          FDQuery.Next;
+        end;
+        FDQuery.Close;
+      finally
+        Condicoes.Free;
+      end;
+    finally
+      FDQuery.Free;
+    end;
+  except
+    on E: Exception do
+    begin
+      for I := 0 to Result.Count - 1 do
+        TCliente(Result[I]).Free;
+      Result.Free;
+      raise Exception.Create('Erro ao recuperar todos os clientes: ' + E.Message);
+    end;
+  end;
+end;
+
+end.

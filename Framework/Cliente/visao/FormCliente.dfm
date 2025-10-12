@@ -11,6 +11,11 @@ object FrmCliente: TFrmCliente
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object PnlCliente: TPanel
@@ -20,8 +25,6 @@ object FrmCliente: TFrmCliente
     Height = 467
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = -8
-    ExplicitWidth = 700
     object lblIeRg: TLabel
       Left = 26
       Top = 50
@@ -251,189 +254,33 @@ object FrmCliente: TFrmCliente
       Height = 25
       Align = alTop
       TabOrder = 0
-      ExplicitLeft = -75
-      ExplicitTop = 16
+      ExplicitLeft = 1
+      ExplicitTop = 1
+      ExplicitWidth = 642
       inherited pnLabel: TPanel
         Width = 642
+        ExplicitWidth = 642
         inherited lblTitulo: TLabel
           Width = 544
+          Height = 18
         end
         inherited spdAlterar: TSpeedButton
           Left = 573
+          ExplicitLeft = 573
         end
         inherited spdConsultar: TSpeedButton
           Left = 596
+          ExplicitLeft = 596
         end
         inherited spdIncluir: TSpeedButton
           Left = 550
+          ExplicitLeft = 550
         end
         inherited spdSair: TSpeedButton
           Left = 619
+          ExplicitLeft = 619
         end
       end
-    end
-    object Edit1: TEdit
-      Left = 26
-      Top = 118
-      Width = 356
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 1
-    end
-    object Edit2: TEdit
-      Left = 247
-      Top = 70
-      Width = 219
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 2
-    end
-    object Edit3: TEdit
-      Left = 26
-      Top = 70
-      Width = 215
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 3
-    end
-    object Edit5: TEdit
-      Left = 388
-      Top = 118
-      Width = 229
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 4
-    end
-    object Edit8: TEdit
-      Left = 315
-      Top = 167
-      Width = 301
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
-    end
-    object Edit9: TEdit
-      Left = 26
-      Top = 216
-      Width = 341
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 6
-    end
-    object Edit10: TEdit
-      Left = 373
-      Top = 216
-      Width = 68
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 7
-    end
-    object Edit11: TEdit
-      Left = 447
-      Top = 216
-      Width = 169
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 8
-    end
-    object Edit12: TEdit
-      Left = 29
-      Top = 267
-      Width = 186
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 9
-    end
-    object Edit13: TEdit
-      Left = 404
-      Top = 267
-      Width = 39
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 10
-    end
-    object Edit14: TEdit
-      Left = 221
-      Top = 267
-      Width = 177
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 11
-    end
-    object Edit15: TEdit
-      Left = 449
-      Top = 267
-      Width = 167
-      Height = 29
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = 21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 12
-    end
-    object MemoObs: TMemo
-      Left = 27
-      Top = 331
-      Width = 590
-      Height = 89
-      TabOrder = 13
     end
     object CmbTipoPessoa: TComboBox
       Left = 472
@@ -447,16 +294,95 @@ object FrmCliente: TFrmCliente
       Font.Style = []
       ItemIndex = 0
       ParentFont = False
-      TabOrder = 14
+      TabOrder = 1
       Text = 'F'#237'sica'
       Items.Strings = (
         'F'#237'sica'
         'Jur'#237'dica')
     end
+    object ChkAtivo: TCheckBox
+      Left = 559
+      Top = 308
+      Width = 51
+      Height = 17
+      Caption = 'Ativo'
+      TabOrder = 2
+    end
+    inline fraSalvaCancela1: TfraSalvaCancela
+      Left = 184
+      Top = 441
+      Width = 271
+      Height = 37
+      TabOrder = 3
+      ExplicitLeft = 184
+      ExplicitTop = 441
+      inherited pnlCancelar: TPanel
+        inherited btnCancelar: TSpeedButton
+          OnClick = fraSalvaCancela1btnCancelarClick
+        end
+      end
+      inherited pnlSalvar: TPanel
+        inherited btnSalvar: TSpeedButton
+          OnClick = fraSalvaCancela1btnSalvarClick
+        end
+      end
+    end
+    object EdtRgIe: TEdit
+      Left = 26
+      Top = 70
+      Width = 211
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+    end
+    object EdtDocumento: TEdit
+      Left = 247
+      Top = 70
+      Width = 215
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+    end
+    object EdtNomeRazao: TEdit
+      Left = 26
+      Top = 118
+      Width = 352
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
+    end
+    object EdtEmail: TEdit
+      Left = 388
+      Top = 118
+      Width = 225
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 7
+    end
     object EdtTelPrincipal: TMaskEdit
       Left = 26
       Top = 167
-      Width = 139
+      Width = 137
       Height = 29
       EditMask = '!\(99\)00000-0000;1;_'
       Font.Charset = DEFAULT_CHARSET
@@ -466,10 +392,10 @@ object FrmCliente: TFrmCliente
       Font.Style = []
       MaxLength = 14
       ParentFont = False
-      TabOrder = 15
+      TabOrder = 8
       Text = '(  )     -    '
     end
-    object MaskEdit1: TMaskEdit
+    object EdtTelSecundario: TMaskEdit
       Left = 171
       Top = 167
       Width = 138
@@ -482,25 +408,119 @@ object FrmCliente: TFrmCliente
       Font.Style = []
       MaxLength = 14
       ParentFont = False
-      TabOrder = 16
+      TabOrder = 9
       Text = '(  )     -    '
     end
-    object ChkAtivo: TCheckBox
-      Left = 559
-      Top = 308
-      Width = 51
-      Height = 17
-      Caption = 'Ativo'
+    object EdtContato: TEdit
+      Left = 315
+      Top = 167
+      Width = 301
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 10
+    end
+    object EdtRua: TEdit
+      Left = 26
+      Top = 216
+      Width = 341
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 11
+    end
+    object EdtNumero: TEdit
+      Left = 373
+      Top = 216
+      Width = 68
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 12
+    end
+    object EdtComplemento: TEdit
+      Left = 447
+      Top = 216
+      Width = 169
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 13
+    end
+    object EdtBairro: TEdit
+      Left = 29
+      Top = 267
+      Width = 186
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 14
+    end
+    object EdtCidade: TEdit
+      Left = 221
+      Top = 267
+      Width = 177
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 15
+    end
+    object EdtUF: TEdit
+      Left = 404
+      Top = 267
+      Width = 39
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 16
+    end
+    object EdtCep: TEdit
+      Left = 449
+      Top = 267
+      Width = 167
+      Height = 29
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 21
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 17
     end
-    inline fraSalvaCancela1: TfraSalvaCancela
-      Left = 184
-      Top = 441
-      Width = 271
-      Height = 37
+    object MemoObs: TMemo
+      Left = 27
+      Top = 331
+      Width = 590
+      Height = 89
       TabOrder = 18
-      ExplicitLeft = 184
-      ExplicitTop = 441
     end
   end
 end

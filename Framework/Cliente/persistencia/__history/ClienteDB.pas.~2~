@@ -1,0 +1,25 @@
+unit ClienteDB;
+
+interface
+
+uses
+  OrObject, Constantes, Filtro;
+
+type
+  IClienteDB = interface
+    procedure setObjeto(objeto: TObject);
+    function getObjeto: TOrObject;
+    function getLista: TOrObject;
+    procedure novaInstancia;
+    function temDados: boolean;
+    procedure incluir;
+    procedure alterar;
+    procedure excluir(pos: integer = POS_NAO_ENCONTRADA);
+    procedure clone(objeto: TOrObject);
+    function encontrar(id: integer = NULL_INTEGER): boolean;
+    procedure recuperarTodos(filtro: TFiltro; index: integer);
+  end;
+
+implementation
+
+end.

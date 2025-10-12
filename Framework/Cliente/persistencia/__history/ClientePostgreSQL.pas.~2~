@@ -1,0 +1,23 @@
+unit ClientePostgreSQL;
+
+interface
+uses
+  Cliente;
+
+  type
+  TClientePostgreSQL = class
+    public
+      function inserir(cliente: TCliente; var sErro: string):Boolean;
+  end;
+
+implementation
+
+{ TClientePostgreSQL }
+
+function TClientePostgreSQL.inserir(cliente: TCliente;
+  var sErro: string): Boolean;
+begin
+
+end;
+
+end.

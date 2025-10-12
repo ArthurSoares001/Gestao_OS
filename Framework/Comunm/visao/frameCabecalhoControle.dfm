@@ -317,7 +317,6 @@ object fraCabecalhoControle: TfraCabecalhoControle
         ParentFont = False
         TabOrder = 0
         Text = '  /  /    '
-        ExplicitLeft = 261
       end
     end
     object CmbTipo: TComboBox

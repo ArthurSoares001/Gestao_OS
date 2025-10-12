@@ -21,7 +21,11 @@ uses
   FormClienteControle in 'Framework\Cliente\visao\FormClienteControle.pas' {FrmClienteControle},
   frameCabecalhoControle in 'Framework\Comunm\visao\frameCabecalhoControle.pas' {fraCabecalhoControle: TFrame},
   frameRodaPeControle in 'Framework\Comunm\visao\frameRodaPeControle.pas' {fraRodaPeControle: TFrame},
-  frameSalvaCancela in 'Framework\Comunm\visao\frameSalvaCancela.pas' {fraSalvaCancela: TFrame};
+  frameSalvaCancela in 'Framework\Comunm\visao\frameSalvaCancela.pas' {fraSalvaCancela: TFrame},
+  ClientePostgreSQL in 'Framework\Cliente\persistencia\ClientePostgreSQL.pas',
+  DataModule in 'Framework\Comunm\DataModule.pas' {DMConexao: TDataModule},
+  ClienteDB in 'Framework\Cliente\persistencia\ClienteDB.pas',
+  Filtro in 'Framework\Comunm\Filtro.pas';
 
 {$R *.res}
 
@@ -29,5 +33,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+  Application.CreateForm(TDMConexao, DMConexao);
   Application.Run;
 end.
