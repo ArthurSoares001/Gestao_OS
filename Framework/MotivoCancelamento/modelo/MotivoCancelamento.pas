@@ -19,6 +19,7 @@ type
          function getDescricao: string;
 
          function validar: Boolean; override;
+         procedure ocopy(AObject: TOrObject); override;
       end;
 
 implementation
@@ -70,6 +71,16 @@ begin
     raise Exception.Create('Campo Descrição não pode exceder 120 caracteres!');
 
   Result := True;
+end;
+
+procedure TMotivoCancelamento.ocopy(AObject: TOrObject);
+begin
+  inherited ocopy(AObject);
+  with AObject as TMotivoCancelamento do
+  begin
+    self.id := getId;
+    self.descricao := getDescricao;
+  end;
 end;
 
 end.

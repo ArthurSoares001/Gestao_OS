@@ -11,7 +11,13 @@ type
     MainMenu1: TMainMenu;
     Cadastros1: TMenuItem;
     Cliente1: TMenuItem;
+    cnico1: TMenuItem;
+    Produto1: TMenuItem;
+    OS1: TMenuItem;
     procedure Cliente1Click(Sender: TObject);
+    procedure cnico1Click(Sender: TObject);
+    procedure Produto1Click(Sender: TObject);
+    procedure OS1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -23,13 +29,29 @@ var
 
 implementation
 uses
-  Biblioteca, FormClienteControle;
+  Biblioteca, FormClienteControle, FormTecnicoControle, FormProdutoControle,
+  FormOSControle;
 
 {$R *.dfm}
 
 procedure TFrmPrincipal.Cliente1Click(Sender: TObject);
 begin
   AbreForm(TfrmClienteControle, frmClienteControle);
+end;
+
+procedure TFrmPrincipal.cnico1Click(Sender: TObject);
+begin
+  AbreForm(TfrmTecnicoControle, frmTecnicoControle);
+end;
+
+procedure TFrmPrincipal.OS1Click(Sender: TObject);
+begin
+  AbreForm(TFrmOSControle, frmOSControle);
+end;
+
+procedure TFrmPrincipal.Produto1Click(Sender: TObject);
+begin
+  AbreForm(TfrmProdutoControle, frmProdutoControle);
 end;
 
 end.

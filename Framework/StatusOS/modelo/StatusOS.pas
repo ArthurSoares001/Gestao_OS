@@ -22,6 +22,7 @@ type
          function getOrdem: Integer;
 
          function validar: Boolean; override;
+         procedure ocopy(AObject: TOrObject); override;
       end;
 
 implementation
@@ -31,8 +32,6 @@ uses Constantes;
 constructor TStatusOS.Create;
 begin
   setId(NULL_INTEGER);
-  setCodigo('');
-  setOrdem(0);
 end;
 
 destructor TStatusOS.Destroy;
@@ -87,6 +86,17 @@ begin
     raise Exception.Create('Campo Ordem não pode ser negativo!');
 
   Result := True;
+end;
+
+procedure TStatusOS.ocopy(AObject: TOrObject);
+begin
+  inherited ocopy(AObject);
+  with AObject as TStatusOS do
+  begin
+    self.id := getId;
+    self.codigo := getCodigo;
+    self.ordem := getOrdem;
+  end;
 end;
 
 end.

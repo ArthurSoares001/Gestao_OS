@@ -1,0 +1,101 @@
+unit FormOS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Mask, RxToolEdit, OrDateEdit,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.Grids, OrStringGrid, Vcl.ComCtrls, OrMemo,
+  Vcl.ExtCtrls, OrEdit, frameformLabel;
+
+type
+  TFrmOS = class(TForm)
+    fraformLabel1: TfraformLabel;
+    lblProdutos: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label2: TLabel;
+    pnlPesquisar: TPanel;
+    BtnPesquisar: TSpeedButton;
+    lblFiltro: TLabel;
+    Panel1: TPanel;
+    SpeedButton1: TSpeedButton;
+    pnlValores: TPanel;
+    Label4: TLabel;
+    Label1: TLabel;
+    Label3: TLabel;
+    Label7: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    lblLogin: TLabel;
+    lblObservacao: TLabel;
+    MemoDescProblema: TOrMemo;
+    Label8: TLabel;
+    Label13: TLabel;
+    MemoSolucaoAplic: TOrMemo;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Label17: TLabel;
+    StgServicos: TOrStringGrid;
+    btnAdd: TBitBtn;
+    btnRem: TBitBtn;
+    Panel2: TPanel;
+    SpeedButton2: TSpeedButton;
+    TabSheet3: TTabSheet;
+    CmbStatus: TComboBox;
+    CmbPrioridade: TComboBox;
+    CmbCliente: TComboBox;
+    CmbTecnico: TComboBox;
+    CmbServicos: TComboBox;
+    EdtItens: TEdit;
+    EdtValorSemDesconto: TEdit;
+    EdtDesconto: TEdit;
+    EdtValorComDesconto: TEdit;
+    EdtQuantidade: TEdit;
+    EdtTroco: TEdit;
+    Label18: TLabel;
+    StgProdutos: TOrStringGrid;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    Panel3: TPanel;
+    SpeedButton3: TSpeedButton;
+    CmbProdutos: TComboBox;
+    lblValorContaPagar: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    lblRegistro: TLabel;
+    StgFormaPagto: TOrStringGrid;
+    btnEdit: TBitBtn;
+    CmbFormaPagto: TComboBox;
+    EdtValorPagto: TEdit;
+    BitBtn3: TBitBtn;
+    BitBtn4: TBitBtn;
+    EdtDataEntrada: TEdit;
+    EdtDataSaida: TEdit;
+    EdtNumOS: TEdit;
+    EdtTitulo: TEdit;
+    EdtDiagnostico: TEdit;
+    EdtDataPrevConclusao: TEdit;
+    EdtEndereco: TEdit;
+    Edit3: TEdit;
+    EdtVencimentoPagto: TEdit;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmOS: TFrmOS;
+
+implementation
+
+{$R *.dfm}
+
+end.

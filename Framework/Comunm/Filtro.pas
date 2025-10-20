@@ -2,93 +2,98 @@ unit Filtro;
 
 interface
 
-uses Classes;
+uses
+  Classes;
 
 type
-   TFiltro = class
-      constructor Create();
-      private
-         dataDe                   : TDateTime;
-         dataAte                  : TDateTime;
-         descricao                : String;
-         agruparPor               : integer;
-         ordernarPor              : integer;
-         ativo                    : boolean;
-        
-         isPendente               : boolean;
-      public
-         procedure novaInstancia;
-         procedure setDataDe(dataDe: TDateTime);
-         procedure setDataAte(dataAte: TDateTime);
-         procedure setDescricao(descricao: string);
-
-         procedure setAgruparPor(agruparPor: integer);
-         procedure setOrdernarPor(ordernarPor: integer);
-
-         procedure setAtivo(ativo: boolean);
-
-         function getDataDe: TDateTime;
-         function getDataAte: TDateTime;
-         function getDescricao: string;
-
-         function getAgruparPor: integer;
-         function getOrdernarPor: integer;
-
-         function getAtivo: boolean;
-      end;
+  TFiltro = class
+  private
+    dataDe: TDateTime;
+    dataAte: TDateTime;
+    descricao: string;
+    agruparPor: Integer;
+    ordernarPor: Integer;
+    ativo: Boolean;
+    isPendente: Boolean;
+    tipo: string;
+  public
+    constructor Create;
+    procedure novaInstancia;
+    procedure setDataDe(dataDe: TDateTime);
+    procedure setDataAte(dataAte: TDateTime);
+    procedure setDescricao(descricao: string);
+    procedure setAgruparPor(agruparPor: Integer);
+    procedure setOrdernarPor(ordernarPor: Integer);
+    procedure setAtivo(ativo: Boolean);
+    procedure setTipo(tipo: string);
+    function getDataDe: TDateTime;
+    function getDataAte: TDateTime;
+    function getDescricao: string;
+    function getAgruparPor: Integer;
+    function getOrdernarPor: Integer;
+    function getAtivo: Boolean;
+    function getTipo: string;
+  end;
 
 implementation
 
-Uses Constantes, System.SysUtils;
+uses
+  Constantes, System.SysUtils;
 
 { TFiltro }
-
-procedure TFiltro.novaInstancia;
-begin
-  setDataDe(NULL_DATETIME);
-  setDataAte(NULL_DATETIME);
-  setDescricao(NULL_STRING);
-  setAtivo(true);
-  setAgruparPor(0);
-  setOrdernarPor(0);
-end;
 
 constructor TFiltro.Create;
 begin
   novaInstancia;
 end;
 
-function TFiltro.getAgruparPor: integer;
+procedure TFiltro.novaInstancia;
 begin
-  result := agruparPor;
+  setDataDe(NULL_DATETIME);
+  setDataAte(NULL_DATETIME);
+  setDescricao(NULL_STRING);
+  setAtivo(True);
+  setAgruparPor(0);
+  setOrdernarPor(0);
+  setTipo(NULL_STRING);
 end;
 
-function TFiltro.getOrdernarPor: integer;
+function TFiltro.getAgruparPor: Integer;
 begin
-  result := ordernarPor;
+  Result := agruparPor;
 end;
 
-function TFiltro.getAtivo: boolean;
+function TFiltro.getOrdernarPor: Integer;
 begin
-  result := ativo;
+  Result := ordernarPor;
+end;
+
+function TFiltro.getAtivo: Boolean;
+begin
+  Result := ativo;
 end;
 
 function TFiltro.getDataAte: TDateTime;
 begin
-  result := dataAte;
+  Result := dataAte;
 end;
 
 function TFiltro.getDataDe: TDateTime;
 begin
-  result := dataDe;
+  Result := dataDe;
 end;
 
-function TFiltro.getDescricao: String;
+function TFiltro.getDescricao: string;
 begin
-  result := descricao;
+  Result := descricao;
 end;
 
-procedure TFiltro.setAtivo(ativo: boolean);
+function TFiltro.getTipo: string;
+begin
+  Result := tipo;
+end;
+
+procedure TFiltro.setAtivo(ativo: Boolean);
 begin
   self.ativo := ativo;
 end;
@@ -103,20 +108,24 @@ begin
   self.dataDe := dataDe;
 end;
 
-procedure TFiltro.setDescricao(descricao: String);
+procedure TFiltro.setDescricao(descricao: string);
 begin
   self.descricao := descricao;
 end;
 
-procedure TFiltro.setAgruparPor(agruparPor: integer);
+procedure TFiltro.setAgruparPor(agruparPor: Integer);
 begin
   self.agruparPor := agruparPor;
 end;
 
-procedure TFiltro.setOrdernarPor(ordernarPor: integer);
+procedure TFiltro.setOrdernarPor(ordernarPor: Integer);
 begin
   self.ordernarPor := ordernarPor;
 end;
 
+procedure TFiltro.setTipo(tipo: string);
+begin
+  self.tipo := tipo;
+end;
 
 end.

@@ -1,0 +1,475 @@
+unit OS;
+
+interface
+
+uses OrObject, SysUtils, Classes;
+
+type
+   TOS = class(TOrObject)
+      constructor Create;
+      destructor Destroy; override;
+      private
+         id: Integer;
+         numero: string;
+         titulo: string;
+         descricaoProblema: string;
+         diagnostico: string;
+         solucaoAplicada: string;
+         origem: string;
+         dtAbertura: TDateTime;
+         dtPrevisaoConclusao: TDateTime;
+         dtInicioExecucao: TDateTime;
+         dtConclusao: TDateTime;
+         enderecoExecucao: string;
+         valorDesconto: Double;
+         valorAcrescimo: Double;
+         formaPagamento: string;
+         observacoes: string;
+         usuarioAbertura: string;
+         usuarioUltimaAtualizacao: string;
+         anexosQtde: Integer;
+         dtCadastro: TDateTime;
+         dtAtualizacao: TDateTime;
+
+         cliente: TOrObject;
+         tecnicoResponsavel: TOrObject;
+         status: TOrObject;
+         prioridade: TOrObject;
+         motivoCancelamento: TOrObject;
+      public
+         procedure setId(id: Integer); override;
+         procedure setNumero(numero: string);
+         procedure setCliente(cliente: TOrObject);
+         procedure setTecnicoResponsavel(tecnicoResponsavel: TOrObject);
+         procedure setTitulo(titulo: string);
+         procedure setDescricaoProblema(descricaoProblema: string);
+         procedure setDiagnostico(diagnostico: string);
+         procedure setSolucaoAplicada(solucaoAplicada: string);
+         procedure setStatus(status: TOrObject);
+         procedure setPrioridade(prioridade: TOrObject);
+         procedure setOrigem(origem: string);
+         procedure setDtAbertura(dtAbertura: TDateTime);
+         procedure setDtPrevisaoConclusao(dtPrevisaoConclusao: TDateTime);
+         procedure setDtInicioExecucao(dtInicioExecucao: TDateTime);
+         procedure setDtConclusao(dtConclusao: TDateTime);
+         procedure setMotivoCancelamento(motivoCancelamento: TOrObject);
+         procedure setEnderecoExecucao(enderecoExecucao: string);
+         procedure setValorDesconto(valorDesconto: Double);
+         procedure setValorAcrescimo(valorAcrescimo: Double);
+         procedure setFormaPagamento(formaPagamento: string);
+         procedure setObservacoes(observacoes: string);
+         procedure setUsuarioAbertura(usuarioAbertura: string);
+         procedure setUsuarioUltimaAtualizacao(usuarioUltimaAtualizacao: string);
+         procedure setAnexosQtde(anexosQtde: Integer);
+         procedure setDtCadastro(dtCadastro: TDateTime);
+         procedure setDtAtualizacao(dtAtualizacao: TDateTime);
+
+         function getId: Integer; override;
+         function getNumero: string;
+         function getCliente: TOrObject;
+         function getTecnicoResponsavel: TOrObject;
+         function getTitulo: string;
+         function getDescricaoProblema: string;
+         function getDiagnostico: string;
+         function getSolucaoAplicada: string;
+         function getStatus: TOrObject;
+         function getPrioridade: TOrObject;
+         function getOrigem: string;
+         function getDtAbertura: TDateTime;
+         function getDtPrevisaoConclusao: TDateTime;
+         function getDtInicioExecucao: TDateTime;
+         function getDtConclusao: TDateTime;
+         function getMotivoCancelamento: TOrObject;
+         function getEnderecoExecucao: string;
+         function getValorDesconto: Double;
+         function getValorAcrescimo: Double;
+         function getFormaPagamento: string;
+         function getObservacoes: string;
+         function getUsuarioAbertura: string;
+         function getUsuarioUltimaAtualizacao: string;
+         function getAnexosQtde: Integer;
+         function getDtCadastro: TDateTime;
+         function getDtAtualizacao: TDateTime;
+
+         function validar: Boolean; override;
+      end;
+
+implementation
+
+uses Constantes, Cliente, Tecnico, StatusOS, PrioridadeOS, MotivoCancelamento;
+
+constructor TOS.Create;
+begin
+  setId(NULL_INTEGER);
+  setNumero('');
+  setCliente(TCliente.Create);
+  setTecnicoResponsavel(nil);
+  setTitulo('');
+  setDescricaoProblema('');
+  setDiagnostico('');
+  setSolucaoAplicada('');
+  setStatus(nil);
+  setPrioridade(nil);
+  setOrigem('');
+  setDtAbertura(Now);
+  setDtPrevisaoConclusao(0);
+  setDtInicioExecucao(0);
+  setDtConclusao(0);
+  setMotivoCancelamento(nil);
+  setEnderecoExecucao('');
+  setValorDesconto(0);
+  setValorAcrescimo(0);
+  setFormaPagamento('');
+  setObservacoes('');
+  setUsuarioAbertura('');
+  setUsuarioUltimaAtualizacao('');
+  setAnexosQtde(0);
+  setDtCadastro(Now);
+  setDtAtualizacao(Now);
+end;
+
+destructor TOS.Destroy;
+begin
+  cliente.Free;
+  if Assigned(tecnicoResponsavel) then
+    tecnicoResponsavel.Free;
+  if Assigned(status) then
+    status.Free;
+  if Assigned(prioridade) then
+    prioridade.Free;
+  if Assigned(motivoCancelamento) then
+    motivoCancelamento.Free;
+  inherited;
+end;
+
+//---------------- gets
+function TOS.getId: Integer;
+begin
+  Result := id;
+end;
+
+function TOS.getNumero: string;
+begin
+  Result := numero;
+end;
+
+function TOS.getCliente: TOrObject;
+begin
+  Result := cliente;
+end;
+
+function TOS.getTecnicoResponsavel: TOrObject;
+begin
+  Result := tecnicoResponsavel;
+end;
+
+function TOS.getTitulo: string;
+begin
+  Result := titulo;
+end;
+
+function TOS.getDescricaoProblema: string;
+begin
+  Result := descricaoProblema;
+end;
+
+function TOS.getDiagnostico: string;
+begin
+  Result := diagnostico;
+end;
+
+function TOS.getSolucaoAplicada: string;
+begin
+  Result := solucaoAplicada;
+end;
+
+function TOS.getStatus: TOrObject;
+begin
+  Result := status;
+end;
+
+function TOS.getPrioridade: TOrObject;
+begin
+  Result := prioridade;
+end;
+
+function TOS.getOrigem: string;
+begin
+  Result := origem;
+end;
+
+function TOS.getDtAbertura: TDateTime;
+begin
+  Result := dtAbertura;
+end;
+
+function TOS.getDtPrevisaoConclusao: TDateTime;
+begin
+  Result := dtPrevisaoConclusao;
+end;
+
+function TOS.getDtInicioExecucao: TDateTime;
+begin
+  Result := dtInicioExecucao;
+end;
+
+function TOS.getDtConclusao: TDateTime;
+begin
+  Result := dtConclusao;
+end;
+
+function TOS.getMotivoCancelamento: TOrObject;
+begin
+  Result := motivoCancelamento;
+end;
+
+function TOS.getEnderecoExecucao: string;
+begin
+  Result := enderecoExecucao;
+end;
+
+function TOS.getValorDesconto: Double;
+begin
+  Result := valorDesconto;
+end;
+
+function TOS.getValorAcrescimo: Double;
+begin
+  Result := valorAcrescimo;
+end;
+
+function TOS.getFormaPagamento: string;
+begin
+  Result := formaPagamento;
+end;
+
+function TOS.getObservacoes: string;
+begin
+  Result := observacoes;
+end;
+
+function TOS.getUsuarioAbertura: string;
+begin
+  Result := usuarioAbertura;
+end;
+
+function TOS.getUsuarioUltimaAtualizacao: string;
+begin
+  Result := usuarioUltimaAtualizacao;
+end;
+
+function TOS.getAnexosQtde: Integer;
+begin
+  Result := anexosQtde;
+end;
+
+function TOS.getDtCadastro: TDateTime;
+begin
+  Result := dtCadastro;
+end;
+
+function TOS.getDtAtualizacao: TDateTime;
+begin
+  Result := dtAtualizacao;
+end;
+
+//---------------- sets
+procedure TOS.setId(id: Integer);
+begin
+  inherited;
+  self.id := id;
+end;
+
+procedure TOS.setNumero(numero: string);
+begin
+  self.numero := numero;
+end;
+
+procedure TOS.setCliente(cliente: TOrObject);
+begin
+  self.cliente := cliente;
+end;
+
+procedure TOS.setTecnicoResponsavel(tecnicoResponsavel: TOrObject);
+begin
+  self.tecnicoResponsavel := tecnicoResponsavel;
+end;
+
+procedure TOS.setTitulo(titulo: string);
+begin
+  self.titulo := titulo;
+end;
+
+procedure TOS.setDescricaoProblema(descricaoProblema: string);
+begin
+  self.descricaoProblema := descricaoProblema;
+end;
+
+procedure TOS.setDiagnostico(diagnostico: string);
+begin
+  self.diagnostico := diagnostico;
+end;
+
+procedure TOS.setSolucaoAplicada(solucaoAplicada: string);
+begin
+  self.solucaoAplicada := solucaoAplicada;
+end;
+
+procedure TOS.setStatus(status: TOrObject);
+begin
+  self.status := status;
+end;
+
+procedure TOS.setPrioridade(prioridade: TOrObject);
+begin
+  self.prioridade := prioridade;
+end;
+
+procedure TOS.setOrigem(origem: string);
+begin
+  self.origem := origem;
+end;
+
+procedure TOS.setDtAbertura(dtAbertura: TDateTime);
+begin
+  self.dtAbertura := dtAbertura;
+end;
+
+procedure TOS.setDtPrevisaoConclusao(dtPrevisaoConclusao: TDateTime);
+begin
+  self.dtPrevisaoConclusao := dtPrevisaoConclusao;
+end;
+
+procedure TOS.setDtInicioExecucao(dtInicioExecucao: TDateTime);
+begin
+  self.dtInicioExecucao := dtInicioExecucao;
+end;
+
+procedure TOS.setDtConclusao(dtConclusao: TDateTime);
+begin
+  self.dtConclusao := dtConclusao;
+end;
+
+procedure TOS.setMotivoCancelamento(motivoCancelamento: TOrObject);
+begin
+  self.motivoCancelamento := motivoCancelamento;
+end;
+
+procedure TOS.setEnderecoExecucao(enderecoExecucao: string);
+begin
+  self.enderecoExecucao := enderecoExecucao;
+end;
+
+procedure TOS.setValorDesconto(valorDesconto: Double);
+begin
+  self.valorDesconto := valorDesconto;
+end;
+
+procedure TOS.setValorAcrescimo(valorAcrescimo: Double);
+begin
+  self.valorAcrescimo := valorAcrescimo;
+end;
+
+procedure TOS.setFormaPagamento(formaPagamento: string);
+begin
+  self.formaPagamento := formaPagamento;
+end;
+
+procedure TOS.setObservacoes(observacoes: string);
+begin
+  self.observacoes := observacoes;
+end;
+
+procedure TOS.setUsuarioAbertura(usuarioAbertura: string);
+begin
+  self.usuarioAbertura := usuarioAbertura;
+end;
+
+procedure TOS.setUsuarioUltimaAtualizacao(usuarioUltimaAtualizacao: string);
+begin
+  self.usuarioUltimaAtualizacao := usuarioUltimaAtualizacao;
+end;
+
+procedure TOS.setAnexosQtde(anexosQtde: Integer);
+begin
+  self.anexosQtde := anexosQtde;
+end;
+
+procedure TOS.setDtCadastro(dtCadastro: TDateTime);
+begin
+  self.dtCadastro := dtCadastro;
+end;
+
+procedure TOS.setDtAtualizacao(dtAtualizacao: TDateTime);
+begin
+  self.dtAtualizacao := dtAtualizacao;
+end;
+
+function TOS.validar: Boolean;
+begin
+  Result := False;
+
+  if Trim(getNumero) = '' then
+    raise Exception.Create('Campo Número é obrigatório!');
+
+  if Length(Trim(getNumero)) > 20 then
+    raise Exception.Create('Campo Número não pode exceder 20 caracteres!');
+
+  if (getCliente.getId = NULL_INTEGER) then
+    raise Exception.Create('Campo Cliente é obrigatório!');
+
+  if Trim(getTitulo) = '' then
+    raise Exception.Create('Campo Título é obrigatório!');
+
+  if Length(Trim(getTitulo)) > 120 then
+    raise Exception.Create('Campo Título não pode exceder 120 caracteres!');
+
+  if (getStatus.getId = NULL_INTEGER) then
+    raise Exception.Create('Campo Status é obrigatório!');
+
+  if (getPrioridade.getId = NULL_INTEGER) then
+    raise Exception.Create('Campo Prioridade é obrigatório!');
+
+  if (Trim(getOrigem) <> '') and (Length(Trim(getOrigem)) > 20) then
+    raise Exception.Create('Campo Origem não pode exceder 20 caracteres!');
+
+  if getDtAbertura = 0 then
+    raise Exception.Create('Campo Data de Abertura é obrigatório!');
+
+  if (getDtPrevisaoConclusao <> 0) and (getDtPrevisaoConclusao < getDtAbertura) then
+    raise Exception.Create('Campo Data de Previsão de Conclusão não pode ser anterior à Data de Abertura!');
+
+  if (getDtInicioExecucao <> 0) and (getDtInicioExecucao < getDtAbertura) then
+    raise Exception.Create('Campo Data de Início de Execução não pode ser anterior à Data de Abertura!');
+
+  if (getDtConclusao <> 0) and (getDtConclusao < getDtAbertura) then
+    raise Exception.Create('Campo Data de Conclusão não pode ser anterior à Data de Abertura!');
+
+  if (getMotivoCancelamento.getId = NULL_INTEGER) then
+    raise Exception.Create('Campo Motivo de Cancelamento inválido!');
+
+  if (Trim(getEnderecoExecucao) <> '') and (Length(Trim(getEnderecoExecucao)) > 250) then
+    raise Exception.Create('Campo Endereço de Execução não pode exceder 250 caracteres!');
+
+  if getValorDesconto < 0 then
+    raise Exception.Create('Campo Valor de Desconto não pode ser negativo!');
+
+  if getValorAcrescimo < 0 then
+    raise Exception.Create('Campo Valor de Acréscimo não pode ser negativo!');
+
+  if (Trim(getFormaPagamento) <> '') and (Length(Trim(getFormaPagamento)) > 20) then
+    raise Exception.Create('Campo Forma de Pagamento não pode exceder 20 caracteres!');
+
+  if (Trim(getUsuarioAbertura) <> '') and (Length(Trim(getUsuarioAbertura)) > 60) then
+    raise Exception.Create('Campo Usuário de Abertura não pode exceder 60 caracteres!');
+
+  if (Trim(getUsuarioUltimaAtualizacao) <> '') and (Length(Trim(getUsuarioUltimaAtualizacao)) > 60) then
+    raise Exception.Create('Campo Usuário de Última Atualização não pode exceder 60 caracteres!');
+
+  if getAnexosQtde < 0 then
+    raise Exception.Create('Campo Quantidade de Anexos não pode ser negativo!');
+
+  Result := True;
+end;
+
+end.

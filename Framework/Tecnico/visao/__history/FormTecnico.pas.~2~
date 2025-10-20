@@ -1,0 +1,39 @@
+unit FormTecnico;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Mask, Vcl.StdCtrls,
+  frameSalvaCancela, frameformLabel, Vcl.ExtCtrls;
+
+type
+  TFrmTecnico = class(TForm)
+    PnlCliente: TPanel;
+    lblNomeRazao: TLabel;
+    lblTelefone1: TLabel;
+    lblEmail: TLabel;
+    lblPontoDeReferencia: TLabel;
+    Label3: TLabel;
+    fraformLabel1: TfraformLabel;
+    ChkAtivo: TCheckBox;
+    fraSalvaCancela1: TfraSalvaCancela;
+    EdtNomeRazao: TEdit;
+    EdtEmail: TEdit;
+    EdtTelPrincipal: TMaskEdit;
+    EdtContato: TEdit;
+    EdtComplemento: TEdit;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmTecnico: TFrmTecnico;
+
+implementation
+
+{$R *.dfm}
+
+end.

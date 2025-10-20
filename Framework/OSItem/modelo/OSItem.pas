@@ -10,8 +10,6 @@ type
       destructor Destroy; override;
       private
          id: Integer;
-         os: TOrObject;
-         produto: TOrObject;
          descricao: string;
          tipo: string;
          qtde: Double;
@@ -20,9 +18,11 @@ type
          acrescimoValor: Double;
          totalItem: Double;
          observacao: string;
+         osId: Integer;
+         produto: TOrObject;
       public
          procedure setId(id: Integer); override;
-         procedure setOs(os: TOrObject);
+         procedure setOsId(osId: Integer);
          procedure setProduto(produto: TOrObject);
          procedure setDescricao(descricao: string);
          procedure setTipo(tipo: string);
@@ -34,7 +34,7 @@ type
          procedure setObservacao(observacao: string);
 
          function getId: Integer; override;
-         function getOs: TOrObject;
+         function getOsId: Integer;
          function getProduto: TOrObject;
          function getDescricao: string;
          function getTipo: string;
@@ -46,6 +46,7 @@ type
          function getObservacao: string;
 
          function validar: Boolean; override;
+         procedure ocopy(AObject: TOrObject); override;
       end;
 
 implementation
@@ -54,9 +55,9 @@ uses Constantes, OS, Produto;
 
 constructor TOSItem.Create;
 begin
+  inherited Create;
   setId(NULL_INTEGER);
-  setOs(TOS.Create);
-  setProduto(nil);
+  setOsId(NULL_INTEGER);
   setDescricao('');
   setTipo('');
   setQtde(0);
@@ -65,11 +66,11 @@ begin
   setAcrescimoValor(0);
   setTotalItem(0);
   setObservacao('');
+  setProduto(nil); // produto may be nil initially
 end;
 
 destructor TOSItem.Destroy;
 begin
-  os.Free;
   if Assigned(produto) then
     produto.Free;
   inherited;
@@ -81,9 +82,9 @@ begin
   Result := id;
 end;
 
-function TOSItem.getOs: TOrObject;
+function TOSItem.getOsId: Integer;
 begin
-  Result := os;
+  Result := osId;
 end;
 
 function TOSItem.getProduto: TOrObject;
@@ -138,14 +139,19 @@ begin
   self.id := id;
 end;
 
-procedure TOSItem.setOs(os: TOrObject);
+procedure TOSItem.setOsId(osId: Integer);
 begin
-  self.os := os;
+  self.osId := osId;
 end;
 
 procedure TOSItem.setProduto(produto: TOrObject);
 begin
-  self.produto := produto;
+  if self.produto <> produto then
+  begin
+    if Assigned(self.produto) then
+      self.produto.Free;
+    self.produto := produto;
+  end;
 end;
 
 procedure TOSItem.setDescricao(descricao: string);
@@ -188,24 +194,31 @@ begin
   self.observacao := observacao;
 end;
 
+procedure TOSItem.ocopy(AObject: TOrObject);
+begin
+  inherited;
+  with AObject as TOSItem do
+  begin
+    self.id := getId;
+    self.osId := getOsId;
+    self.descricao := getDescricao;
+    self.tipo := getTipo;
+    self.qtde := getQtde;
+    self.precoUnit := getPrecoUnit;
+    self.descontoValor := getDescontoValor;
+    self.acrescimoValor := getAcrescimoValor;
+    self.totalItem := getTotalItem;
+    self.observacao := getObservacao;
+    self.produto.ocopy(getProduto);
+  end;
+end;
+
 function TOSItem.validar: Boolean;
 begin
   Result := False;
 
-  if (getOs.getId = NULL_INTEGER) then
-    raise Exception.Create('Campo OS é obrigatório!');
-
-  if (getProduto.getId = NULL_INTEGER) then
-    raise Exception.Create('Campo Produto é obrigatório!');
-
   if Trim(getDescricao) = '' then
     raise Exception.Create('Campo Descrição é obrigatório!');
-
-  if Length(Trim(getDescricao)) > 150 then
-    raise Exception.Create('Campo Descrição não pode exceder 150 caracteres!');
-
-  if not (getTipo = 'P') and not (getTipo = 'S') then
-    raise Exception.Create('Campo Tipo deve ser "P" (Produto) ou "S" (Serviço)!');
 
   if getQtde <= 0 then
     raise Exception.Create('Campo Quantidade deve ser maior que zero!');
@@ -214,17 +227,13 @@ begin
     raise Exception.Create('Campo Preço Unitário não pode ser negativo!');
 
   if getDescontoValor < 0 then
-    raise Exception.Create('Campo Desconto Valor não pode ser negativo!');
+    raise Exception.Create('Campo Desconto não pode ser negativo!');
 
   if getAcrescimoValor < 0 then
-    raise Exception.Create('Campo Acréscimo Valor não pode ser negativo!');
+    raise Exception.Create('Campo Acréscimo não pode ser negativo!');
 
-  if Length(Trim(getObservacao)) > 150 then
-    raise Exception.Create('Campo Observação não pode exceder 150 caracteres!');
-
-  // Verifica consistência do totalItem (conforme fórmula da tabela)
-  if Abs(getTotalItem - ((getQtde * getPrecoUnit) - getDescontoValor + getAcrescimoValor)) > 0.01 then
-    raise Exception.Create('Campo Total Item deve ser igual a ((Quantidade * Preço Unitário) - Desconto + Acréscimo)!');
+  if getTotalItem < 0 then
+    raise Exception.Create('Campo Total do Item não pode ser negativo!');
 
   Result := True;
 end;

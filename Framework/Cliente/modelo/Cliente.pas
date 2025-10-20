@@ -73,6 +73,7 @@ type
          function getDtAtualizacao: TDateTime;
 
          function validar: Boolean; override;
+         procedure ocopy(AObject: TOrObject); override;
 
       end;
 
@@ -344,5 +345,35 @@ begin
 
   Result := True;
 end;
+
+
+procedure TCliente.ocopy(AObject: TOrObject);
+begin
+  inherited ocopy(AObject);
+  with AObject as TCliente do
+  begin
+    self.id := getId;
+    self.nomeRazao := getNomeRazao;
+    self.documento := getDocumento;
+    self.inscricaoEstadual := getInscricaoEstadual;
+    self.tipoPessoa := getTipoPessoa;
+    self.email := getEmail;
+    self.telefonePrincipal := getTelefonePrincipal;
+    self.telefoneSecundario := getTelefoneSecundario;
+    self.contato := getContato;
+    self.enderecoRua := getEnderecoRua;
+    self.enderecoNumero := getEnderecoNumero;
+    self.enderecoCompl := getEnderecoCompl;
+    self.enderecoBairro := getEnderecoBairro;
+    self.enderecoCidade := getEnderecoCidade;
+    self.enderecoUf := getEnderecoUf;
+    self.enderecoCep := getEnderecoCep;
+    self.ativo := getAtivo;
+    self.observacoes := getObservacoes;
+    self.dtCadastro := getDtCadastro;
+    self.dtAtualizacao := getDtAtualizacao;
+  end;
+end;
+
 
 end.

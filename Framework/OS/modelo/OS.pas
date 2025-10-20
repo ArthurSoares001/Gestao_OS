@@ -3,119 +3,133 @@ unit OS;
 interface
 
 uses OrObject, SysUtils, Classes;
-
 type
    TOS = class(TOrObject)
       constructor Create;
       destructor Destroy; override;
-      private
-         id: Integer;
-         numero: string;
-         titulo: string;
-         descricaoProblema: string;
-         diagnostico: string;
-         solucaoAplicada: string;
-         origem: string;
-         dtAbertura: TDateTime;
-         dtPrevisaoConclusao: TDateTime;
-         dtInicioExecucao: TDateTime;
-         dtConclusao: TDateTime;
-         enderecoExecucao: string;
-         valorDesconto: Double;
-         valorAcrescimo: Double;
-         formaPagamento: string;
-         observacoes: string;
-         usuarioAbertura: string;
-         usuarioUltimaAtualizacao: string;
-         anexosQtde: Integer;
-         dtCadastro: TDateTime;
-         dtAtualizacao: TDateTime;
+   private
+      id: Integer;
+      numero: string;
+      titulo: string;
+      descricaoProblema: string;
+      diagnostico: string;
+      solucaoAplicada: string;
+      origem: string;
+      dtAbertura: TDateTime;
+      dtPrevisaoConclusao: TDateTime;
+      dtInicioExecucao: TDateTime;
+      dtConclusao: TDateTime;
+      enderecoExecucao: string;
+      valorDesconto: Double;
+      valorAcrescimo: Double;
+      formaPagamento: string;
+      observacoes: string;
+      usuarioAbertura: string;
+      usuarioUltimaAtualizacao: string;
+      anexosQtde: Integer;
+      dtCadastro: TDateTime;
+      dtAtualizacao: TDateTime;
 
-         cliente: TOrObject;
-         tecnicoResponsavel: TOrObject;
-         status: TOrObject;
-         prioridade: TOrObject;
-         motivoCancelamento: TOrObject;
-      public
-         procedure setId(id: Integer); override;
-         procedure setNumero(numero: string);
-         procedure setCliente(cliente: TOrObject);
-         procedure setTecnicoResponsavel(tecnicoResponsavel: TOrObject);
-         procedure setTitulo(titulo: string);
-         procedure setDescricaoProblema(descricaoProblema: string);
-         procedure setDiagnostico(diagnostico: string);
-         procedure setSolucaoAplicada(solucaoAplicada: string);
-         procedure setStatus(status: TOrObject);
-         procedure setPrioridade(prioridade: TOrObject);
-         procedure setOrigem(origem: string);
-         procedure setDtAbertura(dtAbertura: TDateTime);
-         procedure setDtPrevisaoConclusao(dtPrevisaoConclusao: TDateTime);
-         procedure setDtInicioExecucao(dtInicioExecucao: TDateTime);
-         procedure setDtConclusao(dtConclusao: TDateTime);
-         procedure setMotivoCancelamento(motivoCancelamento: TOrObject);
-         procedure setEnderecoExecucao(enderecoExecucao: string);
-         procedure setValorDesconto(valorDesconto: Double);
-         procedure setValorAcrescimo(valorAcrescimo: Double);
-         procedure setFormaPagamento(formaPagamento: string);
-         procedure setObservacoes(observacoes: string);
-         procedure setUsuarioAbertura(usuarioAbertura: string);
-         procedure setUsuarioUltimaAtualizacao(usuarioUltimaAtualizacao: string);
-         procedure setAnexosQtde(anexosQtde: Integer);
-         procedure setDtCadastro(dtCadastro: TDateTime);
-         procedure setDtAtualizacao(dtAtualizacao: TDateTime);
+      cliente: TOrObject;
+      tecnicoResponsavel: TOrObject;
+      status: TOrObject;
+      prioridade: TOrObject;
+      motivoCancelamento: TOrObject;
+      lstOSItem: TOrObject;
+      lstOSAnexo: TOrObject;
 
-         function getId: Integer; override;
-         function getNumero: string;
-         function getCliente: TOrObject;
-         function getTecnicoResponsavel: TOrObject;
-         function getTitulo: string;
-         function getDescricaoProblema: string;
-         function getDiagnostico: string;
-         function getSolucaoAplicada: string;
-         function getStatus: TOrObject;
-         function getPrioridade: TOrObject;
-         function getOrigem: string;
-         function getDtAbertura: TDateTime;
-         function getDtPrevisaoConclusao: TDateTime;
-         function getDtInicioExecucao: TDateTime;
-         function getDtConclusao: TDateTime;
-         function getMotivoCancelamento: TOrObject;
-         function getEnderecoExecucao: string;
-         function getValorDesconto: Double;
-         function getValorAcrescimo: Double;
-         function getFormaPagamento: string;
-         function getObservacoes: string;
-         function getUsuarioAbertura: string;
-         function getUsuarioUltimaAtualizacao: string;
-         function getAnexosQtde: Integer;
-         function getDtCadastro: TDateTime;
-         function getDtAtualizacao: TDateTime;
+   public
+      procedure setId(id: Integer); override;
+      procedure setNumero(numero: string);
+      procedure setTitulo(titulo: string);
+      procedure setDescricaoProblema(descricaoProblema: string);
+      procedure setDiagnostico(diagnostico: string);
+      procedure setSolucaoAplicada(solucaoAplicada: string);
+      procedure setOrigem(origem: string);
+      procedure setDtAbertura(dtAbertura: TDateTime);
+      procedure setDtPrevisaoConclusao(dtPrevisaoConclusao: TDateTime);
+      procedure setDtInicioExecucao(dtInicioExecucao: TDateTime);
+      procedure setDtConclusao(dtConclusao: TDateTime);
+      procedure setEnderecoExecucao(enderecoExecucao: string);
+      procedure setValorDesconto(valorDesconto: Double);
+      procedure setValorAcrescimo(valorAcrescimo: Double);
+      procedure setFormaPagamento(formaPagamento: string);
+      procedure setObservacoes(observacoes: string);
+      procedure setUsuarioAbertura(usuarioAbertura: string);
+      procedure setUsuarioUltimaAtualizacao(usuarioUltimaAtualizacao: string);
+      procedure setAnexosQtde(anexosQtde: Integer);
+      procedure setDtCadastro(dtCadastro: TDateTime);
+      procedure setDtAtualizacao(dtAtualizacao: TDateTime);
 
-         function validar: Boolean; override;
-      end;
+      procedure setCliente(cliente: TOrObject);
+      procedure setTecnicoResponsavel(tecnicoResponsavel: TOrObject);
+      procedure setStatus(status: TOrObject);
+      procedure setPrioridade(prioridade: TOrObject);
+      procedure setMotivoCancelamento(motivoCancelamento: TOrObject);
+      procedure setLstOSItem(lstOSItem: TOrObject);
+      procedure setLstOSAnexo(lstOSAnexo: TOrObject); // <-- Novo setter
+
+      function getId: Integer; override;
+      function getNumero: string;
+      function getTitulo: string;
+      function getDescricaoProblema: string;
+      function getDiagnostico: string;
+      function getSolucaoAplicada: string;
+      function getOrigem: string;
+      function getDtAbertura: TDateTime;
+      function getDtPrevisaoConclusao: TDateTime;
+      function getDtInicioExecucao: TDateTime;
+      function getDtConclusao: TDateTime;
+      function getEnderecoExecucao: string;
+      function getValorDesconto: Double;
+      function getValorAcrescimo: Double;
+      function getFormaPagamento: string;
+      function getObservacoes: string;
+      function getUsuarioAbertura: string;
+      function getUsuarioUltimaAtualizacao: string;
+      function getAnexosQtde: Integer;
+      function getDtCadastro: TDateTime;
+      function getDtAtualizacao: TDateTime;
+
+      function getCliente: TOrObject;
+      function getTecnicoResponsavel: TOrObject;
+      function getStatus: TOrObject;
+      function getPrioridade: TOrObject;
+      function getMotivoCancelamento: TOrObject;
+
+      function getLstOSItem: TOrObject;
+      function getLstOSAnexo: TOrObject; // <-- Novo getter
+
+      function validar: Boolean; override;
+      procedure ocopy(AObject: TOrObject); override;
+   end;
 
 implementation
 
-uses Constantes, Cliente, Tecnico, StatusOS, PrioridadeOS, MotivoCancelamento;
+uses Constantes, Cliente, Tecnico, StatusOS, PrioridadeOS, MotivoCancelamento, OrList;
 
 constructor TOS.Create;
 begin
   setId(NULL_INTEGER);
-  setNumero('');
+
   setCliente(TCliente.Create);
-  setTecnicoResponsavel(nil);
+  setTecnicoResponsavel(TTecnico.Create);
+  setStatus(TStatusOS.Create);
+  setPrioridade(TPrioridadeOS.Create);
+  setMotivoCancelamento(TMotivoCancelamento.Create);
+  setLstOSItem(TOrList.Create);
+  setLstOSAnexo(TOrList.Create); // <-- Criado no construtor
+
+  setNumero('');
   setTitulo('');
   setDescricaoProblema('');
   setDiagnostico('');
   setSolucaoAplicada('');
-  setStatus(nil);
-  setPrioridade(nil);
   setOrigem('');
   setDtAbertura(Now);
   setDtPrevisaoConclusao(0);
   setDtInicioExecucao(0);
   setDtConclusao(0);
-  setMotivoCancelamento(nil);
   setEnderecoExecucao('');
   setValorDesconto(0);
   setValorAcrescimo(0);
@@ -131,21 +145,28 @@ end;
 destructor TOS.Destroy;
 begin
   cliente.Free;
-  if Assigned(tecnicoResponsavel) then
-    tecnicoResponsavel.Free;
-  if Assigned(status) then
-    status.Free;
-  if Assigned(prioridade) then
-    prioridade.Free;
-  if Assigned(motivoCancelamento) then
-    motivoCancelamento.Free;
+  tecnicoResponsavel.Free;
+  status.Free;
+  prioridade.Free;
+  motivoCancelamento.Free;
+  lstOSItem.Free;
+  lstOSAnexo.Free; // <-- Liberado no destrutor
   inherited;
 end;
-
 //---------------- gets
 function TOS.getId: Integer;
 begin
   Result := id;
+end;
+
+function TOS.getLstOSItem: TOrObject;
+begin
+  result := lstOSItem;
+end;
+
+function TOS.getLstOSAnexo: TOrObject;
+begin
+  result := lstOSAnexo;
 end;
 
 function TOS.getNumero: string;
@@ -278,6 +299,16 @@ procedure TOS.setId(id: Integer);
 begin
   inherited;
   self.id := id;
+end;
+
+procedure TOS.setLstOSItem(lstOSItem: TOrObject);
+begin
+  self.lstOSItem := lstOSItem;
+end;
+
+procedure TOS.setLstOSAnexo(lstOSAnexo: TOrObject);
+begin
+  self.lstOSAnexo := lstOSAnexo;
 end;
 
 procedure TOS.setNumero(numero: string);
@@ -471,5 +502,44 @@ begin
 
   Result := True;
 end;
+
+procedure TOS.ocopy(AObject: TOrObject);
+begin
+  inherited;
+  with AObject as TOS do
+  begin
+    self.id := getId;
+    self.numero := getNumero;
+    self.titulo := getTitulo;
+    self.descricaoProblema := getDescricaoProblema;
+    self.diagnostico := getDiagnostico;
+    self.solucaoAplicada := getSolucaoAplicada;
+    self.origem := getOrigem;
+    self.dtAbertura := getDtAbertura;
+    self.dtPrevisaoConclusao := getDtPrevisaoConclusao;
+    self.dtInicioExecucao := getDtInicioExecucao;
+    self.dtConclusao := getDtConclusao;
+    self.enderecoExecucao := getEnderecoExecucao;
+    self.valorDesconto := getValorDesconto;
+    self.valorAcrescimo := getValorAcrescimo;
+    self.formaPagamento := getFormaPagamento;
+    self.observacoes := getObservacoes;
+    self.usuarioAbertura := getUsuarioAbertura;
+    self.usuarioUltimaAtualizacao := getUsuarioUltimaAtualizacao;
+    self.anexosQtde := getAnexosQtde;
+    self.dtCadastro := getDtCadastro;
+    self.dtAtualizacao := getDtAtualizacao;
+
+    self.cliente.ocopy(getCliente);
+    self.tecnicoResponsavel.ocopy(getTecnicoResponsavel);
+    self.status.ocopy(getStatus);
+    self.prioridade.ocopy(getPrioridade);
+    self.motivoCancelamento.ocopy(getMotivoCancelamento);
+    self.lstOSItem.ocopy(getLstOSItem);
+    self.lstOSAnexo.ocopy(getLstOSAnexo);
+  end;
+end;
+
+
 
 end.

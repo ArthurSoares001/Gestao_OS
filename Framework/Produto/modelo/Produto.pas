@@ -40,6 +40,7 @@ type
          function getDtAtualizacao: TDateTime;
 
          function validar: Boolean; override;
+         procedure ocopy(AObject: TORObject); override;
       end;
 
 implementation
@@ -189,6 +190,23 @@ begin
     raise Exception.Create('Campo Data de Atualização é obrigatório!');
 
   Result := True;
+end;
+
+procedure TProduto.ocopy(AObject: TORObject);
+begin
+  inherited ocopy(AObject);
+  with AObject as TProduto do
+  begin
+    self.id := getId;
+    self.descricao := getDescricao;
+    self.tipo := getTipo;
+    self.precoPadrao := getPrecoPadrao;
+    self.unidade := getUnidade;
+    self.codigoBarras := getCodigoBarras;
+    self.ativo := getAtivo;
+    self.dtCadastro := getDtCadastro;
+    self.dtAtualizacao := getDtAtualizacao;
+  end;
 end;
 
 end.

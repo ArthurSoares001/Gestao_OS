@@ -139,7 +139,10 @@ begin
     EdtNomeRazao.Text := getNomeRazao;
     EdtDocumento.Text := getDocumento;
     EdtRgIe.Text := getInscricaoEstadual;
-    cmbTipoPessoa.ItemIndex := cmbTipoPessoa.Items.IndexOf(getTipoPessoa);
+    if getTipoPessoa = 'F' then
+      cmbTipoPessoa.ItemIndex := 0
+    else
+      cmbTipoPessoa.ItemIndex := 1;
     EdtEmail.Text := getEmail;
     EdtTelPrincipal.Text := getTelefonePrincipal;
     EdtTelSecundario.Text := getTelefoneSecundario;

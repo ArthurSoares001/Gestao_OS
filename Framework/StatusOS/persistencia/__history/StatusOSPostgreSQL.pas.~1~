@@ -1,0 +1,7 @@
+unit StatusOSPostgreSQL;
+
+interface
+
+implementation
+
+end.

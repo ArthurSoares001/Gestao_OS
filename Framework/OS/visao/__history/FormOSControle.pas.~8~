@@ -1,0 +1,465 @@
+
+unit FormOSControle;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls, frameRodaPeControle, frameCabecalhoControle,
+  frameformLabel, Filtro, Data.DB, Vcl.DBGrids, OSPostgreSQL, OS, OrList, OSItem, Produto;
+
+type
+  TFrmOSControle = class(TForm)
+    fraformLabel1: TfraformLabel;
+    fraRodaPeControle1: TfraRodaPeControle;
+    stgDados: TStringGrid;
+    fraCabecalhoControle1: TfraCabecalhoControle;
+    GroupBox1: TGroupBox;
+    stgDadosServico: TStringGrid;
+    GroupBox2: TGroupBox;
+    stgDadosProduto: TStringGrid;
+    procedure FormCreate(Sender: TObject);
+    procedure stgDadosDrawCell(Sender: TObject; ACol, ARow: Integer;
+      Rect: TRect; State: TGridDrawState);
+    procedure FormShow(Sender: TObject);
+    procedure fraRodaPeControle1spdEditarClick(Sender: TObject);
+    procedure fraRodaPeControle1spdExcluirClick(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure frameCabecalhoControle1spdProcurarClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure fraRodaPeControle1spdImprimirClick(Sender: TObject);
+    procedure stgDadosClick(Sender: TObject); // Alterado para stgDadosClick
+    procedure fraRodaPeControle1spdExcelClick(Sender: TObject);
+    procedure frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+    procedure fraCabecalhoControle1btnNovoClick(Sender: TObject);
+    procedure stgDadosDblClick(Sender: TObject);
+    procedure stgDadosProdutoDrawCell(Sender: TObject; ACol, ARow: Integer;
+      Rect: TRect; State: TGridDrawState);
+  private
+    filtro: TFiltro;
+    OSDB: TOSPostgreSQL;
+    ListaOS: TList;
+    procedure atualizarGrid;
+    procedure atualizarGridProduto(OS: TOS);
+    procedure atualizarInterface;
+    procedure chamarFormOS;
+    procedure FreeListaOS;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+var
+  FrmOSControle: TFrmOSControle;
+
+implementation
+
+uses
+  Constantes, Biblioteca, DataModule, Cliente, StatusOS;
+
+{$R *.dfm}
+
+{ TFrmOSControle }
+
+constructor TFrmOSControle.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  OSDB := TOSPostgreSQL.Create;
+  ListaOS := TList.Create;
+end;
+
+destructor TFrmOSControle.Destroy;
+begin
+  FreeListaOS;
+  ListaOS.Free;
+  OSDB.Free;
+  inherited Destroy;
+end;
+
+procedure TFrmOSControle.FreeListaOS;
+var
+  I: Integer;
+begin
+  for I := 0 to ListaOS.Count - 1 do
+    TObject(ListaOS[I]).Free;
+  ListaOS.Clear;
+end;
+
+procedure TFrmOSControle.atualizarInterface;
+begin
+  organizarTabOrder(Self);
+  Position := poScreenCenter;
+  stgDados.Options := stgDados.Options + [goRowSelect];
+  stgDados.ScrollBars := ssBoth;
+  KeyPreview := True;
+  ShowHint := True;
+  BorderStyle := bsNone;
+  WindowState := wsMaximized;
+
+  // Configurar a grid stgDadosProduto
+  stgDadosProduto.Options := stgDadosProduto.Options + [goRowSelect];
+  stgDadosProduto.ScrollBars := ssBoth;
+end;
+
+procedure TFrmOSControle.chamarFormOS;
+begin
+  { Implementação existente mantida
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
+    Exit;
+
+  OS := TOS(ListaOS[stgDados.Row - 1]);
+  frmOS := TfrmOS.Create(Self);
+  try
+    frmOS.setStatusInterface(stAlterar);
+    frmOS.setOS(OS);
+    if frmOS.ShowModal = mrOk then
+    begin
+      if frmOS.getOS.validar then
+      begin
+        OSDB.Alterar(frmOS.getOS);
+        atualizarGrid;
+      end;
+    end;
+  finally
+    FreeAndNil(frmOS);
+  end;
+  }
+end;
+
+procedure TFrmOSControle.FormCreate(Sender: TObject);
+begin
+  fraformLabel1.iniciar('OS - Controle', Self);
+  fraCabecalhoControle1.iniciar(Self);
+  fraRodaPeControle1.iniciar(NULL_STRING, Self, stgDados);
+  filtro := TFiltro.Create;
+  atualizarInterface;
+end;
+
+procedure TFrmOSControle.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_F2 then
+    fraCabecalhoControle1btnNovoClick(Self)
+  else if Key = VK_F3 then
+    frameCabecalhoControle1spdProcurarClick(Self)
+  else if Key = VK_ESCAPE then
+    Close;
+end;
+
+procedure TFrmOSControle.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = KEY_ENTER then
+  begin
+    Key := KEY_TAB;
+    Perform(WM_NEXTDLGCTL, 0, 0);
+  end;
+end;
+
+procedure TFrmOSControle.FormShow(Sender: TObject);
+begin
+  limparInterface(Self);
+  atualizarGrid;
+end;
+
+procedure TFrmOSControle.fraCabecalhoControle1btnNovoClick(Sender: TObject);
+begin
+  { Implementação existente mantida
+  OS := TOS.Create;
+  try
+    frmOS := TfrmOS.Create(Self);
+    try
+      frmOS.setStatusInterface(stIncluir);
+      frmOS.setOS(OS);
+      if frmOS.ShowModal = mrOk then
+      begin
+        if frmOS.getOS.validar then
+        begin
+          OSDB.Inserir(frmOS.getOS);
+          atualizarGrid;
+        end;
+      end;
+    finally
+      FreeAndNil(frmOS);
+    end;
+  finally
+    OS.Free;
+  end;
+  }
+end;
+
+procedure TFrmOSControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+begin
+  fraCabecalhoControle1.edtDescricaoChange(Sender);
+end;
+
+procedure TFrmOSControle.frameCabecalhoControle1spdProcurarClick(Sender: TObject);
+begin
+  filtro.novaInstancia;
+  filtro.setDescricao(fraCabecalhoControle1.edtDescricao.Text);
+  atualizarGrid;
+end;
+
+procedure TFrmOSControle.fraRodaPeControle1spdEditarClick(Sender: TObject);
+begin
+  chamarFormOS;
+end;
+
+procedure TFrmOSControle.fraRodaPeControle1spdExcelClick(Sender: TObject);
+begin
+  fraRodaPeControle1.spdExcelClick(Sender);
+end;
+
+procedure TFrmOSControle.fraRodaPeControle1spdExcluirClick(Sender: TObject);
+var
+  OS: TOS;
+begin
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
+    Exit;
+
+  if Application.MessageBox(PChar(MSG_CONFIRMA_EXCLUSAO), 'Confirmação', MB_ICONQUESTION + MB_YESNO) = IDYES then
+  begin
+    OS := TOS(ListaOS[stgDados.Row - 1]);
+    OSDB.Deletar(OS);
+    atualizarGrid;
+  end;
+end;
+
+procedure TFrmOSControle.fraRodaPeControle1spdImprimirClick(Sender: TObject);
+begin
+  { Implementação existente mantida
+  rptOS := TrptOS.Create(Self);
+  try
+    rptOS.imprimir(ListaOS);
+  finally
+    FreeAndNil(rptOS);
+  end;
+  }
+end;
+
+procedure TFrmOSControle.stgDadosClick(Sender: TObject);
+var
+  OS, OSCompleta: TOS;
+begin
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
+  begin
+    // Limpar a grid de produtos se nenhuma linha válida for selecionada
+    stgDadosProduto.RowCount := 2;
+    stgDadosProduto.Rows[1].Clear;
+    Exit;
+  end;
+
+  // Obter o objeto TOS selecionado na grid
+  OS := TOS(ListaOS[stgDados.Row - 1]);
+
+  // Chamar o método Procurar para obter a OS completa com os itens
+  OSCompleta := OSDB.Procurar(OS);
+  try
+    if Assigned(OSCompleta) then
+      atualizarGridProduto(OSCompleta)
+    else
+    begin
+      // Limpar a grid de produtos se a OS não for encontrada
+      stgDadosProduto.RowCount := 2;
+      stgDadosProduto.Rows[1].Clear;
+    end;
+  finally
+    OSCompleta.Free;
+  end;
+end;
+
+procedure TFrmOSControle.stgDadosDblClick(Sender: TObject);
+begin
+//  chamarFormOS;
+end;
+
+procedure TFrmOSControle.stgDadosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  strTemp: string;
+  grid: TStringGrid;
+begin
+  grid := Sender as TStringGrid;
+  grid.ColWidths[0] := Trunc(grid.Width * 0.10); // Id
+  grid.ColWidths[1] := Trunc(grid.Width * 0.15); // Numero
+  grid.ColWidths[2] := Trunc(grid.Width * 0.25); // Cliente
+  grid.ColWidths[3] := Trunc(grid.Width * 0.25); // Titulo
+  grid.ColWidths[4] := Trunc(grid.Width * 0.15); // Status
+  grid.ColWidths[5] := Trunc(grid.Width * 0.10); // DtAbertura
+  with grid do
+  begin
+    strTemp := Cells[ACol, ARow];
+    if ACol = ColCount - 1 then
+      strTemp := strTemp + StringOfChar(' ', 5);
+
+    Canvas.Font.Style := [];
+    Canvas.Font.Color := clBlack;
+    Canvas.Brush.Color := clWindow;
+
+    if ARow = 0 then
+    begin
+      Canvas.Font.Style := [fsBold];
+      Canvas.Brush.Color := clBtnFace;
+    end
+    else
+    begin
+      if ARow = Row then
+      begin
+        Canvas.Font.Color := clWhite;
+        Canvas.Brush.Color := clHighlight;
+      end
+      else
+      begin
+        if ARow mod 2 = 0 then
+          Canvas.Brush.Color := clInfoBk
+        else
+          Canvas.Brush.Color := clWhite;
+      end;
+    end;
+    Canvas.FillRect(Rect);
+    if ACol in [2, 3, 4] then
+      DrawText(Canvas.Handle, PChar(' ' + strTemp), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_LEFT)
+    else
+      DrawText(Canvas.Handle, PChar(' ' + strTemp + ' '), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
+  end;
+end;
+
+procedure TFrmOSControle.stgDadosProdutoDrawCell(Sender: TObject; ACol,
+  ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  strTemp: string;
+  grid: TStringGrid;
+begin
+  grid := Sender as TStringGrid;
+  grid.ColWidths[0] := Trunc(grid.Width * 0.08); // ID
+  grid.ColWidths[1] := Trunc(grid.Width * 0.20); // Descrição
+  grid.ColWidths[2] := Trunc(grid.Width * 0.08); // Tipo
+  grid.ColWidths[3] := Trunc(grid.Width * 0.10); // Quantidade
+  grid.ColWidths[4] := Trunc(grid.Width * 0.10); // Preço Unit.
+  grid.ColWidths[5] := Trunc(grid.Width * 0.10); // Desconto
+  grid.ColWidths[6] := Trunc(grid.Width * 0.10); // Acréscimo
+  grid.ColWidths[7] := Trunc(grid.Width * 0.10); // Total
+  grid.ColWidths[8] := Trunc(grid.Width * 0.24); // Produto
+
+  with grid do
+  begin
+    strTemp := Cells[ACol, ARow];
+    if ACol = ColCount - 1 then
+      strTemp := strTemp + StringOfChar(' ', 5);
+
+    Canvas.Font.Style := [];
+    Canvas.Font.Color := clBlack;
+    Canvas.Brush.Color := clWindow;
+
+    if ARow = 0 then
+    begin
+      Canvas.Font.Style := [fsBold];
+      Canvas.Brush.Color := clBtnFace;
+    end
+    else
+    begin
+      if ARow = Row then
+      begin
+        Canvas.Font.Color := clWhite;
+        Canvas.Brush.Color := clHighlight;
+      end
+      else
+      begin
+        if ARow mod 2 = 0 then
+          Canvas.Brush.Color := clInfoBk
+        else
+          Canvas.Brush.Color := clWhite;
+      end;
+    end;
+    Canvas.FillRect(Rect);
+    if ACol in [1, 8] then
+      DrawText(Canvas.Handle, PChar(' ' + strTemp), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_LEFT)
+    else
+      DrawText(Canvas.Handle, PChar(' ' + strTemp + ' '), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
+  end;
+end;
+
+procedure TFrmOSControle.atualizarGrid;
+var
+  OS: TOS;
+  I: Integer;
+begin
+  processando(Self);
+  try
+    FreeListaOS;
+    stgDados.RowCount := 2;
+    stgDados.Rows[1].Clear;
+    stgDados.Cells[0, 0] := 'Id';
+    stgDados.Cells[1, 0] := 'Número';
+    stgDados.Cells[2, 0] := 'Cliente';
+    stgDados.Cells[3, 0] := 'Título';
+    stgDados.Cells[4, 0] := 'Status';
+    stgDados.Cells[5, 0] := 'Data Abertura';
+
+    ListaOS := OSDB.ProcurarTodos(filtro, 0);
+
+    if ListaOS.Count > 0 then
+    begin
+      stgDados.RowCount := ListaOS.Count + 1;
+      for I := 0 to ListaOS.Count - 1 do
+      begin
+        OS := TOS(ListaOS[I]);
+        stgDados.Cells[0, I + 1] := IntToStr(OS.getId);
+        stgDados.Cells[1, I + 1] := OS.getNumero;
+        stgDados.Cells[2, I + 1] := (OS.getCliente as TCliente).getNomeRazao;
+        stgDados.Cells[3, I + 1] := OS.getTitulo;
+        stgDados.Cells[4, I + 1] := (OS.getStatus as TStatusOS).getCodigo;
+        stgDados.Cells[5, I + 1] := DateToStr(OS.getDtAbertura);
+      end;
+    end;
+    fraRodaPeControle1.setRegistro(ListaOS.Count);
+
+    // Limpar a grid de produtos ao atualizar a grid principal
+    stgDadosProduto.RowCount := 2;
+    stgDadosProduto.Rows[1].Clear;
+  finally
+    processoFinalizado(Self);
+  end;
+end;
+
+procedure TFrmOSControle.atualizarGridProduto(OS: TOS);
+var
+  OSItem: TOSItem;
+  I: Integer;
+begin
+  processando(Self);
+  try
+    stgDadosProduto.RowCount := 2;
+    stgDadosProduto.Rows[1].Clear;
+    stgDadosProduto.Cells[0, 0] := 'ID';
+    stgDadosProduto.Cells[1, 0] := 'Descrição';
+    stgDadosProduto.Cells[2, 0] := 'Tipo';
+    stgDadosProduto.Cells[3, 0] := 'Quantidade';
+    stgDadosProduto.Cells[4, 0] := 'Preço Unit.';
+    stgDadosProduto.Cells[5, 0] := 'Desconto';
+    stgDadosProduto.Cells[6, 0] := 'Acréscimo';
+    stgDadosProduto.Cells[7, 0] := 'Total';
+    stgDadosProduto.Cells[8, 0] := 'Produto';
+
+    if Assigned(OS) and Assigned(OS.getLstOSItem as TOrList) and ((OS.getLstOSItem as TOrList).contar > 0) then
+    begin
+      stgDadosProduto.RowCount := (OS.getLstOSItem as TOrList).contar + 1;
+      for I := 0 to (OS.getLstOSItem as TOrList).contar - 1 do
+      begin
+        OSItem := ((OS.getLstOSItem as TOrList).item(I) as TOSItem);
+
+        stgDadosProduto.Cells[0, I + 1] := IntToStr(OSItem.getId);
+        stgDadosProduto.Cells[1, I + 1] := OSItem.getDescricao;
+        stgDadosProduto.Cells[2, I + 1] := OSItem.getTipo;
+        stgDadosProduto.Cells[3, I + 1] := FormatFloat('0.000', OSItem.getQtde);
+        stgDadosProduto.Cells[4, I + 1] := Format('%8.2m', [OSItem.getPrecoUnit]);
+        stgDadosProduto.Cells[5, I + 1] := Format('%8.2m', [OSItem.getDescontoValor]);
+        stgDadosProduto.Cells[6, I + 1] := Format('%8.2m', [OSItem.getAcrescimoValor]);
+        stgDadosProduto.Cells[7, I + 1] := Format('%8.2m', [OSItem.getTotalItem]);
+        stgDadosProduto.Cells[8, I + 1] := (OSItem.getProduto as TProduto).getDescricao;
+      end;
+    end;
+  finally
+    processoFinalizado(Self);
+  end;
+end;
+
+end.

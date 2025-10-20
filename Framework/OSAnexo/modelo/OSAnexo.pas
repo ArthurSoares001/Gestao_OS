@@ -2,54 +2,63 @@ unit OSAnexo;
 
 interface
 
-uses OrObject, SysUtils, Classes;
+uses
+  OrObject, SysUtils, Classes;
 
 type
-   TOSAnexo = class(TOrObject)
-      constructor Create;
-      destructor Destroy; override;
-      private
-         id: Integer;
-         os: TOrObject;
-         nomeArquivo: string;
-         tipoMime: string;
-         tamanhoBytes: Int64;
-         armazenamento: string;
-         caminhoChave: string;
-         dtUpload: TDateTime;
-         usuarioUpload: string;
-      public
-         procedure setId(id: Integer); override;
-         procedure setOs(os: TOrObject);
-         procedure setNomeArquivo(nomeArquivo: string);
-         procedure setTipoMime(tipoMime: string);
-         procedure setTamanhoBytes(tamanhoBytes: Int64);
-         procedure setArmazenamento(armazenamento: string);
-         procedure setCaminhoChave(caminhoChave: string);
-         procedure setDtUpload(dtUpload: TDateTime);
-         procedure setUsuarioUpload(usuarioUpload: string);
+  TOSAnexo = class(TOrObject)
+  private
+    id: Integer;
+    osId: Integer;
+    nomeArquivo: string;
+    tipoMime: string;
+    tamanhoBytes: Integer;
+    armazenamento: string;
+    caminhoChave: string;
+    dtUpload: TDateTime;
+    usuarioUpload: string;
+  public
+    constructor Create;
+    destructor Destroy; override;
 
-         function getId: Integer; override;
-         function getOs: TOrObject;
-         function getNomeArquivo: string;
-         function getTipoMime: string;
-         function getTamanhoBytes: Int64;
-         function getArmazenamento: string;
-         function getCaminhoChave: string;
-         function getDtUpload: TDateTime;
-         function getUsuarioUpload: string;
+    // Sets
+    procedure setId(id: Integer); override;
+    procedure setOsId(osId: Integer);
+    procedure setNomeArquivo(nomeArquivo: string);
+    procedure setTipoMime(tipoMime: string);
+    procedure setTamanhoBytes(tamanhoBytes: Integer);
+    procedure setArmazenamento(armazenamento: string);
+    procedure setCaminhoChave(caminhoChave: string);
+    procedure setDtUpload(dtUpload: TDateTime);
+    procedure setUsuarioUpload(usuarioUpload: string);
 
-         function validar: Boolean; override;
-      end;
+    // Gets
+    function getId: Integer; override;
+    function getOsId: Integer;
+    function getNomeArquivo: string;
+    function getTipoMime: string;
+    function getTamanhoBytes: Integer;
+    function getArmazenamento: string;
+    function getCaminhoChave: string;
+    function getDtUpload: TDateTime;
+    function getUsuarioUpload: string;
+
+    // Validação
+    function validar: Boolean; override;
+  end;
 
 implementation
 
-uses Constantes, OS;
+uses
+  Constantes;
+
+{ TOSAnexo }
 
 constructor TOSAnexo.Create;
 begin
+  inherited Create;
   setId(NULL_INTEGER);
-  setOs(TOS.Create);
+  setOsId(NULL_INTEGER);
   setNomeArquivo('');
   setTipoMime('');
   setTamanhoBytes(0);
@@ -61,19 +70,19 @@ end;
 
 destructor TOSAnexo.Destroy;
 begin
-  os.Free;
   inherited;
 end;
 
-//---------------- gets
+// ======================== GETS ========================
+
 function TOSAnexo.getId: Integer;
 begin
   Result := id;
 end;
 
-function TOSAnexo.getOs: TOrObject;
+function TOSAnexo.getOsId: Integer;
 begin
-  Result := os;
+  Result := osId;
 end;
 
 function TOSAnexo.getNomeArquivo: string;
@@ -86,7 +95,7 @@ begin
   Result := tipoMime;
 end;
 
-function TOSAnexo.getTamanhoBytes: Int64;
+function TOSAnexo.getTamanhoBytes: Integer;
 begin
   Result := tamanhoBytes;
 end;
@@ -111,59 +120,62 @@ begin
   Result := usuarioUpload;
 end;
 
-//---------------- sets
+// ======================== SETS ========================
+
 procedure TOSAnexo.setId(id: Integer);
 begin
   inherited;
-  self.id := id;
+  Self.id := id;
 end;
 
-procedure TOSAnexo.setOs(os: TOrObject);
+procedure TOSAnexo.setOsId(osId: Integer);
 begin
-  self.os := os;
+  Self.osId := osId;
 end;
 
 procedure TOSAnexo.setNomeArquivo(nomeArquivo: string);
 begin
-  self.nomeArquivo := nomeArquivo;
+  Self.nomeArquivo := nomeArquivo;
 end;
 
 procedure TOSAnexo.setTipoMime(tipoMime: string);
 begin
-  self.tipoMime := tipoMime;
+  Self.tipoMime := tipoMime;
 end;
 
-procedure TOSAnexo.setTamanhoBytes(tamanhoBytes: Int64);
+procedure TOSAnexo.setTamanhoBytes(tamanhoBytes: Integer);
 begin
-  self.tamanhoBytes := tamanhoBytes;
+  Self.tamanhoBytes := tamanhoBytes;
 end;
 
 procedure TOSAnexo.setArmazenamento(armazenamento: string);
 begin
-  self.armazenamento := armazenamento;
+  Self.armazenamento := armazenamento;
 end;
 
 procedure TOSAnexo.setCaminhoChave(caminhoChave: string);
 begin
-  self.caminhoChave := caminhoChave;
+  Self.caminhoChave := caminhoChave;
 end;
 
 procedure TOSAnexo.setDtUpload(dtUpload: TDateTime);
 begin
-  self.dtUpload := dtUpload;
+  Self.dtUpload := dtUpload;
 end;
 
 procedure TOSAnexo.setUsuarioUpload(usuarioUpload: string);
 begin
-  self.usuarioUpload := usuarioUpload;
+  Self.usuarioUpload := usuarioUpload;
 end;
+
+// ======================== VALIDAR ========================
 
 function TOSAnexo.validar: Boolean;
 begin
   Result := False;
 
-  if (getOs.getId = NULL_INTEGER) then
-    raise Exception.Create('Campo OS é obrigatório!');
+  if (getOsId = NULL_INTEGER) then
+    raise Exception.Create('Campo OSId é obrigatório!');
 
   if Trim(getNomeArquivo) = '' then
     raise Exception.Create('Campo Nome do Arquivo é obrigatório!');
@@ -199,3 +211,4 @@ begin
 end;
 
 end.
+

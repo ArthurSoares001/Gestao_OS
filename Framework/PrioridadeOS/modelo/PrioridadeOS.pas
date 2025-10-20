@@ -22,6 +22,7 @@ type
          function getSlaHoras: Integer;
 
          function validar: Boolean; override;
+         procedure ocopy(AObject: TOrObject); override;
       end;
 
 implementation
@@ -87,6 +88,17 @@ begin
     raise Exception.Create('Campo SLA Horas deve ser maior que zero!');
 
   Result := True;
+end;
+
+procedure TPrioridadeOS.ocopy(AObject: TOrObject);
+begin
+  inherited ocopy(AObject);
+  with AObject as TPrioridadeOS do
+  begin
+    self.id := getId;
+    self.codigo := getCodigo;
+    self.slaHoras := getSlaHoras;
+  end;
 end;
 
 end.

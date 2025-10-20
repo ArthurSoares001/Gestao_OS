@@ -23,6 +23,18 @@ object FrmPrincipal: TFrmPrincipal
         Caption = 'Cliente'
         OnClick = Cliente1Click
       end
+      object cnico1: TMenuItem
+        Caption = 'T'#233'cnico'
+        OnClick = cnico1Click
+      end
+      object Produto1: TMenuItem
+        Caption = 'Produto'
+        OnClick = Produto1Click
+      end
+    end
+    object OS1: TMenuItem
+      Caption = 'OS'
+      OnClick = OS1Click
     end
   end
 end

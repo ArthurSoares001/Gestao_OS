@@ -25,7 +25,23 @@ uses
   ClientePostgreSQL in 'Framework\Cliente\persistencia\ClientePostgreSQL.pas',
   DataModule in 'Framework\Comunm\DataModule.pas' {DMConexao: TDataModule},
   ClienteDB in 'Framework\Cliente\persistencia\ClienteDB.pas',
-  Filtro in 'Framework\Comunm\Filtro.pas';
+  Filtro in 'Framework\Comunm\Filtro.pas',
+  TecnicoPostgreSQL in 'Framework\Tecnico\persistencia\TecnicoPostgreSQL.pas',
+  TecnicoDB in 'Framework\Tecnico\persistencia\TecnicoDB.pas',
+  FormTecnicoControle in 'Framework\Tecnico\visao\FormTecnicoControle.pas' {FrmTecnicoControle},
+  FormTecnico in 'Framework\Tecnico\visao\FormTecnico.pas' {FrmTecnico},
+  ProdutoPostgreSQL in 'Framework\Produto\persistencia\ProdutoPostgreSQL.pas',
+  ProdutoDB in 'Framework\Produto\persistencia\ProdutoDB.pas',
+  FormProdutoControle in 'Framework\Produto\visao\FormProdutoControle.pas' {FrmProdutoControle},
+  FormProduto in 'Framework\Produto\visao\FormProduto.pas' {FrmProduto},
+  OSPostgreSQL in 'Framework\OS\persistencia\OSPostgreSQL.pas',
+  OSDB in 'Framework\OS\persistencia\OSDB.pas',
+  FormOSControle in 'Framework\OS\visao\FormOSControle.pas' {FrmOSControle},
+  FormOS in 'Framework\OS\visao\FormOS.pas' {FrmOS},
+  StatusOSPostgreSQL in 'Framework\StatusOS\persistencia\StatusOSPostgreSQL.pas',
+  StatusOSDB in 'Framework\StatusOS\persistencia\StatusOSDB.pas',
+  PrioridadeOSPostgreSQL in 'Framework\PrioridadeOS\persistencia\PrioridadeOSPostgreSQL.pas',
+  PrioridadeOSDB in 'Framework\PrioridadeOS\persistencia\PrioridadeOSDB.pas';
 
 {$R *.res}
 
@@ -34,5 +50,11 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmPrincipal, FrmPrincipal);
   Application.CreateForm(TDMConexao, DMConexao);
+  Application.CreateForm(TFrmTecnicoControle, FrmTecnicoControle);
+  Application.CreateForm(TFrmTecnico, FrmTecnico);
+  Application.CreateForm(TFrmProdutoControle, FrmProdutoControle);
+  Application.CreateForm(TFrmProduto, FrmProduto);
+  Application.CreateForm(TFrmOSControle, FrmOSControle);
+  Application.CreateForm(TFrmOS, FrmOS);
   Application.Run;
 end.
