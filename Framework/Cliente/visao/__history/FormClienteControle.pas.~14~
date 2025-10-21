@@ -1,0 +1,324 @@
+unit FormClienteControle;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls, frameRodaPeControle, frameCabecalhoControle,
+  frameformLabel, Filtro, Data.DB, Vcl.DBGrids, ClientePostgreSQL;
+
+type
+  TFrmClienteControle = class(TForm)
+    fraformLabel1: TfraformLabel;
+    fraRodaPeControle1: TfraRodaPeControle;
+    stgDados: TStringGrid;
+    fraCabecalhoControle1: TfraCabecalhoControle;
+    procedure FormCreate(Sender: TObject);
+    procedure stgDadosDrawCell(Sender: TObject; ACol, ARow: Integer;
+      Rect: TRect; State: TGridDrawState);
+    procedure FormShow(Sender: TObject);
+    procedure fraRodaPeControle1spdEditarClick(Sender: TObject);
+    procedure fraRodaPeControle1spdExcluirClick(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure fraRodaPeControle1spdImprimirClick(Sender: TObject);
+    procedure stgDadosDblClick(Sender: TObject);
+    procedure fraRodaPeControle1spdExcelClick(Sender: TObject);
+    procedure frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+    procedure fraCabecalhoControle1btnNovoClick(Sender: TObject);
+    procedure fraCabecalhoControle1spdProcurarClick(Sender: TObject);
+  private
+    filtro: TFiltro;
+    ClienteDB: TClientePostgreSQL;
+    ListaClientes: TList;
+    procedure atualizarGrid;
+    procedure atualizarInterface;
+    procedure chamarFormCliente;
+    procedure FreeListaClientes;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+var
+  FrmClienteControle: TFrmClienteControle;
+
+implementation
+
+uses
+  Constantes, Biblioteca, DataModule, Cliente, FormCliente;
+
+{$R *.dfm}
+
+{ TFrmClienteControle }
+
+constructor TFrmClienteControle.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ClienteDB := TClientePostgreSQL.Create;
+  ListaClientes := TList.Create;
+end;
+
+destructor TFrmClienteControle.Destroy;
+begin
+  FreeListaClientes;
+  ListaClientes.Free;
+  ClienteDB.Free;
+  inherited Destroy;
+end;
+
+procedure TFrmClienteControle.FreeListaClientes;
+var
+  I: Integer;
+begin
+  for I := 0 to ListaClientes.Count - 1 do
+    TObject(ListaClientes[I]).Free;
+  ListaClientes.Clear;
+end;
+
+procedure TFrmClienteControle.atualizarInterface;
+begin
+  organizarTabOrder(Self);
+  Position := poScreenCenter;
+  stgDados.Options := stgDados.Options + [goRowSelect];
+  stgDados.ScrollBars := ssBoth;
+  KeyPreview := True;
+  ShowHint := True;
+  BorderStyle := bsNone;
+  WindowState := wsMaximized;
+end;
+
+procedure TFrmClienteControle.chamarFormCliente;
+var
+  Cliente: TCliente;
+begin
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaClientes.Count) then
+    Exit;
+
+  Cliente := TCliente(ListaClientes[stgDados.Row - 1]);
+  frmCliente := TfrmCliente.Create(Self);
+  try
+    frmCliente.setStatusInterface(stAlterar);
+    frmCliente.setCliente(Cliente);
+    if frmCliente.ShowModal = mrOk then
+    begin
+      if frmCliente.getCliente.validar then
+      begin
+        ClienteDB.Alterar(frmCliente.getCliente);
+        atualizarGrid;
+      end;
+    end;
+  finally
+    FreeAndNil(frmCliente);
+  end;
+end;
+
+procedure TFrmClienteControle.FormCreate(Sender: TObject);
+begin
+  fraformLabel1.iniciar('Cliente - Controle', Self);
+  fraCabecalhoControle1.iniciar(Self);
+  fraRodaPeControle1.iniciar(NULL_STRING, Self, stgDados);
+  filtro := TFiltro.Create;
+  atualizarInterface;
+end;
+
+procedure TFrmClienteControle.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_F2 then
+  //  frameCabecalhoControle1btnNovoClick(Self)
+  else if Key = VK_F3 then
+    fraCabecalhoControle1spdProcurarClick(Self)
+  else if Key = VK_ESCAPE then
+    Close;
+end;
+
+procedure TFrmClienteControle.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = KEY_ENTER then
+  begin
+    Key := KEY_TAB;
+    Perform(WM_NEXTDLGCTL, 0, 0);
+  end;
+end;
+
+procedure TFrmClienteControle.FormShow(Sender: TObject);
+begin
+  limparInterface(Self);
+  atualizarGrid;
+end;
+
+procedure TFrmClienteControle.fraCabecalhoControle1btnNovoClick(Sender: TObject);
+var
+  Cliente: TCliente;
+begin
+  Cliente := TCliente.Create;
+  try
+    frmCliente := TfrmCliente.Create(Self);
+    try
+      frmCliente.setStatusInterface(stIncluir);
+      frmCliente.setCliente(Cliente);
+      if frmCliente.ShowModal = mrOk then
+      begin
+        if frmCliente.getCliente.validar then
+        begin
+          ClienteDB.Inserir(frmCliente.getCliente);
+          atualizarGrid;
+        end;
+      end;
+    finally
+      FreeAndNil(frmCliente);
+    end;
+  finally
+    Cliente.Free;
+  end;
+end;
+
+procedure TFrmClienteControle.fraCabecalhoControle1spdProcurarClick(
+  Sender: TObject);
+begin
+  filtro.novaInstancia;
+  filtro.setDescricao(fraCabecalhoControle1.edtDescricao.Text);
+  atualizarGrid;
+end;
+
+procedure TFrmClienteControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+begin
+  fraCabecalhoControle1.edtDescricaoChange(Sender);
+end;
+
+procedure TFrmClienteControle.fraRodaPeControle1spdEditarClick(Sender: TObject);
+begin
+  chamarFormCliente;
+end;
+
+procedure TFrmClienteControle.fraRodaPeControle1spdExcelClick(Sender: TObject);
+begin
+  fraRodaPeControle1.spdExcelClick(Sender);
+end;
+
+procedure TFrmClienteControle.fraRodaPeControle1spdExcluirClick(Sender: TObject);
+var
+  Cliente: TCliente;
+begin
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaClientes.Count) then
+    Exit;
+
+  if Application.MessageBox(PChar(MSG_CONFIRMA_EXCLUSAO), 'Confirmação', MB_ICONQUESTION + MB_YESNO) = IDYES then
+  begin
+    Cliente := TCliente(ListaClientes[stgDados.Row - 1]);
+    ClienteDB.Deletar(Cliente);
+    atualizarGrid;
+  end;
+end;
+
+procedure TFrmClienteControle.fraRodaPeControle1spdImprimirClick(Sender: TObject);
+begin   {
+  rptCliente := TrptCliente.Create(Self);
+  try
+    rptCliente.imprimir(ListaClientes);
+  finally
+    FreeAndNil(rptCliente);
+  end;    }
+end;
+
+procedure TFrmClienteControle.stgDadosDblClick(Sender: TObject);
+begin
+  chamarFormCliente;
+end;
+
+procedure TFrmClienteControle.stgDadosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  strTemp: string;
+  grid: TStringGrid;
+begin
+  grid := stgDados;
+  grid.ColWidths[0] := Trunc(grid.Width * 0.06); // Ativo
+  grid.ColWidths[1] := Trunc(grid.Width * 0.08); // Id
+  grid.ColWidths[2] := Trunc(grid.Width * 0.30); // NomeRazao
+  grid.ColWidths[3] := Trunc(grid.Width * 0.15); // Telefone
+  grid.ColWidths[4] := Trunc(grid.Width * 0.15); // Documento
+  grid.ColWidths[5] := Trunc(grid.Width * 0.05); // TipoPessoa
+  grid.ColWidths[6] := Trunc(grid.Width * 0.20); // Email
+  with (Sender as TStringGrid) do
+  begin
+    strTemp := Cells[ACol, ARow];
+    if ACol = ColCount - 1 then
+      strTemp := strTemp + StringOfChar(' ', 5);
+
+    Canvas.Font.Style := [];
+    Canvas.Font.Color := clBlack;
+    Canvas.Brush.Color := clWindow;
+
+    if ARow = 0 then
+    begin
+      Canvas.Font.Style := [fsBold];
+      Canvas.Brush.Color := clBtnFace;
+    end
+    else
+    begin
+      if ARow = Row then
+      begin
+        Canvas.Font.Color := clWhite;
+        Canvas.Brush.Color := clHighlight;
+      end
+      else
+      begin
+        if ARow mod 2 = 0 then
+          Canvas.Brush.Color := clInfoBk
+        else
+          Canvas.Brush.Color := clWhite;
+      end;
+      if Cells[0, ARow] = 'N' then
+        Canvas.Brush.Color := $007090FF;
+    end;
+    Canvas.FillRect(Rect);
+    if ACol in [2, 5] then
+      DrawText(Canvas.Handle, PChar(' ' + strTemp), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_LEFT)
+    else
+      DrawText(Canvas.Handle, PChar(' ' + strTemp + ' '), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
+  end;
+end;
+
+procedure TFrmClienteControle.atualizarGrid;
+var
+  Cliente: TCliente;
+  I: Integer;
+begin
+  processando(Self);
+  try
+    FreeListaClientes;
+    stgDados.RowCount := 2;
+    stgDados.Rows[1].Clear;
+    stgDados.Cells[0, 0] := 'Ativo';
+    stgDados.Cells[1, 0] := 'Id';
+    stgDados.Cells[2, 0] := 'Nome/Razão';
+    stgDados.Cells[3, 0] := 'Telefone';
+    stgDados.Cells[4, 0] := 'Documento';
+    stgDados.Cells[5, 0] := 'Tipo';
+    stgDados.Cells[6, 0] := 'Email';
+
+    ListaClientes := ClienteDB.ProcurarTodos(filtro, 0);
+
+    if ListaClientes.Count > 0 then
+    begin
+      stgDados.RowCount := ListaClientes.Count + 1;
+      for I := 0 to ListaClientes.Count - 1 do
+      begin
+        Cliente := TCliente(ListaClientes[I]);
+        stgDados.Cells[0, I + 1] := booleanToChar(Cliente.getAtivo);
+        stgDados.Cells[1, I + 1] := IntToStr(Cliente.getId);
+        stgDados.Cells[2, I + 1] := Cliente.getNomeRazao;
+        stgDados.Cells[3, I + 1] := Cliente.getTelefonePrincipal;
+        stgDados.Cells[4, I + 1] := Cliente.getDocumento;
+        stgDados.Cells[5, I + 1] := Cliente.getTipoPessoa;
+        stgDados.Cells[6, I + 1] := Cliente.getEmail;
+      end;
+    end;
+    fraRodaPeControle1.setRegistro(ListaClientes.Count);
+  finally
+    processoFinalizado(Self);
+  end;
+end;
+
+end.

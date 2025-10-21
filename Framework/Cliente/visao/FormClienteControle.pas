@@ -21,13 +21,13 @@ type
     procedure fraRodaPeControle1spdEditarClick(Sender: TObject);
     procedure fraRodaPeControle1spdExcluirClick(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
-    procedure frameCabecalhoControle1spdProcurarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure fraRodaPeControle1spdImprimirClick(Sender: TObject);
     procedure stgDadosDblClick(Sender: TObject);
     procedure fraRodaPeControle1spdExcelClick(Sender: TObject);
     procedure frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
     procedure fraCabecalhoControle1btnNovoClick(Sender: TObject);
+    procedure fraCabecalhoControle1spdProcurarClick(Sender: TObject);
   private
     filtro: TFiltro;
     ClienteDB: TClientePostgreSQL;
@@ -86,6 +86,9 @@ begin
   KeyPreview := True;
   ShowHint := True;
   BorderStyle := bsNone;
+  WindowState := wsMaximized;
+  fraCabecalhoControle1.GBPeriodo.Visible := false;
+  fraCabecalhoControle1.GroupBox1.Visible := false;
 end;
 
 procedure TFrmClienteControle.chamarFormCliente;
@@ -102,11 +105,11 @@ begin
     frmCliente.setCliente(Cliente);
     if frmCliente.ShowModal = mrOk then
     begin
-      if frmCliente.getCliente.validar then
-      begin
+     // if frmCliente.getCliente.validar then
+    //  begin
         ClienteDB.Alterar(frmCliente.getCliente);
         atualizarGrid;
-      end;
+     // end;
     end;
   finally
     FreeAndNil(frmCliente);
@@ -127,7 +130,7 @@ begin
   if Key = VK_F2 then
   //  frameCabecalhoControle1btnNovoClick(Self)
   else if Key = VK_F3 then
-    frameCabecalhoControle1spdProcurarClick(Self)
+    fraCabecalhoControle1spdProcurarClick(Self)
   else if Key = VK_ESCAPE then
     Close;
 end;
@@ -159,11 +162,11 @@ begin
       frmCliente.setCliente(Cliente);
       if frmCliente.ShowModal = mrOk then
       begin
-        if frmCliente.getCliente.validar then
-        begin
+      //  if frmCliente.getCliente.validar then
+      //  begin
           ClienteDB.Inserir(frmCliente.getCliente);
           atualizarGrid;
-        end;
+       // end;
       end;
     finally
       FreeAndNil(frmCliente);
@@ -173,16 +176,17 @@ begin
   end;
 end;
 
-procedure TFrmClienteControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
-begin
-  fraCabecalhoControle1.edtDescricaoChange(Sender);
-end;
-
-procedure TFrmClienteControle.frameCabecalhoControle1spdProcurarClick(Sender: TObject);
+procedure TFrmClienteControle.fraCabecalhoControle1spdProcurarClick(
+  Sender: TObject);
 begin
   filtro.novaInstancia;
   filtro.setDescricao(fraCabecalhoControle1.edtDescricao.Text);
   atualizarGrid;
+end;
+
+procedure TFrmClienteControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+begin
+  fraCabecalhoControle1.edtDescricaoChange(Sender);
 end;
 
 procedure TFrmClienteControle.fraRodaPeControle1spdEditarClick(Sender: TObject);

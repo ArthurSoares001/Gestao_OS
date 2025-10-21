@@ -153,55 +153,49 @@ function TPrioridadeOSPostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Inte
 var
   FDQuery: TFDQuery;
   PrioridadeOS: TPrioridadeOS;
-  SQL: string;
-  Condicoes: TStringList;
+  SQL: TStringList;
   I: Integer;
 begin
   Result := TList.Create;
   FDQuery := CreateFDQuery;
+  SQL := TStringList.Create;
   try
     try
-      Condicoes := TStringList.Create;
-      try
-        SQL := 'SELECT * FROM public."PrioridadeOS"';
+      SQL.Add('SELECT * FROM public."PrioridadeOS"');
+      SQL.Add('WHERE 1=1');
 
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            Condicoes.Add('"Codigo" ILIKE :Descricao');
-
-          if Condicoes.Count > 0 then
-            SQL := SQL + ' WHERE ' + Condicoes.DelimitedText;
-        end;
-
-        case OrdenarPor of
-          0: SQL := SQL + ' ORDER BY "Codigo"';
-          1: SQL := SQL + ' ORDER BY "SLAHoras"';
-        end;
-
-        FDQuery.SQL.Text := SQL;
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
-        end;
-
-        FDQuery.Open;
-        while not FDQuery.Eof do
-        begin
-          PrioridadeOS := TPrioridadeOS.Create;
-          PrioridadeOS.setId(FDQuery.FieldByName('Id').AsInteger);
-          PrioridadeOS.setCodigo(FDQuery.FieldByName('Codigo').AsString);
-          PrioridadeOS.setSlaHoras(FDQuery.FieldByName('SLAHoras').AsInteger);
-          Result.Add(PrioridadeOS);
-          FDQuery.Next;
-        end;
-
-        FDQuery.Close;
-      finally
-        Condicoes.Free;
+      // ====== Filtros ======
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          SQL.Add('  AND "Codigo" ILIKE :Descricao');
       end;
+
+      // ====== Ordenação fixa ======
+      SQL.Add('ORDER BY "Id"');
+
+      // ====== Preparar e executar ======
+      FDQuery.SQL.Text := SQL.Text;
+
+      if Assigned(Filtro) and (Filtro.getDescricao <> '') then
+        FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+
+      FDQuery.Open;
+
+      // ====== Montagem da lista ======
+      while not FDQuery.Eof do
+      begin
+        PrioridadeOS := TPrioridadeOS.Create;
+        PrioridadeOS.setId(FDQuery.FieldByName('Id').AsInteger);
+        PrioridadeOS.setCodigo(FDQuery.FieldByName('Codigo').AsString);
+        PrioridadeOS.setSlaHoras(FDQuery.FieldByName('SLAHoras').AsInteger);
+        Result.Add(PrioridadeOS);
+        FDQuery.Next;
+      end;
+
+      FDQuery.Close;
     finally
+      SQL.Free;
       FDQuery.Free;
     end;
   except
@@ -214,5 +208,6 @@ begin
     end;
   end;
 end;
+
 
 end.

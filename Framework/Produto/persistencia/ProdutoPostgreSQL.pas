@@ -194,79 +194,76 @@ function TProdutoPostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer):
 var
   FDQuery: TFDQuery;
   Produto: TProduto;
-  SQL: string;
-  Condicoes: TStringList;
+  SQL: TStringList;
   I: Integer;
 begin
   Result := TList.Create;
   FDQuery := CreateFDQuery;
+  SQL := TStringList.Create;
   try
     try
-      Condicoes := TStringList.Create;
-      try
-        SQL := 'SELECT * FROM public."Produto"';
-        if Assigned(Filtro) then
-        begin
-          // Filtro por descrição (Descricao ou CodigoBarras)
-          if Filtro.getDescricao <> '' then
-            Condicoes.Add('("Descricao" ILIKE :Descricao OR "CodigoBarras" ILIKE :Descricao)');
-          // Filtro por ativo
-          if not Filtro.getAtivo then
-            Condicoes.Add('"Ativo" = :Ativo');
-          // Filtro por tipo (P ou S)
-          if Filtro.getTipo <> '' then
-            Condicoes.Add('"Tipo" = :Tipo');
-          // Montar cláusula WHERE com AND
-          if Condicoes.Count > 0 then
-          begin
-            SQL := SQL + ' WHERE ';
-            for I := 0 to Condicoes.Count - 1 do
-            begin
-              SQL := SQL + Condicoes[I];
-              if I < Condicoes.Count - 1 then
-                SQL := SQL + ' AND ';
-            end;
-          end;
-        end;
+      SQL.Add('SELECT *');
+      SQL.Add('FROM public."Produto" p');
+      SQL.Add('WHERE 1=1');
 
-        // Ordenação
-        case OrdenarPor of
-          0: SQL := SQL + ' ORDER BY "Descricao"';
-          1: SQL := SQL + ' ORDER BY "CodigoBarras"';
-        end;
 
-        FDQuery.SQL.Text := SQL;
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
-          if not Filtro.getAtivo then
-            FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
-          if Filtro.getTipo <> '' then
-            FDQuery.ParamByName('Tipo').AsString := Filtro.getTipo;
-        end;
-        FDQuery.Open;
+      if Assigned(Filtro) then
+      begin
 
-        while not FDQuery.Eof do
-        begin
-          Produto := TProduto.Create;
-          Produto.setId(FDQuery.FieldByName('Id').AsInteger);
-          Produto.setDescricao(FDQuery.FieldByName('Descricao').AsString);
-          Produto.setTipo(FDQuery.FieldByName('Tipo').AsString);
-          Produto.setPrecoPadrao(FDQuery.FieldByName('PrecoPadrao').AsFloat);
-          Produto.setUnidade(FDQuery.FieldByName('Unidade').AsString);
-          Produto.setCodigoBarras(FDQuery.FieldByName('CodigoBarras').AsString);
-          Produto.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
-          Produto.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
-          Produto.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
-          Result.Add(Produto);
-          FDQuery.Next;
-        end;
-        FDQuery.Close;
-      finally
-        Condicoes.Free;
+        if Filtro.getDescricao <> '' then
+          SQL.Add('  AND (p."Descricao" ILIKE :Descricao OR p."CodigoBarras" ILIKE :Descricao)');
+
+
+        if not Filtro.getAtivo then
+          SQL.Add('  AND p."Ativo" = :Ativo');
+
+
+        if Filtro.getTipo <> '' then
+          SQL.Add('  AND p."Tipo" = :Tipo');
       end;
+
+
+      case OrdenarPor of
+        0: SQL.Add('ORDER BY p."Descricao"');
+        1: SQL.Add('ORDER BY p."CodigoBarras"');
+      else
+        SQL.Add('ORDER BY p."Id" DESC');
+      end;
+
+      FDQuery.SQL.Text := SQL.Text;
+
+
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+        if not Filtro.getAtivo then
+          FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
+        if Filtro.getTipo <> '' then
+          FDQuery.ParamByName('Tipo').AsString := Filtro.getTipo;
+      end;
+
+
+      FDQuery.Open;
+
+      while not FDQuery.Eof do
+      begin
+        Produto := TProduto.Create;
+        Produto.setId(FDQuery.FieldByName('Id').AsInteger);
+        Produto.setDescricao(FDQuery.FieldByName('Descricao').AsString);
+        Produto.setTipo(FDQuery.FieldByName('Tipo').AsString);
+        Produto.setPrecoPadrao(FDQuery.FieldByName('PrecoPadrao').AsFloat);
+        Produto.setUnidade(FDQuery.FieldByName('Unidade').AsString);
+        Produto.setCodigoBarras(FDQuery.FieldByName('CodigoBarras').AsString);
+        Produto.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
+        Produto.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
+        Produto.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
+        Result.Add(Produto);
+        FDQuery.Next;
+      end;
+
     finally
+      SQL.Free;
       FDQuery.Free;
     end;
   except

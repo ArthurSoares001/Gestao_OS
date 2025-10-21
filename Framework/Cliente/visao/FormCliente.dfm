@@ -3,7 +3,7 @@ object FrmCliente: TFrmCliente
   Top = 0
   Caption = 'FrmCliente'
   ClientHeight = 467
-  ClientWidth = 644
+  ClientWidth = 631
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,9 +21,11 @@ object FrmCliente: TFrmCliente
   object PnlCliente: TPanel
     Left = 0
     Top = 0
-    Width = 644
+    Width = 631
     Height = 467
     Align = alClient
+    BevelKind = bkTile
+    BevelOuter = bvNone
     TabOrder = 0
     object lblIeRg: TLabel
       Left = 26
@@ -144,9 +146,9 @@ object FrmCliente: TFrmCliente
     object lblNumero: TLabel
       Left = 373
       Top = 201
-      Width = 43
+      Width = 50
       Height = 14
-      Caption = 'Numero'
+      Caption = 'Numero*'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -12
@@ -211,9 +213,9 @@ object FrmCliente: TFrmCliente
     object Label2: TLabel
       Left = 28
       Top = 201
-      Width = 20
+      Width = 27
       Height = 14
-      Caption = 'Rua'
+      Caption = 'Rua*'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -12
@@ -237,9 +239,9 @@ object FrmCliente: TFrmCliente
     object Label4: TLabel
       Left = 414
       Top = 248
-      Width = 14
+      Width = 21
       Height = 14
-      Caption = 'UF'
+      Caption = 'UF*'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -12
@@ -248,36 +250,34 @@ object FrmCliente: TFrmCliente
       ParentFont = False
     end
     inline fraformLabel1: TfraformLabel
-      Left = 1
-      Top = 1
-      Width = 642
+      Left = 0
+      Top = 0
+      Width = 627
       Height = 25
       Align = alTop
       TabOrder = 0
-      ExplicitLeft = 1
-      ExplicitTop = 1
-      ExplicitWidth = 642
+      ExplicitWidth = 627
       inherited pnLabel: TPanel
-        Width = 642
-        ExplicitWidth = 642
+        Width = 627
+        ExplicitWidth = 627
         inherited lblTitulo: TLabel
-          Width = 544
+          Width = 529
           Height = 18
         end
         inherited spdAlterar: TSpeedButton
-          Left = 573
+          Left = 558
           ExplicitLeft = 573
         end
         inherited spdConsultar: TSpeedButton
-          Left = 596
+          Left = 581
           ExplicitLeft = 596
         end
         inherited spdIncluir: TSpeedButton
-          Left = 550
+          Left = 535
           ExplicitLeft = 550
         end
         inherited spdSair: TSpeedButton
-          Left = 619
+          Left = 604
           ExplicitLeft = 619
         end
       end
@@ -324,6 +324,8 @@ object FrmCliente: TFrmCliente
       inherited pnlSalvar: TPanel
         inherited btnSalvar: TSpeedButton
           OnClick = fraSalvaCancela1btnSalvarClick
+          ExplicitLeft = 4
+          ExplicitWidth = 129
         end
       end
     end

@@ -11,6 +11,7 @@ object FrmProduto: TFrmProduto
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
@@ -23,6 +24,8 @@ object FrmProduto: TFrmProduto
     Width = 637
     Height = 211
     Align = alClient
+    BevelKind = bkTile
+    BevelOuter = bvNone
     TabOrder = 0
     object lblIeRg: TLabel
       Left = 26
@@ -112,9 +115,9 @@ object FrmProduto: TFrmProduto
       ParentFont = False
     end
     inline fraformLabel1: TfraformLabel
-      Left = 1
-      Top = 1
-      Width = 635
+      Left = 0
+      Top = 0
+      Width = 633
       Height = 25
       Align = alTop
       TabOrder = 0
@@ -122,26 +125,26 @@ object FrmProduto: TFrmProduto
       ExplicitTop = 1
       ExplicitWidth = 635
       inherited pnLabel: TPanel
-        Width = 635
+        Width = 633
         ExplicitWidth = 635
         inherited lblTitulo: TLabel
-          Width = 537
+          Width = 535
           Height = 18
         end
         inherited spdAlterar: TSpeedButton
-          Left = 566
+          Left = 564
           ExplicitLeft = 573
         end
         inherited spdConsultar: TSpeedButton
-          Left = 589
+          Left = 587
           ExplicitLeft = 596
         end
         inherited spdIncluir: TSpeedButton
-          Left = 543
+          Left = 541
           ExplicitLeft = 550
         end
         inherited spdSair: TSpeedButton
-          Left = 612
+          Left = 610
           ExplicitLeft = 619
         end
       end

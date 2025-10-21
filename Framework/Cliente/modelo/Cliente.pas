@@ -304,12 +304,12 @@ begin
   if Trim(getNomeRazao).Length < 5 then
     raise Exception.Create('Campo Nome/Razão Social é obrigatório e deve ter pelo menos 5 caracteres!');
 
-  if (getDocumento.Length <> 11) and (getDocumento.Length <> 14) then
+  if (getInscricaoEstadual.Length <> 11) and (getInscricaoEstadual.Length <> 14) then
     raise Exception.Create('Campo Documento é obrigatório e deve ter valor válido (CPF: 11 dígitos, CNPJ: 14 dígitos)!');
 
-  if (getDocumento.Length = 11) or (getDocumento.Length = 14) then
+  if (getInscricaoEstadual.Length = 11) or (getInscricaoEstadual.Length = 14) then
   begin
-    if getDocumento.Length = 11 then
+    if getInscricaoEstadual.Length = 11 then
     begin
      // if not Biblioteca.validar(getDocumento, 1) then
      //   raise Exception.Create(MSG_ERRO_CPF_CNPJ_INVALIDO);

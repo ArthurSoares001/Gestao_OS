@@ -3,7 +3,7 @@ object FrmClienteControle: TFrmClienteControle
   Top = 0
   Caption = 'FrmClienteControle'
   ClientHeight = 459
-  ClientWidth = 975
+  ClientWidth = 1179
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,32 +21,32 @@ object FrmClienteControle: TFrmClienteControle
   inline fraformLabel1: TfraformLabel
     Left = 0
     Top = 0
-    Width = 975
+    Width = 1179
     Height = 25
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 975
+    ExplicitWidth = 1179
     inherited pnLabel: TPanel
-      Width = 975
-      ExplicitWidth = 975
+      Width = 1179
+      ExplicitWidth = 1179
       inherited lblTitulo: TLabel
-        Width = 877
+        Width = 1081
         Height = 18
       end
       inherited spdAlterar: TSpeedButton
-        Left = 906
+        Left = 1110
         ExplicitLeft = 906
       end
       inherited spdConsultar: TSpeedButton
-        Left = 929
+        Left = 1133
         ExplicitLeft = 929
       end
       inherited spdIncluir: TSpeedButton
-        Left = 883
+        Left = 1087
         ExplicitLeft = 883
       end
       inherited spdSair: TSpeedButton
-        Left = 952
+        Left = 1156
         ExplicitLeft = 952
       end
     end
@@ -54,23 +54,29 @@ object FrmClienteControle: TFrmClienteControle
   inline fraRodaPeControle1: TfraRodaPeControle
     Left = 0
     Top = 415
-    Width = 975
+    Width = 1179
     Height = 44
     Align = alBottom
     TabOrder = 1
     ExplicitTop = 415
-    ExplicitWidth = 975
+    ExplicitWidth = 1179
     inherited pnRodape: TPanel
-      Width = 975
-      ExplicitWidth = 975
+      Width = 1179
+      ExplicitWidth = 1179
       inherited spdExcluir: TSpeedButton
         OnClick = fraRodaPeControle1spdExcluirClick
+        ExplicitLeft = 85
+        ExplicitTop = 1
+        ExplicitHeight = 31
       end
       inherited spdEditar: TSpeedButton
         OnClick = fraRodaPeControle1spdEditarClick
+        ExplicitLeft = 44
+        ExplicitTop = 1
+        ExplicitHeight = 31
       end
       inherited lblRegistro: TLabel
-        Left = 910
+        Left = 1114
         Height = 37
         ExplicitLeft = 910
       end
@@ -79,7 +85,7 @@ object FrmClienteControle: TFrmClienteControle
   object stgDados: TStringGrid
     Left = 0
     Top = 93
-    Width = 975
+    Width = 1179
     Height = 322
     Align = alClient
     ColCount = 7
@@ -90,35 +96,37 @@ object FrmClienteControle: TFrmClienteControle
   inline fraCabecalhoControle1: TfraCabecalhoControle
     Left = 0
     Top = 25
-    Width = 975
+    Width = 1179
     Height = 68
     Align = alTop
     TabOrder = 3
     ExplicitTop = 25
-    ExplicitWidth = 975
+    ExplicitWidth = 1179
     inherited pnCabecalho: TPanel
-      Width = 975
-      ExplicitWidth = 975
+      Width = 1179
+      ExplicitWidth = 1179
+      inherited spdProcurar: TSpeedButton
+        OnClick = fraCabecalhoControle1spdProcurarClick
+        ExplicitLeft = 481
+        ExplicitTop = 6
+        ExplicitHeight = 55
+      end
       inherited pnlNovo: TPanel
-        Left = 810
-        ExplicitLeft = 810
+        Left = 1014
+        ExplicitLeft = 1014
         inherited btnNovo: TSpeedButton
           OnClick = fraCabecalhoControle1btnNovoClick
+          ExplicitLeft = 1
+          ExplicitTop = 1
+          ExplicitWidth = 132
         end
-      end
-      inherited edtDescricao: TEdit
-        Top = 19
-        Height = 29
-        Margins.Top = 19
-        Margins.Bottom = 17
-        ExplicitTop = 19
       end
       inherited GBPeriodo: TGroupBox
         inherited LblDe: TLabel
-          Height = 20
+          Height = 26
         end
         inherited LblAte: TLabel
-          Height = 20
+          Height = 26
         end
       end
     end

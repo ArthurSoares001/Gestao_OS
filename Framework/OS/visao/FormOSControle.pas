@@ -1,24 +1,25 @@
-
+Ôªø
 unit FormOSControle;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.StdCtrls, OrObject,
   Vcl.Buttons, Vcl.ExtCtrls, frameRodaPeControle, frameCabecalhoControle,
-  frameformLabel, Filtro, Data.DB, Vcl.DBGrids, OSPostgreSQL, OS, OrList, OSItem, Produto;
+  frameformLabel, Filtro, Data.DB, Vcl.DBGrids, OSPostgreSQL, OS, OrList, OSItem,
+  Produto, StatusOSPostgreSQL, PrioridadeOSPostgreSQL;
 
 type
   TFrmOSControle = class(TForm)
     fraformLabel1: TfraformLabel;
-    fraRodaPeControle1: TfraRodaPeControle;
-    stgDados: TStringGrid;
     fraCabecalhoControle1: TfraCabecalhoControle;
+    fraRodaPeControle1: TfraRodaPeControle;
     GroupBox1: TGroupBox;
     stgDadosServico: TStringGrid;
     GroupBox2: TGroupBox;
     stgDadosProduto: TStringGrid;
+    stgDados: TStringGrid;
     procedure FormCreate(Sender: TObject);
     procedure stgDadosDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
@@ -26,7 +27,6 @@ type
     procedure fraRodaPeControle1spdEditarClick(Sender: TObject);
     procedure fraRodaPeControle1spdExcluirClick(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
-    procedure frameCabecalhoControle1spdProcurarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure fraRodaPeControle1spdImprimirClick(Sender: TObject);
     procedure stgDadosClick(Sender: TObject);
@@ -38,16 +38,22 @@ type
       Rect: TRect; State: TGridDrawState);
     procedure stgDadosServicoDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
+    procedure fraCabecalhoControle1spdProcurarClick(Sender: TObject);
   private
     filtro: TFiltro;
     OSDB: TOSPostgreSQL;
     ListaOS: TList;
+    StatusDB: TStatusOSPostgreSQL;
+    PrioridadeDB: TPrioridadeOSPostgreSQL;
     procedure atualizarGrid;
     procedure atualizarGridProduto(OS: TOS);
     procedure atualizarGridServico(OS: TOS);
     procedure atualizarInterface;
     procedure chamarFormOS;
     procedure FreeListaOS;
+    procedure carregarItensOSSelecionada;
+    procedure CarregarCombos;
+    procedure PreencherCombo(ACombo: TComboBox; AList: TList; AType: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -59,7 +65,7 @@ var
 implementation
 
 uses
-  Constantes, Biblioteca, DataModule, Cliente, StatusOS, FormOS;
+  Constantes, Biblioteca, DataModule, Cliente, StatusOS, FormOS, PrioridadeOS;
 
 {$R *.dfm}
 
@@ -69,6 +75,8 @@ constructor TFrmOSControle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   OSDB := TOSPostgreSQL.Create;
+  StatusDB := TStatusOSPostgreSQL.Create;
+  PrioridadeDB := TPrioridadeOSPostgreSQL.Create;
   ListaOS := TList.Create;
 end;
 
@@ -77,6 +85,8 @@ begin
   FreeListaOS;
   ListaOS.Free;
   OSDB.Free;
+  StatusDB.Free;
+  PrioridadeDB.Free;
   inherited Destroy;
 end;
 
@@ -87,6 +97,27 @@ begin
   for I := 0 to ListaOS.Count - 1 do
     TObject(ListaOS[I]).Free;
   ListaOS.Clear;
+end;
+
+procedure TFrmOSControle.PreencherCombo(ACombo: TComboBox; AList: TList; AType: string);
+var
+  I: Integer;
+  Obj: TOrObject;
+  DisplayText: string;
+begin
+  ACombo.Clear;
+  if Assigned(AList) and (AList.Count > 0) then
+    for I := 0 to AList.Count - 1 do
+    begin
+      Obj := TOrObject(AList[I]);
+      if AType = 'StatusOS' then
+        DisplayText := TStatusOS(Obj).getCodigo
+      else if AType = 'PrioridadeOS' then
+        DisplayText := TPrioridadeOS(Obj).getCodigo
+      else
+        DisplayText := '';
+      ACombo.Items.AddObject(DisplayText, Obj);
+    end;
 end;
 
 procedure TFrmOSControle.atualizarInterface;
@@ -107,12 +138,106 @@ begin
   // Configurar a grid stgDadosServico
   stgDadosServico.Options := stgDadosServico.Options + [goRowSelect];
   stgDadosServico.ScrollBars := ssBoth;
+
+
 end;
 
-procedure TFrmOSControle.chamarFormOS;
+procedure TFrmOSControle.CarregarCombos;
+var
+  ListaStatus, ListaPrioridade: TList;
+  Filtro: TFiltro;
 begin
-  { ImplementaÁ„o existente mantida }
+  Filtro := TFiltro.Create;
+  try
+    ListaStatus := StatusDB.ProcurarTodos(Filtro, 0);
+    ListaPrioridade := PrioridadeDB.ProcurarTodos(Filtro, 0);
+    try
+      PreencherCombo(fraCabecalhoControle1.cmbStatus, ListaStatus, 'StatusOS');
+      PreencherCombo(fraCabecalhoControle1.cmbPrioridade, ListaPrioridade, 'PrioridadeOS');
+    finally
+      ListaStatus.Free;
+      ListaPrioridade.Free;
+    end;
+  finally
+    Filtro.Free;
+  end;
 end;
+
+
+procedure TFrmOSControle.carregarItensOSSelecionada;
+var
+  OS, OSCompleta: TOS;
+begin
+  // Verifica se h√° linha v√°lida selecionada
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
+  begin
+    // Limpa grids se nenhuma OS v√°lida for selecionada
+    stgDadosProduto.RowCount := 2;
+    stgDadosProduto.Rows[1].Clear;
+    stgDadosServico.RowCount := 2;
+    stgDadosServico.Rows[1].Clear;
+    Exit;
+  end;
+
+  // Obt√©m o objeto TOS da linha selecionada
+  OS := TOS(ListaOS[stgDados.Row - 1]);
+
+  // Busca a OS completa com seus itens
+  OSCompleta := OSDB.Procurar(OS);
+  try
+    if Assigned(OSCompleta) then
+    begin
+      atualizarGridProduto(OSCompleta);
+      atualizarGridServico(OSCompleta);
+    end
+    else
+    begin
+      // Limpa grids se a OS n√£o for encontrada
+      stgDadosProduto.RowCount := 2;
+      stgDadosProduto.Rows[1].Clear;
+      stgDadosServico.RowCount := 2;
+      stgDadosServico.Rows[1].Clear;
+    end;
+  finally
+    OSCompleta.Free;
+  end;
+end;
+
+
+procedure TFrmOSControle.chamarFormOS;
+var
+  OS: TOS;
+begin
+  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
+    Exit;
+
+  OS := TOS(ListaOS[stgDados.Row - 1]);
+
+  frmOS := TfrmOS.Create(Self);
+  try
+    frmOS.setStatusInterface(stAlterar);
+
+    // üîπ Primeiro define o objeto OS
+    frmOS.setOS(OS);
+
+    // üîπ Depois carrega os atributos visuais
+    frmOS.getAtributos;
+
+    // Agora o formul√°rio j√° tem tudo preenchido
+    if frmOS.ShowModal = mrOk then
+    begin
+      if frmOS.getOS.validar then
+      begin
+        OSDB.Alterar(frmOS.getOS);
+        atualizarGrid;
+      end;
+    end;
+  finally
+    FreeAndNil(frmOS);
+  end;
+end;
+
+
 
 procedure TFrmOSControle.FormCreate(Sender: TObject);
 begin
@@ -128,7 +253,7 @@ begin
   if Key = VK_F2 then
     fraCabecalhoControle1btnNovoClick(Self)
   else if Key = VK_F3 then
-    frameCabecalhoControle1spdProcurarClick(Self)
+    fraCabecalhoControle1spdProcurarClick(Self)
   else if Key = VK_ESCAPE then
     Close;
 end;
@@ -145,7 +270,9 @@ end;
 procedure TFrmOSControle.FormShow(Sender: TObject);
 begin
   limparInterface(Self);
+  CarregarCombos;
   atualizarGrid;
+  carregarItensOSSelecionada;
 end;
 
 procedure TFrmOSControle.fraCabecalhoControle1btnNovoClick(Sender: TObject);
@@ -162,8 +289,8 @@ begin
       begin
       //  if frmOS.getProduto.validar then
        // begin
-       //   OSDB.Inserir(frmOS.getOS);
-         // atualizarGrid;
+          OSDB.Inserir(frmOS.getOS);
+          atualizarGrid;
        // end;
       end;
     finally
@@ -174,16 +301,31 @@ begin
   end;
 end;
 
-procedure TFrmOSControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
-begin
-  fraCabecalhoControle1.edtDescricaoChange(Sender);
-end;
-
-procedure TFrmOSControle.frameCabecalhoControle1spdProcurarClick(Sender: TObject);
+procedure TFrmOSControle.fraCabecalhoControle1spdProcurarClick(Sender: TObject);
 begin
   filtro.novaInstancia;
   filtro.setDescricao(fraCabecalhoControle1.edtDescricao.Text);
+  if (Length(fraCabecalhoControle1.EdtDe.Text) = 8 ) and
+     (Length(fraCabecalhoControle1.EdtAte.Text) = 8 ) then
+  begin
+    filtro.setDataDe(StrToData(fraCabecalhoControle1.EdtDe.Text));
+    filtro.setDataAte(StrToData(fraCabecalhoControle1.EdtAte.Text));
+  end;
+
+  if (fraCabecalhoControle1.cmbStatus.ItemIndex <> NULL_INTEGER) then
+    filtro.setStatusId(fraCabecalhoControle1.cmbStatus.ItemIndex + 1);
+
+  if (fraCabecalhoControle1.cmbPrioridade.ItemIndex <> NULL_INTEGER) then
+    filtro.setPrioridadeId(fraCabecalhoControle1.cmbPrioridade.ItemIndex + 1);
+
   atualizarGrid;
+  carregarItensOSSelecionada;
+
+end;
+
+procedure TFrmOSControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+begin
+  fraCabecalhoControle1.edtDescricaoChange(Sender);
 end;
 
 procedure TFrmOSControle.fraRodaPeControle1spdEditarClick(Sender: TObject);
@@ -203,7 +345,7 @@ begin
   if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
     Exit;
 
-  if Application.MessageBox(PChar(MSG_CONFIRMA_EXCLUSAO), 'ConfirmaÁ„o', MB_ICONQUESTION + MB_YESNO) = IDYES then
+  if Application.MessageBox(PChar(MSG_CONFIRMA_EXCLUSAO), 'Confirma√ß√£o', MB_ICONQUESTION + MB_YESNO) = IDYES then
   begin
     OS := TOS(ListaOS[stgDados.Row - 1]);
     OSDB.Deletar(OS);
@@ -213,50 +355,17 @@ end;
 
 procedure TFrmOSControle.fraRodaPeControle1spdImprimirClick(Sender: TObject);
 begin
-  { ImplementaÁ„o existente mantida }
+  { Implementa√ß√£o existente mantida }
 end;
 
 procedure TFrmOSControle.stgDadosClick(Sender: TObject);
-var
-  OS, OSCompleta: TOS;
 begin
-  if (stgDados.Row - 1 < 0) or (stgDados.Row - 1 >= ListaOS.Count) then
-  begin
-    // Limpar as grids de produtos e serviÁos se nenhuma linha v·lida for selecionada
-    stgDadosProduto.RowCount := 2;
-    stgDadosProduto.Rows[1].Clear;
-    stgDadosServico.RowCount := 2;
-    stgDadosServico.Rows[1].Clear;
-    Exit;
-  end;
-
-  // Obter o objeto TOS selecionado na grid
-  OS := TOS(ListaOS[stgDados.Row - 1]);
-
-  // Chamar o mÈtodo Procurar para obter a OS completa com os itens
-  OSCompleta := OSDB.Procurar(OS);
-  try
-    if Assigned(OSCompleta) then
-    begin
-      atualizarGridProduto(OSCompleta);
-      atualizarGridServico(OSCompleta);
-    end
-    else
-    begin
-      // Limpar as grids de produtos e serviÁos se a OS n„o for encontrada
-      stgDadosProduto.RowCount := 2;
-      stgDadosProduto.Rows[1].Clear;
-      stgDadosServico.RowCount := 2;
-      stgDadosServico.Rows[1].Clear;
-    end;
-  finally
-    OSCompleta.Free;
-  end;
+  carregarItensOSSelecionada;
 end;
 
 procedure TFrmOSControle.stgDadosDblClick(Sender: TObject);
 begin
-  { ImplementaÁ„o existente mantida }
+  chamarFormOS;
 end;
 
 procedure TFrmOSControle.stgDadosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
@@ -316,12 +425,12 @@ var
 begin
   grid := Sender as TStringGrid;
   grid.ColWidths[0] := Trunc(grid.Width * 0.08); // ID
-  grid.ColWidths[1] := Trunc(grid.Width * 0.20); // DescriÁ„o
+  grid.ColWidths[1] := Trunc(grid.Width * 0.20); // Descri√ß√£o
   grid.ColWidths[2] := Trunc(grid.Width * 0.08); // Tipo
   grid.ColWidths[3] := Trunc(grid.Width * 0.10); // Quantidade
-  grid.ColWidths[4] := Trunc(grid.Width * 0.10); // PreÁo Unit.
+  grid.ColWidths[4] := Trunc(grid.Width * 0.10); // Pre√ßo Unit.
   grid.ColWidths[5] := Trunc(grid.Width * 0.10); // Desconto
-  grid.ColWidths[6] := Trunc(grid.Width * 0.10); // AcrÈscimo
+  grid.ColWidths[6] := Trunc(grid.Width * 0.10); // Acr√©scimo
   grid.ColWidths[7] := Trunc(grid.Width * 0.10); // Total
   grid.ColWidths[8] := Trunc(grid.Width * 0.24); // Produto
 
@@ -370,12 +479,12 @@ var
 begin
   grid := Sender as TStringGrid;
   grid.ColWidths[0] := Trunc(grid.Width * 0.08); // ID
-  grid.ColWidths[1] := Trunc(grid.Width * 0.20); // DescriÁ„o
+  grid.ColWidths[1] := Trunc(grid.Width * 0.20); // Descri√ß√£o
   grid.ColWidths[2] := Trunc(grid.Width * 0.08); // Tipo
   grid.ColWidths[3] := Trunc(grid.Width * 0.10); // Quantidade
-  grid.ColWidths[4] := Trunc(grid.Width * 0.10); // PreÁo Unit.
+  grid.ColWidths[4] := Trunc(grid.Width * 0.10); // Pre√ßo Unit.
   grid.ColWidths[5] := Trunc(grid.Width * 0.10); // Desconto
-  grid.ColWidths[6] := Trunc(grid.Width * 0.10); // AcrÈscimo
+  grid.ColWidths[6] := Trunc(grid.Width * 0.10); // Acr√©scimo
   grid.ColWidths[7] := Trunc(grid.Width * 0.10); // Total
   grid.ColWidths[8] := Trunc(grid.Width * 0.24); // Produto
 
@@ -428,13 +537,13 @@ begin
     stgDados.RowCount := 2;
     stgDados.Rows[1].Clear;
     stgDados.Cells[0, 0] := 'Id';
-    stgDados.Cells[1, 0] := 'N˙mero';
+    stgDados.Cells[1, 0] := 'N√∫mero';
     stgDados.Cells[2, 0] := 'Cliente';
-    stgDados.Cells[3, 0] := 'TÌtulo';
+    stgDados.Cells[3, 0] := 'T√≠tulo';
     stgDados.Cells[4, 0] := 'Status';
     stgDados.Cells[5, 0] := 'Data Abertura';
 
-    ListaOS := OSDB.ProcurarTodos(filtro, 0);
+    ListaOS := OSDB.ProcurarTodos(filtro, fraCabecalhoControle1.CmbTipo.ItemIndex);
 
     if ListaOS.Count > 0 then
     begin
@@ -452,7 +561,7 @@ begin
     end;
     fraRodaPeControle1.setRegistro(ListaOS.Count);
 
-    // Limpar as grids de produtos e serviÁos ao atualizar a grid principal
+    // Limpar as grids de produtos e servi√ßos ao atualizar a grid principal
     stgDadosProduto.RowCount := 2;
     stgDadosProduto.Rows[1].Clear;
     stgDadosServico.RowCount := 2;
@@ -472,12 +581,12 @@ begin
     stgDadosProduto.RowCount := 2;
     stgDadosProduto.Rows[1].Clear;
     stgDadosProduto.Cells[0, 0] := 'ID';
-    stgDadosProduto.Cells[1, 0] := 'DescriÁ„o';
+    stgDadosProduto.Cells[1, 0] := 'Descri√ß√£o';
     stgDadosProduto.Cells[2, 0] := 'Tipo';
     stgDadosProduto.Cells[3, 0] := 'Quantidade';
-    stgDadosProduto.Cells[4, 0] := 'PreÁo Unit.';
+    stgDadosProduto.Cells[4, 0] := 'Pre√ßo Unit.';
     stgDadosProduto.Cells[5, 0] := 'Desconto';
-    stgDadosProduto.Cells[6, 0] := 'AcrÈscimo';
+    stgDadosProduto.Cells[6, 0] := 'Acr√©scimo';
     stgDadosProduto.Cells[7, 0] := 'Total';
     stgDadosProduto.Cells[8, 0] := 'Produto';
 
@@ -518,12 +627,12 @@ begin
     stgDadosServico.RowCount := 2;
     stgDadosServico.Rows[1].Clear;
     stgDadosServico.Cells[0, 0] := 'ID';
-    stgDadosServico.Cells[1, 0] := 'DescriÁ„o';
+    stgDadosServico.Cells[1, 0] := 'Descri√ß√£o';
     stgDadosServico.Cells[2, 0] := 'Tipo';
     stgDadosServico.Cells[3, 0] := 'Quantidade';
-    stgDadosServico.Cells[4, 0] := 'PreÁo Unit.';
+    stgDadosServico.Cells[4, 0] := 'Pre√ßo Unit.';
     stgDadosServico.Cells[5, 0] := 'Desconto';
-    stgDadosServico.Cells[6, 0] := 'AcrÈscimo';
+    stgDadosServico.Cells[6, 0] := 'Acr√©scimo';
     stgDadosServico.Cells[7, 0] := 'Total';
     stgDadosServico.Cells[8, 0] := 'Produto';
 

@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.Buttons, Vcl.ExtCtrls;
 
 type
   TFrmPrincipal = class(TForm)
@@ -14,10 +14,14 @@ type
     cnico1: TMenuItem;
     Produto1: TMenuItem;
     OS1: TMenuItem;
+    Panel1: TPanel;
+    spdParticipante: TSpeedButton;
     procedure Cliente1Click(Sender: TObject);
     procedure cnico1Click(Sender: TObject);
     procedure Produto1Click(Sender: TObject);
     procedure OS1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure spdParticipanteClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -44,6 +48,11 @@ begin
   AbreForm(TfrmTecnicoControle, frmTecnicoControle);
 end;
 
+procedure TFrmPrincipal.FormCreate(Sender: TObject);
+begin
+  WindowState := wsMaximized;
+end;
+
 procedure TFrmPrincipal.OS1Click(Sender: TObject);
 begin
   AbreForm(TFrmOSControle, frmOSControle);
@@ -52,6 +61,11 @@ end;
 procedure TFrmPrincipal.Produto1Click(Sender: TObject);
 begin
   AbreForm(TfrmProdutoControle, frmProdutoControle);
+end;
+
+procedure TFrmPrincipal.spdParticipanteClick(Sender: TObject);
+begin
+  AbreForm(TFrmOSControle, frmOSControle);
 end;
 
 end.

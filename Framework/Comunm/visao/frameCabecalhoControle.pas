@@ -21,6 +21,12 @@ type
     CmbTipo: TComboBox;
     LblFiltro: TLabel;
     EdtAte: TMaskEdit;
+    EdtDe: TMaskEdit;
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    cmbPrioridade: TComboBox;
+    Label2: TLabel;
+    cmbStatus: TComboBox;
     procedure edtDescricaoChange(Sender: TObject);
   private
     { Private declarations }

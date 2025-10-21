@@ -1,0 +1,1078 @@
+unit FormOS;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Constantes, Biblioteca, OS, OrObject,
+  Vcl.StdCtrls, Vcl.ComCtrls, Vcl.Mask, RxToolEdit, RxCurrEdit,
+  frameformLabel, frameSalvaCancela, Vcl.ExtCtrls, Vcl.Grids, Vcl.Buttons,
+  ClienteDB, TecnicoDB, StatusOSDB, PrioridadeOSDB, ProdutoDB, OrList, Cliente,
+  Tecnico, StatusOS, PrioridadeOS, Produto, OSItem;
+
+type
+  TFrmOS = class(TForm)
+    fraformLabel1: TfraformLabel;
+    fraSalvaCancela1: TfraSalvaCancela;
+    lblProdutos: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label2: TLabel;
+    pnlPesquisar: TPanel;
+    BtnPesquisar: TSpeedButton;
+    lblFiltro: TLabel;
+    Panel1: TPanel;
+    SpeedButton1: TSpeedButton;
+    pnlValores: TPanel;
+    Label1: TLabel;
+    Label3: TLabel;
+    Label7: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    lblLogin: TLabel;
+    lblObservacao: TLabel;
+    Label8: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Label17: TLabel;
+    StgServicos: TStringGrid;
+    BtnAddServico: TBitBtn;
+    BtnRemServico: TBitBtn;
+    Panel2: TPanel;
+    SpeedButton2: TSpeedButton;
+    TabSheet3: TTabSheet;
+    CmbStatus: TComboBox;
+    CmbPrioridade: TComboBox;
+    CmbCliente: TComboBox;
+    CmbTecnico: TComboBox;
+    CmbServicos: TComboBox;
+    EdtValorDesconto: TEdit;
+    EdtValorAcrescimo: TEdit;
+    EdtValorComDesconto: TEdit;
+    EdtQuantidade: TEdit;
+    Label18: TLabel;
+    StgProdutos: TStringGrid;
+    BtnAddProduto: TBitBtn;
+    BtnRemProduto: TBitBtn;
+    Panel3: TPanel;
+    SpeedButton3: TSpeedButton;
+    CmbProdutos: TComboBox;
+    Label19: TLabel;
+    StgAnexoOS: TStringGrid;
+    BtnAddAnexoOS: TBitBtn;
+    BtnRemAnexoOS: TBitBtn;
+    EdtDataEntrada: TEdit;
+    EdtDataSaida: TEdit;
+    EdtNumOS: TEdit;
+    EdtTitulo: TEdit;
+    EdtDiagnostico: TEdit;
+    EdtDataPrevConclusao: TEdit;
+    EdtEndereco: TEdit;
+    Edit3: TEdit;
+    MemoDescProblema: TMemo;
+    MemoSolucaoAplic: TMemo;
+    Label4: TLabel;
+    CmbFormaPagto: TComboBox;
+    EdtURLAnexo: TEdit;
+    Button1: TBitBtn;
+    OpenDialog1: TOpenDialog;
+    Label9: TLabel;
+    EdtQuantidadeOSITem: TEdit;
+    Label20: TLabel;
+    EdtPrecoOSItem: TEdit;
+    Label21: TLabel;
+    EdtDescOSITem: TEdit;
+    Label23: TLabel;
+    EdtAcrescOSITem: TEdit;
+    EdtTotalOSITem: TEdit;
+    MemoObs: TMemo;
+    Label22: TLabel;
+    Label24: TLabel;
+    Label25: TLabel;
+    EdtQtdProdOSItem: TEdit;
+    Label26: TLabel;
+    EdtPrecProdOSItem: TEdit;
+    Label27: TLabel;
+    EdtDescProdOSItem: TEdit;
+    Label28: TLabel;
+    EdtAcrescProdOSItem: TEdit;
+    EdtTotalProdOSItem: TEdit;
+    Memo1: TMemo;
+    Label29: TLabel;
+    Label30: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure fraSalvaCancela1btnSalvarClick(Sender: TObject);
+    procedure fraSalvaCancela1btnCancelarClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure BtnAddAnexoOSClick(Sender: TObject);
+    procedure StgAnexoOSDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure CmbServicosSelect(Sender: TObject);
+    procedure CmbProdutosSelect(Sender: TObject);
+    procedure EdtQuantidadeOSITemChange(Sender: TObject);
+    procedure EdtPrecoOSItemChange(Sender: TObject);
+    procedure EdtDescOSITemChange(Sender: TObject);
+    procedure EdtAcrescOSITemChange(Sender: TObject);
+    procedure EdtQtdProdOSItemChange(Sender: TObject);
+    procedure EdtPrecProdOSItemChange(Sender: TObject);
+    procedure EdtDescProdOSItemChange(Sender: TObject);
+    procedure EdtAcrescProdOSItemChange(Sender: TObject);
+    procedure BtnAddServicoClick(Sender: TObject);
+    procedure StgServicosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure StgProdutosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure BtnAddProdutoClick(Sender: TObject);
+    procedure BtnRemProdutoClick(Sender: TObject);
+    procedure BtnRemServicoClick(Sender: TObject);
+  private
+    statusInterface: TStatusInterface;
+    os: TOS;
+    clienteDB: IClienteDB;
+    tecnicoDB: ITecnicoDB;
+    statusOSDB: IStatusOSDB;
+    prioridadeOSDB: IPrioridadeOSDB;
+    produtoDB: IProdutoDB;
+    FUpdatingGrids: Boolean; // Variável para evitar loops
+    procedure setAtributos;
+    procedure getAtributos;
+    procedure atualizarInterface;
+    procedure CarregarCombos;
+    procedure PreencherCombo(ACombo: TComboBox; AList: TList; AType: string);
+    procedure AtualizarGridServicos;
+    procedure AtualizarGridProdutos;
+    procedure atualizarGridAnexo(OS: TOS);
+    procedure CalcularTotalOSItem(EdtQuantidade, EdtPreco, EdtDesconto, EdtAcrescimo, EdtTotal: TEdit);
+    procedure DrawGridCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+  public
+    destructor Destroy; override;
+    procedure setStatusInterface(statusInterface: TStatusInterface);
+    procedure setOS(os: TOS);
+    function getOS: TOS;
+  end;
+
+var
+  FrmOS: TFrmOS;
+
+implementation
+
+uses
+  DataModule, Filtro, ClientePostgreSQL, TecnicoPostgreSQL, StatusOSPostgreSQL,
+  PrioridadeOSPostgreSQL, ProdutoPostgreSQL, OSAnexo;
+
+{$R *.dfm}
+
+destructor TFrmOS.Destroy;
+begin
+  clienteDB := nil;
+  tecnicoDB := nil;
+  statusOSDB := nil;
+  prioridadeOSDB := nil;
+  produtoDB := nil;
+  //FreeAndNil(os);
+  os := nil;
+  inherited Destroy;
+end;
+
+procedure TFrmOS.DrawGridCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  strTemp: string;
+  grid: TStringGrid;
+begin
+  grid := Sender as TStringGrid;
+  // Define as larguras das colunas proporcionalmente
+  grid.ColWidths[0] := Trunc(grid.Width * 0.40); // Descrição (40%)
+  grid.ColWidths[1] := Trunc(grid.Width * 0.20); // Quantidade (20%)
+  grid.ColWidths[2] := Trunc(grid.Width * 0.20); // Preço (20%)
+  grid.ColWidths[3] := Trunc(grid.Width * 0.20); // Total (20%)
+
+  with grid do
+  begin
+    strTemp := Cells[ACol, ARow];
+    if ACol = ColCount - 1 then
+      strTemp := strTemp + StringOfChar(' ', 5); // Adiciona espaço na última coluna
+
+    Canvas.Font.Style := [];
+    Canvas.Font.Color := clBlack;
+    Canvas.Brush.Color := clWindow;
+
+    if ARow = 0 then
+    begin
+      Canvas.Font.Style := [fsBold]; // Negrito para o cabeçalho
+      Canvas.Brush.Color := clBtnFace; // Fundo cinza para o cabeçalho
+    end
+    else
+    begin
+      if ARow = Row then
+      begin
+        Canvas.Font.Color := clWhite; // Texto branco para linha selecionada
+        Canvas.Brush.Color := clHighlight; // Fundo azul para linha selecionada
+      end
+      else
+      begin
+        if ARow mod 2 = 0 then
+          Canvas.Brush.Color := clInfoBk // Fundo claro para linhas pares
+        else
+          Canvas.Brush.Color := clWhite; // Fundo branco para linhas ímpares
+      end;
+    end;
+
+    Canvas.FillRect(Rect); // Preenche o fundo da célula
+    DrawText(Canvas.Handle, PChar(' ' + strTemp), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_LEFT); // Desenha o texto
+  end;
+end;
+
+procedure TFrmOS.EdtAcrescOSITemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQuantidadeOSITem, EdtPrecoOSItem, EdtDescOSITem, EdtAcrescOSITem, EdtTotalOSITem);
+end;
+
+procedure TFrmOS.EdtAcrescProdOSItemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQtdProdOSItem, EdtPrecProdOSItem, EdtDescProdOSItem, EdtAcrescProdOSItem, EdtTotalProdOSItem);
+end;
+
+procedure TFrmOS.EdtDescOSITemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQuantidadeOSITem, EdtPrecoOSItem, EdtDescOSITem, EdtAcrescOSITem, EdtTotalOSITem);
+end;
+
+procedure TFrmOS.EdtDescProdOSItemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQtdProdOSItem, EdtPrecProdOSItem, EdtDescProdOSItem, EdtAcrescProdOSItem, EdtTotalProdOSItem);
+end;
+
+procedure TFrmOS.EdtPrecoOSItemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQuantidadeOSITem, EdtPrecoOSItem, EdtDescOSITem, EdtAcrescOSITem, EdtTotalOSITem);
+end;
+
+procedure TFrmOS.EdtPrecProdOSItemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQtdProdOSItem, EdtPrecProdOSItem, EdtDescProdOSItem, EdtAcrescProdOSItem, EdtTotalProdOSItem);
+end;
+
+procedure TFrmOS.EdtQtdProdOSItemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQtdProdOSItem, EdtPrecProdOSItem, EdtDescProdOSItem, EdtAcrescProdOSItem, EdtTotalProdOSItem);
+end;
+
+procedure TFrmOS.EdtQuantidadeOSITemChange(Sender: TObject);
+begin
+  if not FUpdatingGrids then
+    CalcularTotalOSItem(EdtQuantidadeOSITem, EdtPrecoOSItem, EdtDescOSITem, EdtAcrescOSITem, EdtTotalOSITem);
+end;
+
+procedure TFrmOS.PreencherCombo(ACombo: TComboBox; AList: TList; AType: string);
+var
+  I: Integer;
+  Obj: TOrObject;
+  DisplayText: string;
+begin
+  ACombo.Clear;
+  if Assigned(AList) and (AList.Count > 0) then
+    for I := 0 to AList.Count - 1 do
+    begin
+      Obj := TOrObject(AList[I]);
+      if AType = 'Cliente' then
+        DisplayText := TCliente(Obj).getNomeRazao
+      else if AType = 'Tecnico' then
+        DisplayText := TTecnico(Obj).getNome
+      else if AType = 'StatusOS' then
+        DisplayText := TStatusOS(Obj).getCodigo
+      else if AType = 'PrioridadeOS' then
+        DisplayText := TPrioridadeOS(Obj).getCodigo
+      else if AType = 'Produto' then
+        DisplayText := TProduto(Obj).getDescricao
+      else
+        DisplayText := '';
+      ACombo.Items.AddObject(DisplayText, Obj);
+    end;
+end;
+
+procedure TFrmOS.BtnAddAnexoOSClick(Sender: TObject);
+var
+  OSAnexo: TOSAnexo;
+  I: Integer;
+  Achou: Boolean;
+begin
+  Achou := False;
+
+  if Trim(EdtURLAnexo.Text) <> '' then
+  begin
+    if Assigned(os) and Assigned(os.getLstOSAnexo as TOrList) then
+    begin
+      for I := 0 to (os.getLstOSAnexo as TOrList).contar - 1 do
+      begin
+        if (os.getLstOSAnexo as TOrList).item(I) is TOSAnexo then
+        begin
+          if TOSAnexo((os.getLstOSAnexo as TOrList).item(I)).getNomeArquivo = Trim(EdtURLAnexo.Text) then
+          begin
+            Achou := True;
+            Break;
+          end;
+        end;
+      end;
+    end;
+
+    if not Achou then
+    begin
+      OSAnexo := TOSAnexo.Create;
+      try
+        OSAnexo.setNomeArquivo(Trim(EdtURLAnexo.Text));
+        OSAnexo.setOsId(os.getId);
+        OSAnexo.setDtUpload(Now);
+        OSAnexo.setUsuarioUpload('UsuarioLogado');
+        OSAnexo.setTipoMime('');
+        OSAnexo.setTamanhoBytes(0);
+        OSAnexo.setArmazenamento('');
+        OSAnexo.setCaminhoChave('');
+        (os.getLstOSAnexo as TOrList).Add(OSAnexo);
+        atualizarGridAnexo(os);
+        EdtURLAnexo.Clear;
+      except
+        OSAnexo.Free;
+        raise;
+      end;
+    end
+    else
+    begin
+      MessageDlg('Anexo já cadastrado!', mtWarning, [mbOK], 0);
+    end;
+  end
+  else
+  begin
+    MessageDlg('Informe o nome do arquivo!', mtWarning, [mbOK], 0);
+  end;
+end;
+
+procedure TFrmOS.BtnAddProdutoClick(Sender: TObject);
+var
+  OSItem: TOSItem;
+  Produto: TProduto;
+  I: Integer;
+  Achou: Boolean;
+begin
+  Achou := False;
+
+  if CmbProdutos.ItemIndex >= 0 then
+  begin
+    if StrToFloatDef(EdtTotalProdOSItem.Text, 0) <= 0 then
+    begin
+      MessageDlg('O total do produto deve ser maior que zero!', mtWarning, [mbOK], 0);
+      Exit;
+    end;
+
+    Produto := TProduto(CmbProdutos.Items.Objects[CmbProdutos.ItemIndex]);
+
+    if Assigned(os) and Assigned(os.getLstOSItem as TOrList) then
+    begin
+      for I := 0 to (os.getLstOSItem as TOrList).contar - 1 do
+      begin
+        if (os.getLstOSItem as TOrList).item(I) is TOSItem then
+        begin
+          if TOSItem((os.getLstOSItem as TOrList).item(I)).getProduto.getId = Produto.getId then
+          begin
+            Achou := True;
+            ShowMessage('Produto já na lista: ' + (TOSItem((os.getLstOSItem as TOrList).item(I)).getProduto as TProduto).getDescricao +
+                        ', ID: ' + IntToStr(TOSItem((os.getLstOSItem as TOrList).item(I)).getProduto.getId));
+            Break;
+          end;
+        end;
+      end;
+    end;
+
+    if not Achou then
+    begin
+      OSItem := TOSItem.Create;
+      try
+        OSItem.setProduto(Produto);
+        OSItem.setQtde(StrToFloatDef(EdtQtdProdOSItem.Text, 1));
+        OSItem.setPrecoUnit(StrToFloatDef(EdtPrecProdOSItem.Text, 0));
+        OSItem.setDescontoValor(StrToFloatDef(EdtDescProdOSItem.Text, 0));
+        OSItem.setAcrescimoValor(StrToFloatDef(EdtAcrescProdOSItem.Text, 0));
+        OSItem.setOsId(os.getId);
+        (os.getLstOSItem as TOrList).Add(OSItem);
+        AtualizarGridProdutos;
+        CmbProdutos.ItemIndex := -1;
+        EdtQtdProdOSItem.Text := '1';
+        EdtPrecProdOSItem.Text := '0.00';
+        EdtDescProdOSItem.Text := '0.00';
+        EdtAcrescProdOSItem.Text := '0.00';
+        EdtTotalProdOSItem.Text := '0.00';
+      except
+        OSItem.Free;
+        raise;
+      end;
+    end
+    else
+    begin
+      MessageDlg('Produto já adicionado!', mtWarning, [mbOK], 0);
+    end;
+  end
+  else
+  begin
+    MessageDlg('Selecione um produto!', mtWarning, [mbOK], 0);
+  end;
+end;
+
+procedure TFrmOS.BtnAddServicoClick(Sender: TObject);
+var
+  OSItem: TOSItem;
+  Produto: TProduto;
+  I: Integer;
+  Achou: Boolean;
+begin
+  Achou := False;
+
+  if CmbServicos.ItemIndex >= 0 then
+  begin
+    if StrToFloatDef(EdtTotalOSITem.Text, 0) <= 0 then
+    begin
+      MessageDlg('O total do serviço deve ser maior que zero!', mtWarning, [mbOK], 0);
+      Exit;
+    end;
+
+    Produto := TProduto(CmbServicos.Items.Objects[CmbServicos.ItemIndex]);
+
+    if Assigned(os) and Assigned(os.getLstOSItem as TOrList) then
+    begin
+      for I := 0 to (os.getLstOSItem as TOrList).contar - 1 do
+      begin
+        if (os.getLstOSItem as TOrList).item(I) is TOSItem then
+        begin
+          if TOSItem((os.getLstOSItem as TOrList).item(I)).getProduto.getId = Produto.getId then
+          begin
+            Achou := True;
+            Break;
+          end;
+        end;
+      end;
+    end;
+
+    if not Achou then
+    begin
+      OSItem := TOSItem.Create;
+      try
+        OSItem.setProduto(Produto);
+        OSItem.setQtde(StrToFloatDef(EdtQuantidadeOSITem.Text, 1));
+        OSItem.setPrecoUnit(StrToFloatDef(EdtPrecoOSItem.Text, 0));
+        OSItem.setDescontoValor(StrToFloatDef(EdtDescOSITem.Text, 0));
+        OSItem.setAcrescimoValor(StrToFloatDef(EdtAcrescOSITem.Text, 0));
+        OSItem.setOsId(os.getId);
+        (os.getLstOSItem as TOrList).Add(OSItem);
+        AtualizarGridServicos;
+        CmbServicos.ItemIndex := -1;
+        EdtQuantidadeOSITem.Text := '1';
+        EdtPrecoOSItem.Text := '0.00';
+        EdtDescOSITem.Text := '0.00';
+        EdtAcrescOSITem.Text := '0.00';
+        EdtTotalOSITem.Text := '0.00';
+      except
+        OSItem.Free;
+        raise;
+      end;
+    end
+    else
+    begin
+      MessageDlg('Serviço já adicionado!', mtWarning, [mbOK], 0);
+    end;
+  end
+  else
+  begin
+    MessageDlg('Selecione um serviço!', mtWarning, [mbOK], 0);
+  end;
+end;
+
+procedure TFrmOS.BtnRemProdutoClick(Sender: TObject);
+var
+  Row: Integer;
+  Itens: TOrList;
+  Item: TOSItem;
+  I: Integer;
+  ProdutoDescricao: string;
+begin
+  Row := StgProdutos.Row;
+  if (Row > 0) and (Row < StgProdutos.RowCount) then
+  begin
+    Itens := os.getLstOSItem as TOrList;
+    ProdutoDescricao := StgProdutos.Cells[0, Row];
+    if Assigned(Itens) then
+    begin
+      for I := Itens.contar - 1 downto 0 do
+      begin
+        Item := TOSItem(Itens.Item(I));
+        if ((Item.getProduto as TProduto).getTipo = 'P') and
+           ((Item.getProduto as TProduto).getDescricao = ProdutoDescricao) then
+        begin
+          Itens.rem(I);
+          FreeAndNil(Item);
+          ShowMessage('Produto removido. Itens restantes: ' + IntToStr(Itens.contar)); // Depuração
+          Break;
+        end;
+      end;
+      AtualizarGridProdutos;
+    end;
+  end
+  else
+    MessageDlg('Selecione um produto para remover!', mtWarning, [mbOK], 0);
+end;
+
+procedure TFrmOS.BtnRemServicoClick(Sender: TObject);
+var
+  Row: Integer;
+  Itens: TOrList;
+  Item: TOSItem;
+  I: Integer;
+begin
+  Row := StgServicos.Row;
+  if (Row > 0) and (Row < StgServicos.RowCount) then
+  begin
+    Itens := os.getLstOSItem as TOrList;
+    if Assigned(Itens) then
+    begin
+      for I := Itens.contar - 1 downto 0 do
+      begin
+        Item := TOSItem(Itens.Item(I));
+        if ((Item.getProduto as TProduto).getTipo = 'S') and
+           (StgServicos.Cells[0, Row] = (Item.getProduto as TProduto).getDescricao) then
+        begin
+          Itens.rem(I);
+          FreeAndNil(Item);
+          ShowMessage('Serviço removido. Itens restantes: ' + IntToStr(Itens.contar)); // Depuração
+          Break;
+        end;
+      end;
+      AtualizarGridServicos;
+    end;
+  end
+  else
+    MessageDlg('Selecione um serviço para remover!', mtWarning, [mbOK], 0);
+end;
+
+procedure TFrmOS.Button1Click(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+  begin
+    EdtURLAnexo.Text := OpenDialog1.FileName;
+  end;
+end;
+
+procedure TFrmOS.CalcularTotalOSItem(EdtQuantidade, EdtPreco, EdtDesconto, EdtAcrescimo, EdtTotal: TEdit);
+var
+  Quantidade, Preco, Desconto, Acrescimo: Double;
+begin
+  Quantidade := StrToFloatDef(EdtQuantidade.Text, 1);
+  Preco := StrToFloatDef(EdtPreco.Text, 0);
+  Desconto := StrToFloatDef(EdtDesconto.Text, 0);
+  Acrescimo := StrToFloatDef(EdtAcrescimo.Text, 0);
+  EdtTotal.Text := FormatFloat('0.00', Quantidade * (Preco - Desconto + Acrescimo));
+end;
+
+procedure TFrmOS.CarregarCombos;
+var
+  ListaClientes, ListaTecnicos, ListaStatusOS, ListaPrioridadeOS, ListaServicos, ListaProdutos: TList;
+  Filtro: TFiltro;
+begin
+  Filtro := TFiltro.Create;
+  try
+    ListaClientes := clienteDB.ProcurarTodos(Filtro, 0);
+    ListaTecnicos := tecnicoDB.ProcurarTodos(Filtro, 0);
+    ListaStatusOS := statusOSDB.ProcurarTodos(Filtro, 0);
+    ListaPrioridadeOS := prioridadeOSDB.ProcurarTodos(Filtro, 0);
+    Filtro.setTipo('S');
+    ListaServicos := produtoDB.ProcurarTodos(Filtro, 0);
+    Filtro.setTipo('P');
+    ListaProdutos := produtoDB.ProcurarTodos(Filtro, 0);
+
+    try
+      PreencherCombo(CmbCliente, ListaClientes, 'Cliente');
+      PreencherCombo(CmbTecnico, ListaTecnicos, 'Tecnico');
+      PreencherCombo(CmbStatus, ListaStatusOS, 'StatusOS');
+      PreencherCombo(CmbPrioridade, ListaPrioridadeOS, 'PrioridadeOS');
+      PreencherCombo(CmbServicos, ListaServicos, 'Produto');
+      PreencherCombo(CmbProdutos, ListaProdutos, 'Produto');
+    finally
+      ListaClientes.Free;
+      ListaTecnicos.Free;
+      ListaStatusOS.Free;
+      ListaPrioridadeOS.Free;
+      ListaServicos.Free;
+      ListaProdutos.Free;
+    end;
+  finally
+    Filtro.Free;
+  end;
+end;
+
+procedure TFrmOS.CmbProdutosSelect(Sender: TObject);
+var
+  SelectedProduto: TProduto;
+begin
+  if not FUpdatingGrids then
+  begin
+    if CmbProdutos.ItemIndex >= 0 then
+    begin
+      SelectedProduto := TProduto(CmbProdutos.Items.Objects[CmbProdutos.ItemIndex]);
+      if Assigned(SelectedProduto) then
+        EdtPrecProdOSItem.Text := FormatFloat('0.00', SelectedProduto.getPrecoPadrao);
+    end
+    else
+      EdtPrecProdOSItem.Text := '0.00';
+    CalcularTotalOSItem(EdtQtdProdOSItem, EdtPrecProdOSItem, EdtDescProdOSItem, EdtAcrescProdOSItem, EdtTotalProdOSItem);
+  end;
+end;
+
+procedure TFrmOS.CmbServicosSelect(Sender: TObject);
+var
+  SelectedProduto: TProduto;
+begin
+  if not FUpdatingGrids then
+  begin
+    if CmbServicos.ItemIndex >= 0 then
+    begin
+      SelectedProduto := TProduto(CmbServicos.Items.Objects[CmbServicos.ItemIndex]);
+      if Assigned(SelectedProduto) then
+        EdtPrecoOSItem.Text := FormatFloat('0.00', SelectedProduto.getPrecoPadrao);
+    end
+    else
+      EdtPrecoOSItem.Text := '0.00';
+    CalcularTotalOSItem(EdtQuantidadeOSITem, EdtPrecoOSItem, EdtDescOSITem, EdtAcrescOSITem, EdtTotalOSITem);
+  end;
+end;
+
+procedure TFrmOS.AtualizarGridServicos;
+var
+  Itens: TOrList;
+  Item: TOSItem;
+  I, Row: Integer;
+  Produto: TProduto;
+  TemServico: Boolean;
+begin
+  if FUpdatingGrids then
+    Exit;
+
+  FUpdatingGrids := True;
+  try
+    // Inicializar o grid
+    StgServicos.ColCount := 4;
+    StgServicos.FixedRows := 1;
+    StgServicos.RowCount := 2; // Uma linha para cabeçalho, uma vazia
+    StgServicos.Cells[0, 0] := 'Descrição';
+    StgServicos.Cells[1, 0] := 'Quantidade';
+    StgServicos.Cells[2, 0] := 'Preço';
+    StgServicos.Cells[3, 0] := 'Total';
+    StgServicos.Rows[1].Clear; // Limpa a linha vazia
+    TemServico := False;
+    Itens := os.getLstOSItem as TOrList;
+    if Assigned(Itens) then
+    begin
+      Row := 1;
+      for I := 0 to Itens.contar - 1 do
+      begin
+        Item := (Itens.Item(I) as TOSItem);
+        Produto := Item.getProduto as TProduto;
+        if Assigned(Produto) and (Produto.getTipo = 'S') then
+        begin
+          TemServico := True;
+          StgServicos.RowCount := Row + 1;
+          StgServicos.Cells[0, Row] := Produto.getDescricao;
+          StgServicos.Cells[1, Row] := FormatFloat('0.00', Item.getQtde);
+          StgServicos.Cells[2, Row] := FormatFloat('0.00', Item.getPrecoUnit);
+          StgServicos.Cells[3, Row] := FormatFloat('0.00', Item.getQtde * (Item.getPrecoUnit - Item.getDescontoValor + Item.getAcrescimoValor));
+          Inc(Row);
+        end;
+      end;
+    end;
+    BtnRemServico.Enabled := TemServico;
+    StgServicos.Invalidate; // Agenda o redesenho sem forçar imediatamente
+  finally
+    FUpdatingGrids := False;
+  end;
+end;
+
+procedure TFrmOS.AtualizarGridProdutos;
+var
+  Itens: TOrList;
+  Item: TOSItem;
+  I, Row: Integer;
+  Produto: TProduto;
+  TemProduto: Boolean;
+begin
+  if FUpdatingGrids then
+    Exit;
+
+  FUpdatingGrids := True;
+  try
+    // Inicializar o grid
+    StgProdutos.ColCount := 4;
+    StgProdutos.FixedRows := 1;
+    StgProdutos.RowCount := 2; // Uma linha para cabeçalho, uma vazia
+    StgProdutos.Cells[0, 0] := 'Descrição';
+    StgProdutos.Cells[1, 0] := 'Quantidade';
+    StgProdutos.Cells[2, 0] := 'Preço';
+    StgProdutos.Cells[3, 0] := 'Total';
+    StgProdutos.Rows[1].Clear; // Limpa a linha vazia
+    TemProduto := False;
+    Itens := os.getLstOSItem as TOrList;
+    if Assigned(Itens) then
+    begin
+      Row := 1;
+      for I := 0 to Itens.contar - 1 do
+      begin
+        Item := (Itens.Item(I) as TOSItem);
+        Produto := Item.getProduto as TProduto;
+        if Assigned(Produto) and (Produto.getTipo = 'P') then
+        begin
+          TemProduto := True;
+          StgProdutos.RowCount := Row + 1;
+          StgProdutos.Cells[0, Row] := Produto.getDescricao;
+          StgProdutos.Cells[1, Row] := FormatFloat('0.00', Item.getQtde);
+          StgProdutos.Cells[2, Row] := FormatFloat('0.00', Item.getPrecoUnit);
+          StgProdutos.Cells[3, Row] := FormatFloat('0.00', Item.getQtde * (Item.getPrecoUnit - Item.getDescontoValor + Item.getAcrescimoValor));
+          Inc(Row);
+        end;
+      end;
+    end;
+    BtnRemProduto.Enabled := TemProduto;
+    StgProdutos.Invalidate; // Agenda o redesenho sem forçar imediatamente
+  finally
+    FUpdatingGrids := False;
+  end;
+end;
+
+procedure TFrmOS.atualizarGridAnexo(OS: TOS);
+var
+  OSAnexo: TOSAnexo;
+  I, RowIndex: Integer;
+begin
+  if FUpdatingGrids then
+    Exit;
+
+  FUpdatingGrids := True;
+  try
+    processando(Self);
+    try
+      StgAnexoOS.RowCount := 2;
+      StgAnexoOS.Rows[1].Clear;
+      StgAnexoOS.Cells[0, 0] := 'ID';
+      StgAnexoOS.Cells[1, 0] := 'Nome do Arquivo';
+      StgAnexoOS.Cells[2, 0] := 'Tipo MIME';
+      StgAnexoOS.Cells[3, 0] := 'Tamanho (Bytes)';
+      StgAnexoOS.Cells[4, 0] := 'Armazenamento';
+      StgAnexoOS.Cells[5, 0] := 'Caminho/Chave';
+      StgAnexoOS.Cells[6, 0] := 'Data de Upload';
+      StgAnexoOS.Cells[7, 0] := 'Usuário de Upload';
+      BtnRemAnexoOS.Enabled := Assigned(OS) and Assigned(OS.getLstOSAnexo as TOrList) and ((OS.getLstOSAnexo as TOrList).contar > 0);
+      if Assigned(OS) and Assigned(OS.getLstOSAnexo as TOrList) and ((OS.getLstOSAnexo as TOrList).contar > 0) then
+      begin
+        RowIndex := 1;
+        for I := 0 to (OS.getLstOSAnexo as TOrList).contar - 1 do
+        begin
+          OSAnexo := ((OS.getLstOSAnexo as TOrList).item(I) as TOSAnexo);
+          StgAnexoOS.RowCount := RowIndex + 1;
+          StgAnexoOS.Cells[0, RowIndex] := IntToStr(OSAnexo.getId);
+          StgAnexoOS.Cells[1, RowIndex] := OSAnexo.getNomeArquivo;
+          StgAnexoOS.Cells[2, RowIndex] := OSAnexo.getTipoMime;
+          StgAnexoOS.Cells[3, RowIndex] := IntToStr(OSAnexo.getTamanhoBytes);
+          StgAnexoOS.Cells[4, RowIndex] := OSAnexo.getArmazenamento;
+          StgAnexoOS.Cells[5, RowIndex] := OSAnexo.getCaminhoChave;
+          StgAnexoOS.Cells[6, RowIndex] := DateTimeToStr(OSAnexo.getDtUpload);
+          StgAnexoOS.Cells[7, RowIndex] := OSAnexo.getUsuarioUpload;
+          Inc(RowIndex);
+        end;
+      end;
+      StgAnexoOS.Invalidate;
+    finally
+      processoFinalizado(Self);
+    end;
+  finally
+    FUpdatingGrids := False;
+  end;
+end;
+
+procedure TFrmOS.atualizarInterface;
+begin
+  EdtNumOS.MaxLength := 20;
+  EdtTitulo.MaxLength := 120;
+  EdtDiagnostico.MaxLength := 250;
+  EdtEndereco.MaxLength := 250;
+  EdtQuantidade.MaxLength := 10;
+  EdtValorDesconto.MaxLength := 14;
+  MemoDescProblema.MaxLength := 1000;
+  MemoSolucaoAplic.MaxLength := 1000;
+  organizarTabOrder(Self);
+  Position := poScreenCenter;
+  KeyPreview := True;
+  ShowHint := True;
+ // BorderStyle := bsNone;
+  CarregarCombos;
+end;
+
+procedure TFrmOS.FormCreate(Sender: TObject);
+begin
+  statusInterface := stConsultar;
+  os := TOS.Create;
+  FUpdatingGrids := False;
+  fraformLabel1.iniciar('Ordem de Serviço - Cadastro', Self);
+  fraSalvaCancela1.iniciar(Self);
+  clienteDB := TClientePostgreSQL.Create;
+  tecnicoDB := TTecnicoPostgreSQL.Create;
+  statusOSDB := TStatusOSPostgreSQL.Create;
+  prioridadeOSDB := TPrioridadeOSPostgreSQL.Create;
+  produtoDB := TProdutoPostgreSQL.Create;
+  StgServicos.FixedRows := 1;
+  StgServicos.FixedCols := 0;
+  StgServicos.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect];
+  StgServicos.DefaultDrawing := False;
+  StgProdutos.FixedRows := 1;
+  StgProdutos.FixedCols := 0;
+  StgProdutos.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect];
+  StgProdutos.DefaultDrawing := False;
+  StgServicos.OnDrawCell := DrawGridCell;
+  StgProdutos.OnDrawCell := DrawGridCell;
+  atualizarInterface;
+end;
+
+procedure TFrmOS.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_F12 then
+    fraSalvaCancela1btnSalvarClick(Self)
+  else if Key = VK_ESCAPE then
+    if Application.MessageBox(PChar(MSG_SAIR), PChar(MT_CONFIRMACAO), MB_OKCANCEL + MB_ICONQUESTION) = IDOK then
+      fraSalvaCancela1.btnCancelarClick(Self);
+end;
+
+procedure TFrmOS.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = KEY_ENTER then
+  begin
+    Key := KEY_TAB;
+    Perform(WM_NEXTDLGCTL, 0, 0);
+  end;
+end;
+
+procedure TFrmOS.FormShow(Sender: TObject);
+begin
+  limparInterface(Self);
+  arredondarInterface(Self);
+  if statusInterface in [stConsultar, stAlterar] then
+    getAtributos
+  else
+  begin
+    EdtDataEntrada.Text := DateToStr(Date);
+    FUpdatingGrids := True;
+    try
+      AtualizarGridServicos;
+      AtualizarGridProdutos;
+    finally
+      FUpdatingGrids := False;
+    end;
+  end;
+end;
+
+procedure TFrmOS.fraSalvaCancela1btnSalvarClick(Sender: TObject);
+begin
+  if Application.MessageBox(PChar(MSG_CONFIRMAR), 'Confirmação', MB_ICONQUESTION + MB_YESNO) = IDYES then
+  begin
+    setAtributos;
+    fraSalvaCancela1.btnSalvarClick(Sender);
+  end;
+end;
+
+procedure TFrmOS.fraSalvaCancela1btnCancelarClick(Sender: TObject);
+begin
+  fraSalvaCancela1.btnCancelarClick(Sender);
+end;
+
+procedure TFrmOS.getAtributos;
+var
+  ClienteSel: TCliente;
+  TecnicoSel: TTecnico;
+  StatusOSSel: TStatusOS;
+  PrioridadeOSSel: TPrioridadeOS;
+begin
+  if not Assigned(os) then
+    Exit;
+
+  FUpdatingGrids := True;
+  try
+    with os do
+    begin
+      EdtNumOS.Text := getNumero;
+      ClienteSel := TCliente(getCliente);
+      if Assigned(ClienteSel) then
+        CmbCliente.ItemIndex := CmbCliente.Items.IndexOf(ClienteSel.getNomeRazao)
+      else
+        CmbCliente.ItemIndex := -1;
+      TecnicoSel := TTecnico(getTecnicoResponsavel);
+      if Assigned(TecnicoSel) then
+        CmbTecnico.ItemIndex := CmbTecnico.Items.IndexOf(TecnicoSel.getNome)
+      else
+        CmbTecnico.ItemIndex := -1;
+      StatusOSSel := TStatusOS(getStatus);
+      if Assigned(StatusOSSel) then
+        CmbStatus.ItemIndex := CmbStatus.Items.IndexOf(StatusOSSel.getCodigo)
+      else
+        CmbStatus.ItemIndex := -1;
+      PrioridadeOSSel := TPrioridadeOS(getPrioridade);
+      if Assigned(PrioridadeOSSel) then
+        CmbPrioridade.ItemIndex := CmbPrioridade.Items.IndexOf(PrioridadeOSSel.getCodigo)
+      else
+        CmbPrioridade.ItemIndex := -1;
+      CmbServicos.ItemIndex := -1;
+      CmbProdutos.ItemIndex := -1;
+      EdtTitulo.Text := getTitulo;
+      MemoDescProblema.Text := getDescricaoProblema;
+      EdtDiagnostico.Text := getDiagnostico;
+      MemoSolucaoAplic.Text := getSolucaoAplicada;
+      EdtDataEntrada.Text := DateToStr(getDtAbertura);
+      if getDtPrevisaoConclusao <> 0 then
+        EdtDataPrevConclusao.Text := DateToStr(getDtPrevisaoConclusao);
+      if getDtInicioExecucao <> 0 then
+        EdtDataSaida.Text := DateToStr(getDtInicioExecucao);
+      if getDtConclusao <> 0 then
+        Edit3.Text := DateToStr(getDtConclusao);
+      EdtEndereco.Text := getEnderecoExecucao;
+      EdtValorDesconto.Text := FormatFloat('0.00', getValorDesconto);
+      EdtQuantidade.Text := IntToStr(getAnexosQtde);
+    end;
+
+    AtualizarGridServicos;
+    AtualizarGridProdutos;
+    atualizarGridAnexo(OS);
+  finally
+    FUpdatingGrids := False;
+  end;
+end;
+
+function TFrmOS.getOS: TOS;
+begin
+  Result := os;
+end;
+
+procedure TFrmOS.setAtributos;
+begin
+  if not Assigned(os) then
+    os := TOS.Create;
+
+  with os do
+  begin
+    setNumero(EdtNumOS.Text);
+    if CmbCliente.ItemIndex >= 0 then
+      setCliente(TCliente(CmbCliente.Items.Objects[CmbCliente.ItemIndex]))
+    else
+      setCliente(nil);
+    if CmbTecnico.ItemIndex >= 0 then
+      setTecnicoResponsavel(TTecnico(CmbTecnico.Items.Objects[CmbTecnico.ItemIndex]))
+    else
+      setTecnicoResponsavel(nil);
+    if CmbStatus.ItemIndex >= 0 then
+      setStatus(TStatusOS(CmbStatus.Items.Objects[CmbStatus.ItemIndex]))
+    else
+      setStatus(nil);
+    if CmbPrioridade.ItemIndex >= 0 then
+      setPrioridade(TPrioridadeOS(CmbPrioridade.Items.Objects[CmbPrioridade.ItemIndex]))
+    else
+      setPrioridade(nil);
+    setTitulo(EdtTitulo.Text);
+    setDescricaoProblema(MemoDescProblema.Text);
+    setDiagnostico(EdtDiagnostico.Text);
+    setSolucaoAplicada(MemoSolucaoAplic.Text);
+    setDtAbertura(StrToDateDef(EdtDataEntrada.Text, Date));
+    setDtPrevisaoConclusao(StrToDateDef(EdtDataPrevConclusao.Text, 0));
+    setDtInicioExecucao(StrToDateDef(EdtDataSaida.Text, 0));
+    setDtConclusao(StrToDateDef(Edit3.Text, 0));
+    setEnderecoExecucao(EdtEndereco.Text);
+    setValorDesconto(StrToFloatDef(EdtValorDesconto.Text, 0));
+    setValorAcrescimo(StrToFloatDef(EdtValorAcrescimo.Text, 0));
+    setFormaPagamento(CmbFormaPagto.Text);
+    setAnexosQtde(StrToIntDef(EdtQuantidade.Text, 0));
+  end;
+end;
+
+procedure TFrmOS.setOS(os: TOS);
+begin
+  if Assigned(Self.os) then
+    Self.os.Free;
+  Self.os := os;
+end;
+
+procedure TFrmOS.setStatusInterface(statusInterface: TStatusInterface);
+begin
+  Self.statusInterface := statusInterface;
+  fraformLabel1.setStatusInterface(statusInterface);
+end;
+
+procedure TFrmOS.StgAnexoOSDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+var
+  strTemp: string;
+  grid: TStringGrid;
+begin
+  grid := StgAnexoOS;
+  grid.ColWidths[0] := Trunc(grid.Width * 0.10);
+  grid.ColWidths[1] := Trunc(grid.Width * 0.25);
+  grid.ColWidths[2] := Trunc(grid.Width * 0.15);
+  grid.ColWidths[3] := Trunc(grid.Width * 0.10);
+  grid.ColWidths[4] := Trunc(grid.Width * 0.10);
+  grid.ColWidths[5] := Trunc(grid.Width * 0.20);
+  grid.ColWidths[6] := Trunc(grid.Width * 0.15);
+  grid.ColWidths[7] := Trunc(grid.Width * 0.15);
+
+  with (Sender as TStringGrid) do
+  begin
+    strTemp := Cells[ACol, ARow];
+    if ACol = ColCount - 1 then
+      strTemp := strTemp + StringOfChar(' ', 5);
+    Canvas.Font.Style := [];
+    Canvas.Font.Color := clBlack;
+    Canvas.Brush.Color := clWindow;
+    if ARow = 0 then
+    begin
+      Canvas.Font.Style := [fsBold];
+      Canvas.Brush.Color := clBtnFace;
+    end
+    else
+    begin
+      if ARow = Row then
+      begin
+        Canvas.Font.Color := clWhite;
+        Canvas.Brush.Color := clHighlight;
+      end
+      else
+      begin
+        if ARow mod 2 = 0 then
+          Canvas.Brush.Color := clInfoBk
+        else
+          Canvas.Brush.Color := clWhite;
+      end;
+    end;
+    Canvas.FillRect(Rect);
+    DrawText(Canvas.Handle, PChar(' ' + strTemp), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+  end;
+end;
+
+procedure TFrmOS.StgProdutosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+begin
+  DrawGridCell(Sender, ACol, ARow, Rect, State);
+end;
+
+procedure TFrmOS.StgServicosDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+begin
+  DrawGridCell(Sender, ACol, ARow, Rect, State);
+end;
+
+end.

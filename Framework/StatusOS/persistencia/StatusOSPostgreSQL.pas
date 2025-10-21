@@ -152,55 +152,46 @@ function TStatusOSPostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer)
 var
   FDQuery: TFDQuery;
   StatusOS: TStatusOS;
-  SQL: string;
-  Condicoes: TStringList;
+  SQL: TStringList;
   I: Integer;
 begin
   Result := TList.Create;
   FDQuery := CreateFDQuery;
+  SQL := TStringList.Create;
   try
     try
-      Condicoes := TStringList.Create;
-      try
-        SQL := 'SELECT * FROM public."StatusOS"';
+      SQL.Add('SELECT * FROM public."StatusOS"');
+      SQL.Add('WHERE 1=1');
 
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            Condicoes.Add('"Codigo" ILIKE :Descricao');
-
-          if Condicoes.Count > 0 then
-            SQL := SQL + ' WHERE ' + Condicoes.DelimitedText;
-        end;
-
-        case OrdenarPor of
-          0: SQL := SQL + ' ORDER BY "Codigo"';
-          1: SQL := SQL + ' ORDER BY "Ordem"';
-        end;
-
-        FDQuery.SQL.Text := SQL;
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
-        end;
-
-        FDQuery.Open;
-        while not FDQuery.Eof do
-        begin
-          StatusOS := TStatusOS.Create;
-          StatusOS.setId(FDQuery.FieldByName('Id').AsInteger);
-          StatusOS.setCodigo(FDQuery.FieldByName('Codigo').AsString);
-          StatusOS.setOrdem(FDQuery.FieldByName('Ordem').AsInteger);
-          Result.Add(StatusOS);
-          FDQuery.Next;
-        end;
-
-        FDQuery.Close;
-      finally
-        Condicoes.Free;
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          SQL.Add('  AND "Codigo" ILIKE :Descricao');
       end;
+
+      SQL.Add('ORDER BY "Id"');
+
+      FDQuery.SQL.Text := SQL.Text;
+
+      if Assigned(Filtro) and (Filtro.getDescricao <> '') then
+        FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+
+      FDQuery.Open;
+
+
+      while not FDQuery.Eof do
+      begin
+        StatusOS := TStatusOS.Create;
+        StatusOS.setId(FDQuery.FieldByName('Id').AsInteger);
+        StatusOS.setCodigo(FDQuery.FieldByName('Codigo').AsString);
+        StatusOS.setOrdem(FDQuery.FieldByName('Ordem').AsInteger);
+        Result.Add(StatusOS);
+        FDQuery.Next;
+      end;
+
+      FDQuery.Close;
     finally
+      SQL.Free;
       FDQuery.Free;
     end;
   except
@@ -213,5 +204,6 @@ begin
     end;
   end;
 end;
+
 
 end.

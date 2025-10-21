@@ -21,13 +21,13 @@ type
     procedure fraRodaPeControle1spdEditarClick(Sender: TObject);
     procedure fraRodaPeControle1spdExcluirClick(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
-    procedure frameCabecalhoControle1spdProcurarClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure fraRodaPeControle1spdImprimirClick(Sender: TObject);
     procedure stgDadosDblClick(Sender: TObject);
     procedure fraRodaPeControle1spdExcelClick(Sender: TObject);
     procedure frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
     procedure fraCabecalhoControle1btnNovoClick(Sender: TObject);
+    procedure fraCabecalhoControle1spdProcurarClick(Sender: TObject);
   private
     filtro: TFiltro;
     TecnicoDB: TTecnicoPostgreSQL;
@@ -86,6 +86,9 @@ begin
   KeyPreview := True;
   ShowHint := True;
   BorderStyle := bsNone;
+  WindowState := wsMaximized;
+  fraCabecalhoControle1.GBPeriodo.Visible := false;
+  fraCabecalhoControle1.GroupBox1.Visible := false;
 end;
 
 procedure TFrmTecnicoControle.chamarFormTecnico;
@@ -127,7 +130,7 @@ begin
   if Key = VK_F2 then
     fraCabecalhoControle1btnNovoClick(Self)
   else if Key = VK_F3 then
-    frameCabecalhoControle1spdProcurarClick(Self)
+    fraCabecalhoControle1spdProcurarClick(Self)
   else if Key = VK_ESCAPE then
     Close;
 end;
@@ -159,11 +162,11 @@ begin
       frmTecnico.setTecnico(Tecnico);
       if frmTecnico.ShowModal = mrOk then
       begin
-        if frmTecnico.getTecnico.validar then
-        begin
+      //  if frmTecnico.getTecnico.validar then
+      //  begin
           TecnicoDB.Inserir(frmTecnico.getTecnico);
           atualizarGrid;
-        end;
+     //   end;
       end;
     finally
       FreeAndNil(frmTecnico);
@@ -173,16 +176,17 @@ begin
   end;
 end;
 
-procedure TFrmTecnicoControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
-begin
-  fraCabecalhoControle1.edtDescricaoChange(Sender);
-end;
-
-procedure TFrmTecnicoControle.frameCabecalhoControle1spdProcurarClick(Sender: TObject);
+procedure TFrmTecnicoControle.fraCabecalhoControle1spdProcurarClick(
+  Sender: TObject);
 begin
   filtro.novaInstancia;
   filtro.setDescricao(fraCabecalhoControle1.edtDescricao.Text);
   atualizarGrid;
+end;
+
+procedure TFrmTecnicoControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
+begin
+  fraCabecalhoControle1.edtDescricaoChange(Sender);
 end;
 
 procedure TFrmTecnicoControle.fraRodaPeControle1spdEditarClick(Sender: TObject);

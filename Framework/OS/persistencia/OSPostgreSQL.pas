@@ -441,215 +441,163 @@ end;
 
 function TOSPostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer): TList;
 var
-  FDQueryOS, FDQueryItems: TFDQuery;
+  FDQuery: TFDQuery;
   OS: TOS;
   Item: TOSItem;
-  SQL, SQLItems: string;
-  Condicoes: TStringList;
-  I: Integer;
+  SQL: TStringList;
+  I, LastOSId: Integer;
 begin
   Result := TList.Create;
-  FDQueryOS := CreateFDQuery;
-  FDQueryItems := CreateFDQuery;
-  Condicoes := TStringList.Create;
+  FDQuery := CreateFDQuery;
+  SQL := TStringList.Create;
   try
-    // Seleciona os principais campos conforme estrutura real da tabela OS
-    SQL :=
-      'SELECT ' +
-      '  o."Id", o."Numero", o."Titulo", o."DescricaoProblema", o."Diagnostico", ' +
-      '  o."SolucaoAplicada", o."Origem", o."DtAbertura", o."DtPrevistaConclusao", ' +
-      '  o."DtInicioExecucao", o."DtConclusao", o."EnderecoExecucao", ' +
-      '  o."ValorDesconto", o."ValorAcrescimo", o."FormaPagamento", o."Observacoes", ' +
-      '  o."UsuarioAbertura", o."UsuarioUltimaAtualizacao", o."AnexosQtde", ' +
-      '  o."DtCadastro", o."DtAtualizacao", ' +
-      '  c."NomeRazao" AS cliente_nome, c."Documento" AS cliente_documento, ' +
-      '  c."InscricaoEstadual" AS cliente_inscricao, c."TipoPessoa" AS cliente_tipopessoa, ' +
-      '  c."Email" AS cliente_email, c."TelefonePrincipal" AS cliente_telefoneprincipal, ' +
-      '  c."TelefoneSecundario" AS cliente_telefonesecundario, c."Contato" AS cliente_contato, ' +
-      '  c."EnderecoRua" AS cliente_enderecorua, c."EnderecoNumero" AS cliente_endereconumero, ' +
-      '  c."EnderecoCompl" AS cliente_enderecocompl, c."EnderecoBairro" AS cliente_enderecobairro, ' +
-      '  c."EnderecoCidade" AS cliente_enderecocidade, c."EnderecoUf" AS cliente_enderecouf, ' +
-      '  c."EnderecoCep" AS cliente_enderecocep, c."Ativo" AS cliente_ativo, ' +
-      '  c."Observacoes" AS cliente_observacoes, c."DtCadastro" AS cliente_dtcadastro, ' +
-      '  c."DtAtualizacao" AS cliente_dtatualizacao, ' +
-      '  t."Nome" AS tecnico_nome, t."Email" AS tecnico_email, t."Telefone" AS tecnico_telefone, ' +
-      '  t."Especialidade" AS tecnico_especialidade, t."CustoHora" AS tecnico_custohora, ' +
-      '  t."Ativo" AS tecnico_ativo, ' +
-      '  s."Codigo" AS status_codigo, s."Ordem" AS status_ordem, ' +
-      '  p."Codigo" AS prioridade_codigo, p."SLAHoras" AS prioridade_sla, ' +
-      '  m."Descricao" AS motivo_cancelamento ' +
-      'FROM public."OS" o ' +
-      'INNER JOIN public."Cliente" c ON o."ClienteId" = c."Id" ' +
-      'INNER JOIN public."Tecnico" t ON o."TecnicoResponsavelId" = t."Id" ' +
-      'INNER JOIN public."StatusOS" s ON o."StatusId" = s."Id" ' +
-      'INNER JOIN public."PrioridadeOS" p ON o."PrioridadeId" = p."Id" ' +
-      'LEFT JOIN public."MotivoCancelamento" m ON o."MotivoCancelamentoId" = m."Id" ';
+    try
+      SQL.Add('SELECT');
+      SQL.Add('  o."Id" AS os_id, o."Numero", o."Titulo", o."DescricaoProblema", o."Diagnostico",');
+      SQL.Add('  o."SolucaoAplicada", o."Origem", o."DtAbertura", o."DtPrevistaConclusao",');
+      SQL.Add('  o."DtInicioExecucao", o."DtConclusao", o."EnderecoExecucao", o."ValorDesconto",');
+      SQL.Add('  o."ValorAcrescimo", o."FormaPagamento", o."Observacoes", o."UsuarioAbertura",');
+      SQL.Add('  o."UsuarioUltimaAtualizacao", o."AnexosQtde", o."DtCadastro", o."DtAtualizacao",');
+      SQL.Add('  c."NomeRazao" AS cliente_nome, c."Documento" AS cliente_documento,');
+      SQL.Add('  t."Nome" AS tecnico_nome, t."Email" AS tecnico_email,');
+      SQL.Add('  s."Codigo" AS status_codigo, p."Codigo" AS prioridade_codigo,');
+      SQL.Add('  m."Descricao" AS motivo_cancelamento,');
+      SQL.Add('  i."Id" AS item_id, i."Descricao" AS item_descricao, i."Qtde", i."PrecoUnit", i."TotalItem",');
+      SQL.Add('  i."DescontoValor", i."AcrescimoValor",');
+      SQL.Add('  pr."Descricao" AS produto_descricao, pr."CodigoBarras" AS produto_codigobarras,');
+      SQL.Add('  pr."PrecoPadrao" AS produto_precopadrao, pr."Unidade" AS produto_unidade, pr."Tipo" AS produto_tipo');
+      SQL.Add('FROM public."OS" o');
+      SQL.Add('INNER JOIN public."Cliente" c ON o."ClienteId" = c."Id"');
+      SQL.Add('INNER JOIN public."Tecnico" t ON o."TecnicoResponsavelId" = t."Id"');
+      SQL.Add('INNER JOIN public."StatusOS" s ON o."StatusId" = s."Id"');
+      SQL.Add('INNER JOIN public."PrioridadeOS" p ON o."PrioridadeId" = p."Id"');
+      SQL.Add('LEFT JOIN public."MotivoCancelamento" m ON o."MotivoCancelamentoId" = m."Id"');
+      SQL.Add('LEFT JOIN public."OSItem" i ON o."Id" = i."OsId"');
+      SQL.Add('LEFT JOIN public."Produto" pr ON i."ProdutoId" = pr."Id"');
+      SQL.Add('WHERE 1=1');
 
-    // ===== Filtros =====
-    if Assigned(Filtro) and (Filtro.getDescricao <> '') then
-    begin
-      case OrdenarPor of
-        0: Condicoes.Add('o."Numero" ILIKE :Descricao');
-        1: Condicoes.Add('CAST(o."Id" AS TEXT) ILIKE :Descricao');
-        2: Condicoes.Add('o."Titulo" ILIKE :Descricao');
-        3: Condicoes.Add('c."NomeRazao" ILIKE :Descricao');
+      // Filtros dinâmicos
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+        begin
+          case OrdenarPor of
+            0: SQL.Add('  AND c."NomeRazao" ILIKE :Descricao');
+            1: SQL.Add('  AND s."Codigo" ILIKE :Descricao');
+            2: SQL.Add('  AND o."Numero" ILIKE :Descricao');
+            3: SQL.Add('  AND o."Titulo" ILIKE :Descricao');
+          end;
+        end;
+
+        if (Filtro.getDataDe > 0) then
+          SQL.Add('  AND o."DtAbertura" >= :DataDe');
+        if (Filtro.getDataAte > 0) then
+          SQL.Add('  AND o."DtAbertura" <= :DataAte');
+        if (Filtro.getStatusId >= 0) then
+          SQL.Add('  AND o."StatusId" = :StatusId');
+        if (Filtro.getPrioridadeId >= 0) then
+          SQL.Add('  AND o."PrioridadeId" = :PrioridadeId');
       end;
-    end;
 
-    if Condicoes.Count > 0 then
-      SQL := SQL + ' WHERE ' + StringReplace(Condicoes.Text, sLineBreak, ' AND ', [rfReplaceAll]);
+      SQL.Add('ORDER BY o."Id", i."Id"'); // garante agrupamento correto
 
-    // ===== Ordenação =====
-    case OrdenarPor of
-      0: SQL := SQL + ' ORDER BY o."Numero"';
-      1: SQL := SQL + ' ORDER BY o."Id" DESC';
-      2: SQL := SQL + ' ORDER BY o."Titulo"';
-      3: SQL := SQL + ' ORDER BY c."NomeRazao"';
-    else
-      SQL := SQL + ' ORDER BY o."Id" DESC';
-    end;
+      FDQuery.SQL.Text := SQL.Text;
 
-    FDQueryOS.SQL.Text := SQL;
+      // parâmetros
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+        if (Filtro.getDataDe > 0) then
+          FDQuery.ParamByName('DataDe').AsDate := Filtro.getDataDe;
+        if (Filtro.getDataAte > 0) then
+          FDQuery.ParamByName('DataAte').AsDateTime := Filtro.getDataAte + EncodeTime(23, 59, 59, 999);
+        if (Filtro.getStatusId >= 0) then
+          FDQuery.ParamByName('StatusId').AsInteger := Filtro.getStatusId;
+        if (Filtro.getPrioridadeId >= 0) then
+          FDQuery.ParamByName('PrioridadeId').AsInteger := Filtro.getPrioridadeId;
+      end;
 
-    // ===== Parâmetro do filtro =====
-    if Assigned(Filtro) and (Filtro.getDescricao <> '') then
-      FDQueryOS.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+      FDQuery.Open;
 
-    FDQueryOS.Open;
+      // Montagem dos objetos
+      LastOSId := -1;
+      OS := nil;
 
-    // Consulta para os itens de OS
-    SQLItems :=
-      'SELECT ' +
-      '  i."Id", i."OsId", i."ProdutoId", i."Descricao", i."Tipo", i."Qtde", ' +
-      '  i."PrecoUnit", i."DescontoValor", i."AcrescimoValor", i."TotalItem", i."Observacao", ' +
-      '  p."Descricao" AS produto_descricao, p."Tipo" AS produto_tipo, ' +
-      '  p."PrecoPadrao" AS produto_precopadrao, p."Unidade" AS produto_unidade, ' +
-      '  p."CodigoBarras" AS produto_codigobarras, p."Ativo" AS produto_ativo ' +
-      'FROM public."OSItem" i ' +
-      'INNER JOIN public."Produto" p ON i."ProdutoId" = p."Id" ' +
-      'WHERE i."OsId" = :OsId';
+      while not FDQuery.Eof do
+      begin
+        // Se mudou o Id da OS, cria nova instância
+        if (OS = nil) or (FDQuery.FieldByName('os_id').AsInteger <> LastOSId) then
+        begin
+          OS := TOS.Create;
+          OS.setId(FDQuery.FieldByName('os_id').AsInteger);
+          OS.setNumero(FDQuery.FieldByName('Numero').AsString);
+          OS.setTitulo(FDQuery.FieldByName('Titulo').AsString);
+          OS.setDescricaoProblema(FDQuery.FieldByName('DescricaoProblema').AsString);
+          OS.setDiagnostico(FDQuery.FieldByName('Diagnostico').AsString);
+          OS.setSolucaoAplicada(FDQuery.FieldByName('SolucaoAplicada').AsString);
+          OS.setOrigem(FDQuery.FieldByName('Origem').AsString);
+          OS.setDtAbertura(FDQuery.FieldByName('DtAbertura').AsDateTime);
 
-    FDQueryItems.SQL.Text := SQLItems;
+          if not FDQuery.FieldByName('DtPrevistaConclusao').IsNull then
+            OS.setDtPrevisaoConclusao(FDQuery.FieldByName('DtPrevistaConclusao').AsDateTime);
+          if not FDQuery.FieldByName('DtInicioExecucao').IsNull then
+            OS.setDtInicioExecucao(FDQuery.FieldByName('DtInicioExecucao').AsDateTime);
+          if not FDQuery.FieldByName('DtConclusao').IsNull then
+            OS.setDtConclusao(FDQuery.FieldByName('DtConclusao').AsDateTime);
 
-    // ===== Montagem dos objetos TOS =====
-    while not FDQueryOS.Eof do
-    begin
-      OS := TOS.Create;
-      try
-        // Campos da tabela OS
-        OS.setId(FDQueryOS.FieldByName('Id').AsInteger);
-        OS.setNumero(FDQueryOS.FieldByName('Numero').AsString);
-        OS.setTitulo(FDQueryOS.FieldByName('Titulo').AsString);
-        OS.setDescricaoProblema(FDQueryOS.FieldByName('DescricaoProblema').AsString);
-        OS.setDiagnostico(FDQueryOS.FieldByName('Diagnostico').AsString);
-        OS.setSolucaoAplicada(FDQueryOS.FieldByName('SolucaoAplicada').AsString);
-        OS.setOrigem(FDQueryOS.FieldByName('Origem').AsString);
-        OS.setDtAbertura(FDQueryOS.FieldByName('DtAbertura').AsDateTime);
+          OS.setEnderecoExecucao(FDQuery.FieldByName('EnderecoExecucao').AsString);
+          OS.setValorDesconto(FDQuery.FieldByName('ValorDesconto').AsFloat);
+          OS.setValorAcrescimo(FDQuery.FieldByName('ValorAcrescimo').AsFloat);
+          OS.setFormaPagamento(FDQuery.FieldByName('FormaPagamento').AsString);
+          OS.setObservacoes(FDQuery.FieldByName('Observacoes').AsString);
+          OS.setUsuarioAbertura(FDQuery.FieldByName('UsuarioAbertura').AsString);
+          OS.setUsuarioUltimaAtualizacao(FDQuery.FieldByName('UsuarioUltimaAtualizacao').AsString);
+          OS.setAnexosQtde(FDQuery.FieldByName('AnexosQtde').AsInteger);
+          OS.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
+          OS.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
 
-        if not FDQueryOS.FieldByName('DtPrevistaConclusao').IsNull then
-          OS.setDtPrevisaoConclusao(FDQueryOS.FieldByName('DtPrevistaConclusao').AsDateTime);
+          (OS.getCliente as TCliente).setNomeRazao(FDQuery.FieldByName('cliente_nome').AsString);
+          (OS.getCliente as TCliente).setDocumento(FDQuery.FieldByName('cliente_documento').AsString);
+          (OS.getTecnicoResponsavel as TTecnico).setNome(FDQuery.FieldByName('tecnico_nome').AsString);
+          (OS.getTecnicoResponsavel as TTecnico).setEmail(FDQuery.FieldByName('tecnico_email').AsString);
+          (OS.getStatus as TStatusOS).setCodigo(FDQuery.FieldByName('status_codigo').AsString);
+          (OS.getPrioridade as TPrioridadeOS).setCodigo(FDQuery.FieldByName('prioridade_codigo').AsString);
 
-        if not FDQueryOS.FieldByName('DtInicioExecucao').IsNull then
-          OS.setDtInicioExecucao(FDQueryOS.FieldByName('DtInicioExecucao').AsDateTime);
+          if not FDQuery.FieldByName('motivo_cancelamento').IsNull then
+            (OS.getMotivoCancelamento as TMotivoCancelamento)
+              .setDescricao(FDQuery.FieldByName('motivo_cancelamento').AsString);
 
-        if not FDQueryOS.FieldByName('DtConclusao').IsNull then
-          OS.setDtConclusao(FDQueryOS.FieldByName('DtConclusao').AsDateTime);
+          Result.Add(OS);
+          LastOSId := OS.getId;
+        end;
 
-        OS.setEnderecoExecucao(FDQueryOS.FieldByName('EnderecoExecucao').AsString);
-        OS.setValorDesconto(FDQueryOS.FieldByName('ValorDesconto').AsFloat);
-        OS.setValorAcrescimo(FDQueryOS.FieldByName('ValorAcrescimo').AsFloat);
-        OS.setFormaPagamento(FDQueryOS.FieldByName('FormaPagamento').AsString);
-        OS.setObservacoes(FDQueryOS.FieldByName('Observacoes').AsString);
-        OS.setUsuarioAbertura(FDQueryOS.FieldByName('UsuarioAbertura').AsString);
-        OS.setUsuarioUltimaAtualizacao(FDQueryOS.FieldByName('UsuarioUltimaAtualizacao').AsString);
-        OS.setAnexosQtde(FDQueryOS.FieldByName('AnexosQtde').AsInteger);
-        OS.setDtCadastro(FDQueryOS.FieldByName('DtCadastro').AsDateTime);
-        OS.setDtAtualizacao(FDQueryOS.FieldByName('DtAtualizacao').AsDatetime);
-
-        // Cliente
-        (OS.getCliente as TCliente).setId(FDQueryOS.FieldByName('Id').AsInteger);
-        (OS.getCliente as TCliente).setNomeRazao(FDQueryOS.FieldByName('cliente_nome').AsString);
-        (OS.getCliente as TCliente).setDocumento(FDQueryOS.FieldByName('cliente_documento').AsString);
-        (OS.getCliente as TCliente).setInscricaoEstadual(FDQueryOS.FieldByName('cliente_inscricao').AsString);
-        (OS.getCliente as TCliente).setTipoPessoa(FDQueryOS.FieldByName('cliente_tipopessoa').AsString);
-        (OS.getCliente as TCliente).setEmail(FDQueryOS.FieldByName('cliente_email').AsString);
-        (OS.getCliente as TCliente).setTelefonePrincipal(FDQueryOS.FieldByName('cliente_telefoneprincipal').AsString);
-        (OS.getCliente as TCliente).setTelefoneSecundario(FDQueryOS.FieldByName('cliente_telefonesecundario').AsString);
-        (OS.getCliente as TCliente).setContato(FDQueryOS.FieldByName('cliente_contato').AsString);
-        (OS.getCliente as TCliente).setEnderecoRua(FDQueryOS.FieldByName('cliente_enderecorua').AsString);
-        (OS.getCliente as TCliente).setEnderecoNumero(FDQueryOS.FieldByName('cliente_endereconumero').AsString);
-        (OS.getCliente as TCliente).setEnderecoCompl(FDQueryOS.FieldByName('cliente_enderecocompl').AsString);
-        (OS.getCliente as TCliente).setEnderecoBairro(FDQueryOS.FieldByName('cliente_enderecobairro').AsString);
-        (OS.getCliente as TCliente).setEnderecoCidade(FDQueryOS.FieldByName('cliente_enderecocidade').AsString);
-        (OS.getCliente as TCliente).setEnderecoUf(FDQueryOS.FieldByName('cliente_enderecouf').AsString);
-        (OS.getCliente as TCliente).setEnderecoCep(FDQueryOS.FieldByName('cliente_enderecocep').AsString);
-        (OS.getCliente as TCliente).setAtivo(FDQueryOS.FieldByName('cliente_ativo').AsBoolean);
-        (OS.getCliente as TCliente).setObservacoes(FDQueryOS.FieldByName('cliente_observacoes').AsString);
-        (OS.getCliente as TCliente).setDtCadastro(FDQueryOS.FieldByName('cliente_dtcadastro').AsDateTime);
-        (OS.getCliente as TCliente).setDtAtualizacao(FDQueryOS.FieldByName('cliente_dtatualizacao').AsDateTime);
-
-        // Técnico
-        (OS.getTecnicoResponsavel as TTecnico).setNome(FDQueryOS.FieldByName('tecnico_nome').AsString);
-        (OS.getTecnicoResponsavel as TTecnico).setEmail(FDQueryOS.FieldByName('tecnico_email').AsString);
-        (OS.getTecnicoResponsavel as TTecnico).setTelefone(FDQueryOS.FieldByName('tecnico_telefone').AsString);
-        (OS.getTecnicoResponsavel as TTecnico).setEspecialidade(FDQueryOS.FieldByName('tecnico_especialidade').AsString);
-        (OS.getTecnicoResponsavel as TTecnico).setCustoHora(FDQueryOS.FieldByName('tecnico_custohora').AsFloat);
-        (OS.getTecnicoResponsavel as TTecnico).setAtivo(FDQueryOS.FieldByName('tecnico_ativo').AsBoolean);
-
-        // Status
-        (OS.getStatus as TStatusOS).setCodigo(FDQueryOS.FieldByName('status_codigo').AsString);
-        (OS.getStatus as TStatusOS).setOrdem(FDQueryOS.FieldByName('status_ordem').AsInteger);
-
-        // Prioridade
-        (OS.getPrioridade as TPrioridadeOS).setCodigo(FDQueryOS.FieldByName('prioridade_codigo').AsString);
-        (OS.getPrioridade as TPrioridadeOS).setSLAHoras(FDQueryOS.FieldByName('prioridade_sla').AsInteger);
-
-        // Motivo de cancelamento (opcional)
-        if not FDQueryOS.FieldByName('motivo_cancelamento').IsNull then
-          (OS.getMotivoCancelamento as TMotivoCancelamento)
-            .setDescricao(FDQueryOS.FieldByName('motivo_cancelamento').AsString);
-
-        // Carregar itens da OS
-        FDQueryItems.Close;
-        FDQueryItems.ParamByName('OsId').AsInteger := OS.getId;
-        FDQueryItems.Open;
-
-        while not FDQueryItems.Eof do
+        // Adiciona item à OS atual
+        if not FDQuery.FieldByName('item_id').IsNull then
         begin
           Item := TOSItem.Create;
-          Item.setId(FDQueryItems.FieldByName('Id').AsInteger);
-          Item.setOsId(FDQueryItems.FieldByName('OsId').AsInteger);
-          Item.getProduto (FDQueryItems.FieldByName('ProdutoId').AsInteger);
-          Item.setDescricao(FDQueryItems.FieldByName('Descricao').AsString);
-          Item.setTipo(FDQueryItems.FieldByName('Tipo').AsString);
-          Item.setQtde(FDQueryItems.FieldByName('Qtde').AsFloat);
-          Item.setPrecoUnit(FDQueryItems.FieldByName('PrecoUnit').AsFloat);
-          Item.setDescontoValor(FDQueryItems.FieldByName('DescontoValor').AsFloat);
-          Item.setAcrescimoValor(FDQueryItems.FieldByName('AcrescimoValor').AsFloat);
-          Item.setTotalItem(FDQueryItems.FieldByName('TotalItem').AsFloat);
-          Item.setObservacao(FDQueryItems.FieldByName('Observacao').AsString);
+          Item.setId(FDQuery.FieldByName('item_id').AsInteger);
+          Item.setDescricao(FDQuery.FieldByName('item_descricao').AsString);
+          Item.setQtde(FDQuery.FieldByName('Qtde').AsFloat);
+          Item.setPrecoUnit(FDQuery.FieldByName('PrecoUnit').AsFloat);
+          Item.setTotalItem(FDQuery.FieldByName('TotalItem').AsFloat);
+          Item.setDescontoValor(FDQuery.FieldByName('DescontoValor').AsFloat);
+          Item.setAcrescimoValor(FDQuery.FieldByName('AcrescimoValor').AsFloat);
 
-          // Produto
-          (Item.getProduto as TProduto).setDescricao(FDQueryItems.FieldByName('produto_descricao').AsString);
-          (Item.getProduto as TProduto).setTipo(FDQueryItems.FieldByName('produto_tipo').AsString);
-          (Item.getProduto as TProduto).setPrecoPadrao(FDQueryItems.FieldByName('produto_precopadrao').AsFloat);
-          (Item.getProduto as TProduto).setUnidade(FDQueryItems.FieldByName('produto_unidade').AsString);
-          (Item.getProduto as TProduto).setCodigoBarras(FDQueryItems.FieldByName('produto_codigobarras').AsString);
-          (Item.getProduto as TProduto).setAtivo(FDQueryItems.FieldByName('produto_ativo').AsBoolean);
+          (Item.getProduto as TProduto).setDescricao(FDQuery.FieldByName('produto_descricao').AsString);
+          (Item.getProduto as TProduto).setCodigoBarras(FDQuery.FieldByName('produto_codigobarras').AsString);
+          (Item.getProduto as TProduto).setPrecoPadrao(FDQuery.FieldByName('produto_precopadrao').AsFloat);
+          (Item.getProduto as TProduto).setUnidade(FDQuery.FieldByName('produto_unidade').AsString);
+          (Item.getProduto as TProduto).setTipo(FDQuery.FieldByName('produto_tipo').AsString);
 
-          OS.getItens.Add(Item);
-          FDQueryItems.Next;
+          (OS.getLstOSItem as TOrList).Add(Item);
         end;
 
-        Result.Add(OS);
-        FDQueryOS.Next;
-      except
-        on E: Exception do
-        begin
-          OS.Free;
-          raise;
-        end;
+        FDQuery.Next;
       end;
+    finally
+      SQL.Free;
+      FDQuery.Free;
     end;
   except
     on E: Exception do
@@ -660,10 +608,6 @@ begin
       raise Exception.Create('Erro ao recuperar as Ordens de Serviço: ' + E.Message);
     end;
   end;
-
-  Condicoes.Free;
-  FDQueryItems.Free;
-  FDQueryOS.Free;
 end;
 
 

@@ -66,7 +66,7 @@ begin
   setAcrescimoValor(0);
   setTotalItem(0);
   setObservacao('');
-  setProduto(nil); // produto may be nil initially
+  setProduto(TProduto.Create);
 end;
 
 destructor TOSItem.Destroy;

@@ -236,77 +236,75 @@ function TClientePostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer):
 var
   FDQuery: TFDQuery;
   Cliente: TCliente;
-  SQL: string;
-  Condicoes: TStringList;
+  SQL: TStringList;
   I: Integer;
 begin
   Result := TList.Create;
   FDQuery := CreateFDQuery;
+  SQL := TStringList.Create;
   try
     try
-      Condicoes := TStringList.Create;
-      try
-        SQL := 'SELECT * FROM public."Cliente"';
-        if Assigned(Filtro) then
-        begin
-          // Filtro por descrição (NomeRazao ou Documento)
-          if Filtro.getDescricao <> '' then
-            Condicoes.Add('("NomeRazao" ILIKE :Descricao OR "Documento" ILIKE :Descricao)');
-          // Filtro por ativo
-          if not Filtro.getAtivo then
-            Condicoes.Add('"Ativo" = :Ativo');
-          // Montar cláusula WHERE
-          if Condicoes.Count > 0 then
-            SQL := SQL + ' WHERE ' + Condicoes.DelimitedText;
-        end;
+      SQL.Add('SELECT *');
+      SQL.Add('FROM public."Cliente" c');
+      SQL.Add('WHERE 1=1');
 
-        // Ordenação
-        case OrdenarPor of
-          0: SQL := SQL + ' ORDER BY "NomeRazao"';
-          1: SQL := SQL + ' ORDER BY "Documento"';
-        end;
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          SQL.Add('  AND c."NomeRazao" ILIKE :Descricao');
 
-        FDQuery.SQL.Text := SQL;
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
-          if not Filtro.getAtivo then
-            FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
-        end;
-        FDQuery.Open;
-
-        while not FDQuery.Eof do
-        begin
-          Cliente := TCliente.Create;
-          Cliente.setId(FDQuery.FieldByName('Id').AsInteger);
-          Cliente.setNomeRazao(FDQuery.FieldByName('NomeRazao').AsString);
-          Cliente.setDocumento(FDQuery.FieldByName('Documento').AsString);
-          Cliente.setInscricaoEstadual(FDQuery.FieldByName('InscricaoEstadual').AsString);
-          Cliente.setTipoPessoa(FDQuery.FieldByName('TipoPessoa').AsString);
-          Cliente.setEmail(FDQuery.FieldByName('Email').AsString);
-          Cliente.setTelefonePrincipal(FDQuery.FieldByName('TelefonePrincipal').AsString);
-          Cliente.setTelefoneSecundario(FDQuery.FieldByName('TelefoneSecundario').AsString);
-          Cliente.setContato(FDQuery.FieldByName('Contato').AsString);
-          Cliente.setEnderecoRua(FDQuery.FieldByName('EnderecoRua').AsString);
-          Cliente.setEnderecoNumero(FDQuery.FieldByName('EnderecoNumero').AsString);
-          Cliente.setEnderecoCompl(FDQuery.FieldByName('EnderecoCompl').AsString);
-          Cliente.setEnderecoBairro(FDQuery.FieldByName('EnderecoBairro').AsString);
-          Cliente.setEnderecoCidade(FDQuery.FieldByName('EnderecoCidade').AsString);
-          Cliente.setEnderecoUf(FDQuery.FieldByName('EnderecoUf').AsString);
-          Cliente.setEnderecoCep(FDQuery.FieldByName('EnderecoCep').AsString);
-          Cliente.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
-          Cliente.setObservacoes(FDQuery.FieldByName('Observacoes').AsString);
-          Cliente.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
-          Cliente.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
-          Result.Add(Cliente);
-          FDQuery.Next;
-        end;
-        FDQuery.Close;
-      finally
-        Condicoes.Free;
+        if not Filtro.getAtivo then
+          SQL.Add('  AND c."Ativo" = :Ativo');
       end;
+
+      case OrdenarPor of
+        0: SQL.Add('ORDER BY c."NomeRazao"');
+        1: SQL.Add('ORDER BY c."Documento"');
+      else
+        SQL.Add('ORDER BY c."Id" DESC');
+      end;
+
+      FDQuery.SQL.Text := SQL.Text;
+
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          FDQuery.ParamByName('Descricao').AsString := Filtro.getDescricao + '%';
+        if not Filtro.getAtivo then
+          FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
+      end;
+
+      FDQuery.Open;
+
+      while not FDQuery.Eof do
+      begin
+        Cliente := TCliente.Create;
+        Cliente.setId(FDQuery.FieldByName('Id').AsInteger);
+        Cliente.setNomeRazao(FDQuery.FieldByName('NomeRazao').AsString);
+        Cliente.setDocumento(FDQuery.FieldByName('Documento').AsString);
+        Cliente.setInscricaoEstadual(FDQuery.FieldByName('InscricaoEstadual').AsString);
+        Cliente.setTipoPessoa(FDQuery.FieldByName('TipoPessoa').AsString);
+        Cliente.setEmail(FDQuery.FieldByName('Email').AsString);
+        Cliente.setTelefonePrincipal(FDQuery.FieldByName('TelefonePrincipal').AsString);
+        Cliente.setTelefoneSecundario(FDQuery.FieldByName('TelefoneSecundario').AsString);
+        Cliente.setContato(FDQuery.FieldByName('Contato').AsString);
+        Cliente.setEnderecoRua(FDQuery.FieldByName('EnderecoRua').AsString);
+        Cliente.setEnderecoNumero(FDQuery.FieldByName('EnderecoNumero').AsString);
+        Cliente.setEnderecoCompl(FDQuery.FieldByName('EnderecoCompl').AsString);
+        Cliente.setEnderecoBairro(FDQuery.FieldByName('EnderecoBairro').AsString);
+        Cliente.setEnderecoCidade(FDQuery.FieldByName('EnderecoCidade').AsString);
+        Cliente.setEnderecoUf(FDQuery.FieldByName('EnderecoUf').AsString);
+        Cliente.setEnderecoCep(FDQuery.FieldByName('EnderecoCep').AsString);
+        Cliente.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
+        Cliente.setObservacoes(FDQuery.FieldByName('Observacoes').AsString);
+        Cliente.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
+        Cliente.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
+        Result.Add(Cliente);
+        FDQuery.Next;
+      end;
+
     finally
+      SQL.Free;
       FDQuery.Free;
     end;
   except
@@ -319,5 +317,7 @@ begin
     end;
   end;
 end;
+
+
 
 end.

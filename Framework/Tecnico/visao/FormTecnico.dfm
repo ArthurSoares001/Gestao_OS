@@ -24,6 +24,8 @@ object FrmTecnico: TFrmTecnico
     Width = 593
     Height = 272
     Align = alClient
+    BevelKind = bkTile
+    BevelOuter = bvNone
     TabOrder = 0
     object lblNomeRazao: TLabel
       Left = 29
@@ -97,9 +99,9 @@ object FrmTecnico: TFrmTecnico
       ParentFont = False
     end
     inline fraformLabel1: TfraformLabel
-      Left = 1
-      Top = 1
-      Width = 591
+      Left = 0
+      Top = 0
+      Width = 589
       Height = 25
       Align = alTop
       TabOrder = 0
@@ -107,26 +109,26 @@ object FrmTecnico: TFrmTecnico
       ExplicitTop = 1
       ExplicitWidth = 591
       inherited pnLabel: TPanel
-        Width = 591
+        Width = 589
         ExplicitWidth = 591
         inherited lblTitulo: TLabel
-          Width = 493
+          Width = 491
           Height = 18
         end
         inherited spdAlterar: TSpeedButton
-          Left = 522
+          Left = 520
           ExplicitLeft = 573
         end
         inherited spdConsultar: TSpeedButton
-          Left = 545
+          Left = 543
           ExplicitLeft = 596
         end
         inherited spdIncluir: TSpeedButton
-          Left = 499
+          Left = 497
           ExplicitLeft = 550
         end
         inherited spdSair: TSpeedButton
-          Left = 568
+          Left = 566
           ExplicitLeft = 619
         end
       end

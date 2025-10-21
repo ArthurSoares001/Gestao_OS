@@ -3,7 +3,7 @@ unit Filtro;
 interface
 
 uses
-  Classes;
+  Classes, SysUtils;
 
 type
   TFiltro = class
@@ -16,9 +16,12 @@ type
     ativo: Boolean;
     isPendente: Boolean;
     tipo: string;
+    statusId: Integer;        // <-- Novo campo
+    prioridadeId: Integer;    // <-- Novo campo
   public
     constructor Create;
     procedure novaInstancia;
+
     procedure setDataDe(dataDe: TDateTime);
     procedure setDataAte(dataAte: TDateTime);
     procedure setDescricao(descricao: string);
@@ -26,6 +29,9 @@ type
     procedure setOrdernarPor(ordernarPor: Integer);
     procedure setAtivo(ativo: Boolean);
     procedure setTipo(tipo: string);
+    procedure setStatusId(statusId: Integer);             // <-- Novo setter
+    procedure setPrioridadeId(prioridadeId: Integer);     // <-- Novo setter
+
     function getDataDe: TDateTime;
     function getDataAte: TDateTime;
     function getDescricao: string;
@@ -33,12 +39,14 @@ type
     function getOrdernarPor: Integer;
     function getAtivo: Boolean;
     function getTipo: string;
+    function getStatusId: Integer;           // <-- Novo getter
+    function getPrioridadeId: Integer;       // <-- Novo getter
   end;
 
 implementation
 
 uses
-  Constantes, System.SysUtils;
+  Constantes;
 
 { TFiltro }
 
@@ -56,6 +64,8 @@ begin
   setAgruparPor(0);
   setOrdernarPor(0);
   setTipo(NULL_STRING);
+  setStatusId(NULL_INTEGER);
+  setPrioridadeId(NULL_INTEGER);
 end;
 
 function TFiltro.getAgruparPor: Integer;
@@ -93,39 +103,60 @@ begin
   Result := tipo;
 end;
 
+function TFiltro.getStatusId: Integer;
+begin
+  Result := statusId;
+end;
+
+function TFiltro.getPrioridadeId: Integer;
+begin
+  Result := prioridadeId;
+end;
+
 procedure TFiltro.setAtivo(ativo: Boolean);
 begin
-  self.ativo := ativo;
+  Self.ativo := ativo;
 end;
 
 procedure TFiltro.setDataAte(dataAte: TDateTime);
 begin
-  self.dataAte := dataAte;
+  Self.dataAte := dataAte;
 end;
 
 procedure TFiltro.setDataDe(dataDe: TDateTime);
 begin
-  self.dataDe := dataDe;
+  Self.dataDe := dataDe;
 end;
 
 procedure TFiltro.setDescricao(descricao: string);
 begin
-  self.descricao := descricao;
+  Self.descricao := descricao;
 end;
 
 procedure TFiltro.setAgruparPor(agruparPor: Integer);
 begin
-  self.agruparPor := agruparPor;
+  Self.agruparPor := agruparPor;
 end;
 
 procedure TFiltro.setOrdernarPor(ordernarPor: Integer);
 begin
-  self.ordernarPor := ordernarPor;
+  Self.ordernarPor := ordernarPor;
 end;
 
 procedure TFiltro.setTipo(tipo: string);
 begin
-  self.tipo := tipo;
+  Self.tipo := tipo;
+end;
+
+procedure TFiltro.setStatusId(statusId: Integer);
+begin
+  Self.statusId := statusId;
+end;
+
+procedure TFiltro.setPrioridadeId(prioridadeId: Integer);
+begin
+  Self.prioridadeId := prioridadeId;
 end;
 
 end.
+

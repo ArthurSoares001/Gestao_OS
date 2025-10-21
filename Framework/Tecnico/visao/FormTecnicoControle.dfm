@@ -3,7 +3,7 @@ object FrmTecnicoControle: TFrmTecnicoControle
   Top = 0
   Caption = 'FrmTecnicoControle'
   ClientHeight = 459
-  ClientWidth = 975
+  ClientWidth = 1182
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,77 +11,42 @@ object FrmTecnicoControle: TFrmTecnicoControle
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  inline fraCabecalhoControle1: TfraCabecalhoControle
-    Left = 0
-    Top = 25
-    Width = 975
-    Height = 68
-    Align = alTop
-    TabOrder = 0
-    ExplicitTop = 25
-    ExplicitWidth = 975
-    inherited pnCabecalho: TPanel
-      Width = 975
-      ExplicitWidth = 975
-      inherited pnlNovo: TPanel
-        Left = 810
-        ExplicitLeft = 810
-        inherited btnNovo: TSpeedButton
-          OnClick = fraCabecalhoControle1btnNovoClick
-        end
-      end
-      inherited edtDescricao: TEdit
-        Top = 19
-        Height = 29
-        Margins.Top = 19
-        Margins.Bottom = 17
-        ExplicitTop = 19
-      end
-      inherited GBPeriodo: TGroupBox
-        inherited LblDe: TLabel
-          Height = 20
-        end
-        inherited LblAte: TLabel
-          Height = 20
-        end
-      end
-    end
-  end
   inline fraformLabel1: TfraformLabel
     Left = 0
     Top = 0
-    Width = 975
+    Width = 1182
     Height = 25
     Align = alTop
-    TabOrder = 1
-    ExplicitWidth = 975
+    TabOrder = 0
+    ExplicitWidth = 1182
     inherited pnLabel: TPanel
-      Width = 975
-      ExplicitWidth = 975
+      Width = 1182
+      ExplicitWidth = 1182
       inherited lblTitulo: TLabel
-        Width = 877
+        Width = 1084
         Height = 18
       end
       inherited spdAlterar: TSpeedButton
-        Left = 906
+        Left = 1113
         ExplicitLeft = 906
       end
       inherited spdConsultar: TSpeedButton
-        Left = 929
+        Left = 1136
         ExplicitLeft = 929
       end
       inherited spdIncluir: TSpeedButton
-        Left = 883
+        Left = 1090
         ExplicitLeft = 883
       end
       inherited spdSair: TSpeedButton
-        Left = 952
+        Left = 1159
         ExplicitLeft = 952
       end
     end
@@ -89,15 +54,15 @@ object FrmTecnicoControle: TFrmTecnicoControle
   inline fraRodaPeControle1: TfraRodaPeControle
     Left = 0
     Top = 415
-    Width = 975
+    Width = 1182
     Height = 44
     Align = alBottom
-    TabOrder = 2
+    TabOrder = 1
     ExplicitTop = 415
-    ExplicitWidth = 975
+    ExplicitWidth = 1182
     inherited pnRodape: TPanel
-      Width = 975
-      ExplicitWidth = 975
+      Width = 1182
+      ExplicitWidth = 1182
       inherited spdExcluir: TSpeedButton
         OnClick = fraRodaPeControle1spdExcluirClick
       end
@@ -105,7 +70,7 @@ object FrmTecnicoControle: TFrmTecnicoControle
         OnClick = fraRodaPeControle1spdEditarClick
       end
       inherited lblRegistro: TLabel
-        Left = 910
+        Left = 1117
         Height = 37
         ExplicitLeft = 910
       end
@@ -114,12 +79,46 @@ object FrmTecnicoControle: TFrmTecnicoControle
   object stgDados: TStringGrid
     Left = 0
     Top = 93
-    Width = 975
+    Width = 1182
     Height = 322
     Align = alClient
-    ColCount = 7
-    TabOrder = 3
+    ColCount = 6
+    TabOrder = 2
     OnDblClick = stgDadosDblClick
     OnDrawCell = stgDadosDrawCell
+  end
+  inline fraCabecalhoControle1: TfraCabecalhoControle
+    Left = 0
+    Top = 25
+    Width = 1182
+    Height = 68
+    Align = alTop
+    TabOrder = 3
+    ExplicitTop = 25
+    ExplicitWidth = 1182
+    inherited pnCabecalho: TPanel
+      Width = 1182
+      ExplicitWidth = 1182
+      inherited spdProcurar: TSpeedButton
+        OnClick = fraCabecalhoControle1spdProcurarClick
+      end
+      inherited pnlNovo: TPanel
+        Left = 1017
+        ExplicitLeft = 1017
+        inherited btnNovo: TSpeedButton
+          OnClick = fraCabecalhoControle1btnNovoClick
+          ExplicitLeft = -2
+          ExplicitWidth = 132
+        end
+      end
+      inherited GBPeriodo: TGroupBox
+        inherited LblDe: TLabel
+          Height = 26
+        end
+        inherited LblAte: TLabel
+          Height = 26
+        end
+      end
+    end
   end
 end

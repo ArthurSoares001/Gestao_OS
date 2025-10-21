@@ -169,6 +169,7 @@ begin
   with cliente do
   begin
     setNomeRazao(EdtNomeRazao.Text);
+    setInscricaoEstadual(EdtRgIe.Text);
     setDocumento(EdtDocumento.Text);
     setInscricaoEstadual(EdtRgIe.Text);
 

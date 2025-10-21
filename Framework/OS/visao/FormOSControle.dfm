@@ -3,7 +3,7 @@ object FrmOSControle: TFrmOSControle
   Top = 0
   Caption = 'FrmOSControle'
   ClientHeight = 686
-  ClientWidth = 1026
+  ClientWidth = 1185
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,125 +18,120 @@ object FrmOSControle: TFrmOSControle
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  inline fraformLabel1: TfraformLabel
+    Left = 0
+    Top = 0
+    Width = 1185
+    Height = 25
+    Align = alTop
+    TabOrder = 0
+    ExplicitWidth = 1185
+    inherited pnLabel: TPanel
+      Width = 1185
+      ExplicitWidth = 1185
+      inherited lblTitulo: TLabel
+        Width = 1087
+        Height = 18
+      end
+      inherited spdAlterar: TSpeedButton
+        Left = 1116
+        ExplicitLeft = 906
+      end
+      inherited spdConsultar: TSpeedButton
+        Left = 1139
+        ExplicitLeft = 929
+      end
+      inherited spdIncluir: TSpeedButton
+        Left = 1093
+        ExplicitLeft = 883
+      end
+      inherited spdSair: TSpeedButton
+        Left = 1162
+        ExplicitLeft = 952
+      end
+    end
+  end
   inline fraCabecalhoControle1: TfraCabecalhoControle
     Left = 0
     Top = 25
-    Width = 1026
+    Width = 1185
     Height = 68
     Align = alTop
-    TabOrder = 0
+    TabOrder = 1
     ExplicitTop = 25
-    ExplicitWidth = 1026
+    ExplicitWidth = 1185
     inherited pnCabecalho: TPanel
-      Width = 1026
-      ExplicitWidth = 1026
+      Width = 1185
+      ExplicitWidth = 1185
+      inherited spdProcurar: TSpeedButton
+        OnClick = fraCabecalhoControle1spdProcurarClick
+      end
       inherited pnlNovo: TPanel
-        Left = 861
-        ExplicitLeft = 861
+        Left = 1020
+        ExplicitLeft = 1020
         inherited btnNovo: TSpeedButton
           OnClick = fraCabecalhoControle1btnNovoClick
         end
       end
-      inherited edtDescricao: TEdit
-        Top = 19
-        Height = 29
-        Margins.Top = 19
-        Margins.Bottom = 17
-        ExplicitTop = 19
-      end
       inherited GBPeriodo: TGroupBox
-        inherited LblDe: TLabel
-          Height = 20
-        end
         inherited LblAte: TLabel
-          Height = 20
+          Left = 131
+          ExplicitHeight = 26
+        end
+        inherited EdtAte: TMaskEdit
+          Left = 154
+          Width = 97
+          EditMask = '!99/99/0000;0;_'
+          Text = ''
+          ExplicitLeft = 154
+          ExplicitWidth = 97
+        end
+        inherited EdtDe: TMaskEdit
+          Width = 97
+          EditMask = '!99/99/0000;0;_'
+          Text = ''
+          ExplicitWidth = 97
         end
       end
-    end
-  end
-  inline fraformLabel1: TfraformLabel
-    Left = 0
-    Top = 0
-    Width = 1026
-    Height = 25
-    Align = alTop
-    TabOrder = 1
-    ExplicitWidth = 1026
-    inherited pnLabel: TPanel
-      Width = 1026
-      ExplicitWidth = 1026
-      inherited lblTitulo: TLabel
-        Width = 928
-        Height = 18
-      end
-      inherited spdAlterar: TSpeedButton
-        Left = 957
-        ExplicitLeft = 906
-      end
-      inherited spdConsultar: TSpeedButton
-        Left = 980
-        ExplicitLeft = 929
-      end
-      inherited spdIncluir: TSpeedButton
-        Left = 934
-        ExplicitLeft = 883
-      end
-      inherited spdSair: TSpeedButton
-        Left = 1003
-        ExplicitLeft = 952
+      inherited GroupBox1: TGroupBox
+        inherited cmbPrioridade: TComboBox
+          Height = 29
+        end
+        inherited cmbStatus: TComboBox
+          Height = 29
+        end
       end
     end
   end
   inline fraRodaPeControle1: TfraRodaPeControle
     Left = 0
     Top = 343
-    Width = 1026
+    Width = 1185
     Height = 44
     Align = alTop
     TabOrder = 2
     ExplicitTop = 343
-    ExplicitWidth = 1026
+    ExplicitWidth = 1185
     inherited pnRodape: TPanel
       Top = 0
-      Width = 1026
+      Width = 1185
       Align = alTop
       ExplicitTop = 0
-      ExplicitWidth = 1026
-      inherited spdExcel: TSpeedButton
-        OnClick = fraRodaPeControle1spdExcelClick
-      end
-      inherited spdExcluir: TSpeedButton
-        OnClick = fraRodaPeControle1spdExcluirClick
-      end
+      ExplicitWidth = 1185
       inherited spdEditar: TSpeedButton
         OnClick = fraRodaPeControle1spdEditarClick
       end
-      inherited spdImprimir: TSpeedButton
-        OnClick = fraRodaPeControle1spdImprimirClick
-      end
       inherited lblRegistro: TLabel
-        Left = 961
+        Left = 1120
         Height = 37
         ExplicitLeft = 961
       end
     end
   end
-  object stgDados: TStringGrid
-    Left = 0
-    Top = 93
-    Width = 1026
-    Height = 250
-    Align = alTop
-    ColCount = 6
-    TabOrder = 3
-    OnClick = stgDadosClick
-    OnDblClick = stgDadosDblClick
-    OnDrawCell = stgDadosDrawCell
-  end
   object GroupBox1: TGroupBox
     Left = 0
     Top = 387
-    Width = 1026
+    Width = 1185
     Height = 180
     Align = alTop
     Caption = 'Servi'#231'os'
@@ -146,12 +141,12 @@ object FrmOSControle: TFrmOSControle
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 3
     object stgDadosServico: TStringGrid
       AlignWithMargins = True
       Left = 5
       Top = 31
-      Width = 1016
+      Width = 1175
       Height = 145
       Margins.Top = 15
       Align = alTop
@@ -163,7 +158,7 @@ object FrmOSControle: TFrmOSControle
   object GroupBox2: TGroupBox
     Left = 0
     Top = 567
-    Width = 1026
+    Width = 1185
     Height = 200
     Align = alTop
     Caption = 'Produtos'
@@ -173,12 +168,12 @@ object FrmOSControle: TFrmOSControle
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 4
     object stgDadosProduto: TStringGrid
       AlignWithMargins = True
       Left = 5
       Top = 31
-      Width = 1016
+      Width = 1175
       Height = 160
       Margins.Top = 15
       Align = alTop
@@ -186,5 +181,17 @@ object FrmOSControle: TFrmOSControle
       TabOrder = 0
       OnDrawCell = stgDadosProdutoDrawCell
     end
+  end
+  object stgDados: TStringGrid
+    Left = 0
+    Top = 93
+    Width = 1185
+    Height = 250
+    Align = alTop
+    ColCount = 6
+    TabOrder = 5
+    OnClick = stgDadosClick
+    OnDblClick = stgDadosDblClick
+    OnDrawCell = stgDadosDrawCell
   end
 end

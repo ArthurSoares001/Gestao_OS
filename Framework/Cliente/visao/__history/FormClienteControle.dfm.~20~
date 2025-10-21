@@ -1,0 +1,125 @@
+object FrmClienteControle: TFrmClienteControle
+  Left = 0
+  Top = 0
+  Caption = 'FrmClienteControle'
+  ClientHeight = 459
+  ClientWidth = 975
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inline fraformLabel1: TfraformLabel
+    Left = 0
+    Top = 0
+    Width = 975
+    Height = 25
+    Align = alTop
+    TabOrder = 0
+    ExplicitWidth = 975
+    inherited pnLabel: TPanel
+      Width = 975
+      ExplicitWidth = 975
+      inherited lblTitulo: TLabel
+        Width = 877
+        Height = 18
+      end
+      inherited spdAlterar: TSpeedButton
+        Left = 906
+        ExplicitLeft = 906
+      end
+      inherited spdConsultar: TSpeedButton
+        Left = 929
+        ExplicitLeft = 929
+      end
+      inherited spdIncluir: TSpeedButton
+        Left = 883
+        ExplicitLeft = 883
+      end
+      inherited spdSair: TSpeedButton
+        Left = 952
+        ExplicitLeft = 952
+      end
+    end
+  end
+  inline fraRodaPeControle1: TfraRodaPeControle
+    Left = 0
+    Top = 415
+    Width = 975
+    Height = 44
+    Align = alBottom
+    TabOrder = 1
+    ExplicitTop = 415
+    ExplicitWidth = 975
+    inherited pnRodape: TPanel
+      Width = 975
+      ExplicitWidth = 975
+      inherited spdExcluir: TSpeedButton
+        OnClick = fraRodaPeControle1spdExcluirClick
+      end
+      inherited spdEditar: TSpeedButton
+        OnClick = fraRodaPeControle1spdEditarClick
+        ExplicitLeft = 44
+        ExplicitTop = 1
+        ExplicitHeight = 31
+      end
+      inherited lblRegistro: TLabel
+        Left = 910
+        Height = 37
+        ExplicitLeft = 910
+      end
+    end
+  end
+  object stgDados: TStringGrid
+    Left = 0
+    Top = 93
+    Width = 975
+    Height = 322
+    Align = alClient
+    ColCount = 7
+    TabOrder = 2
+    OnDblClick = stgDadosDblClick
+    OnDrawCell = stgDadosDrawCell
+  end
+  inline fraCabecalhoControle1: TfraCabecalhoControle
+    Left = 0
+    Top = 25
+    Width = 975
+    Height = 68
+    Align = alTop
+    TabOrder = 3
+    ExplicitTop = 25
+    ExplicitWidth = 975
+    inherited pnCabecalho: TPanel
+      Width = 975
+      ExplicitWidth = 975
+      inherited spdProcurar: TSpeedButton
+        OnClick = fraCabecalhoControle1spdProcurarClick
+        ExplicitLeft = 481
+        ExplicitTop = 6
+        ExplicitHeight = 55
+      end
+      inherited pnlNovo: TPanel
+        Left = 810
+        ExplicitLeft = 810
+      end
+      inherited GBPeriodo: TGroupBox
+        inherited LblDe: TLabel
+          Height = 26
+        end
+        inherited LblAte: TLabel
+          Height = 26
+        end
+      end
+    end
+  end
+end

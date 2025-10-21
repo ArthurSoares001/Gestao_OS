@@ -193,62 +193,68 @@ function TTecnicoPostgreSQL.ProcurarTodos(Filtro: TFiltro; OrdenarPor: Integer):
 var
   FDQuery: TFDQuery;
   Tecnico: TTecnico;
-  SQL: string;
-  Condicoes: TStringList;
+  SQL: TStringList;
   I: Integer;
 begin
   Result := TList.Create;
   FDQuery := CreateFDQuery;
+  SQL := TStringList.Create;
   try
     try
-      Condicoes := TStringList.Create;
-      try
-        SQL := 'SELECT * FROM public."Tecnico"';
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            Condicoes.Add('("Nome" ILIKE :Descricao OR "Especialidade" ILIKE :Descricao)');
-          if not Filtro.getAtivo then
-            Condicoes.Add('"Ativo" = :Ativo');
-          if Condicoes.Count > 0 then
-            SQL := SQL + ' WHERE ' + Condicoes.DelimitedText;
-        end;
+      SQL.Add('SELECT *');
+      SQL.Add('FROM public."Tecnico" t');
+      SQL.Add('WHERE 1=1'); // garante que WHERE sempre existe
 
-        case OrdenarPor of
-          0: SQL := SQL + ' ORDER BY "Nome"';
-          1: SQL := SQL + ' ORDER BY "Especialidade"';
-        end;
+      // ====== FILTROS ======
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          SQL.Add('  AND (t."Nome" ILIKE :Descricao OR t."Especialidade" ILIKE :Descricao)');
 
-        FDQuery.SQL.Text := SQL;
-        if Assigned(Filtro) then
-        begin
-          if Filtro.getDescricao <> '' then
-            FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
-          if not Filtro.getAtivo then
-            FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
-        end;
-        FDQuery.Open;
-
-        while not FDQuery.Eof do
-        begin
-          Tecnico := TTecnico.Create;
-          Tecnico.setId(FDQuery.FieldByName('Id').AsInteger);
-          Tecnico.setNome(FDQuery.FieldByName('Nome').AsString);
-          Tecnico.setEmail(FDQuery.FieldByName('Email').AsString);
-          Tecnico.setTelefone(FDQuery.FieldByName('Telefone').AsString);
-          Tecnico.setEspecialidade(FDQuery.FieldByName('Especialidade').AsString);
-          Tecnico.setCustoHora(FDQuery.FieldByName('CustoHora').AsFloat);
-          Tecnico.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
-          Tecnico.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
-          Tecnico.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
-          Result.Add(Tecnico);
-          FDQuery.Next;
-        end;
-        FDQuery.Close;
-      finally
-        Condicoes.Free;
+        if not Filtro.getAtivo then
+          SQL.Add('  AND t."Ativo" = :Ativo');
       end;
+
+      // ====== ORDENAÇÃO ======
+      case OrdenarPor of
+        0: SQL.Add('ORDER BY t."Nome"');
+        1: SQL.Add('ORDER BY t."Especialidade"');
+      else
+        SQL.Add('ORDER BY t."Id" DESC');
+      end;
+
+      FDQuery.SQL.Text := SQL.Text;
+
+      // ====== PARÂMETROS ======
+      if Assigned(Filtro) then
+      begin
+        if Filtro.getDescricao <> '' then
+          FDQuery.ParamByName('Descricao').AsString := '%' + Filtro.getDescricao + '%';
+        if not Filtro.getAtivo then
+          FDQuery.ParamByName('Ativo').AsBoolean := Filtro.getAtivo;
+      end;
+
+      // ====== EXECUÇÃO ======
+      FDQuery.Open;
+
+      while not FDQuery.Eof do
+      begin
+        Tecnico := TTecnico.Create;
+        Tecnico.setId(FDQuery.FieldByName('Id').AsInteger);
+        Tecnico.setNome(FDQuery.FieldByName('Nome').AsString);
+        Tecnico.setEmail(FDQuery.FieldByName('Email').AsString);
+        Tecnico.setTelefone(FDQuery.FieldByName('Telefone').AsString);
+        Tecnico.setEspecialidade(FDQuery.FieldByName('Especialidade').AsString);
+        Tecnico.setCustoHora(FDQuery.FieldByName('CustoHora').AsFloat);
+        Tecnico.setAtivo(FDQuery.FieldByName('Ativo').AsBoolean);
+        Tecnico.setDtCadastro(FDQuery.FieldByName('DtCadastro').AsDateTime);
+        Tecnico.setDtAtualizacao(FDQuery.FieldByName('DtAtualizacao').AsDateTime);
+        Result.Add(Tecnico);
+        FDQuery.Next;
+      end;
+
     finally
+      SQL.Free;
       FDQuery.Free;
     end;
   except
@@ -261,5 +267,6 @@ begin
     end;
   end;
 end;
+
 
 end.

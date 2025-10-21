@@ -19,7 +19,6 @@ uses
   FormCliente in 'Framework\Cliente\visao\FormCliente.pas' {FrmCliente},
   frameformLabel in 'Framework\Comunm\visao\frameformLabel.pas' {fraformLabel: TFrame},
   FormClienteControle in 'Framework\Cliente\visao\FormClienteControle.pas' {FrmClienteControle},
-  frameCabecalhoControle in 'Framework\Comunm\visao\frameCabecalhoControle.pas' {fraCabecalhoControle: TFrame},
   frameRodaPeControle in 'Framework\Comunm\visao\frameRodaPeControle.pas' {fraRodaPeControle: TFrame},
   frameSalvaCancela in 'Framework\Comunm\visao\frameSalvaCancela.pas' {fraSalvaCancela: TFrame},
   ClientePostgreSQL in 'Framework\Cliente\persistencia\ClientePostgreSQL.pas',
@@ -41,7 +40,8 @@ uses
   StatusOSPostgreSQL in 'Framework\StatusOS\persistencia\StatusOSPostgreSQL.pas',
   StatusOSDB in 'Framework\StatusOS\persistencia\StatusOSDB.pas',
   PrioridadeOSPostgreSQL in 'Framework\PrioridadeOS\persistencia\PrioridadeOSPostgreSQL.pas',
-  PrioridadeOSDB in 'Framework\PrioridadeOS\persistencia\PrioridadeOSDB.pas';
+  PrioridadeOSDB in 'Framework\PrioridadeOS\persistencia\PrioridadeOSDB.pas',
+  frameCabecalhoControle in 'Framework\Comunm\visao\frameCabecalhoControle.pas' {fraCabecalhoControle: TFrame};
 
 {$R *.res}
 
@@ -50,11 +50,5 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmPrincipal, FrmPrincipal);
   Application.CreateForm(TDMConexao, DMConexao);
-  Application.CreateForm(TFrmTecnicoControle, FrmTecnicoControle);
-  Application.CreateForm(TFrmTecnico, FrmTecnico);
-  Application.CreateForm(TFrmProdutoControle, FrmProdutoControle);
-  Application.CreateForm(TFrmProduto, FrmProduto);
-  Application.CreateForm(TFrmOSControle, FrmOSControle);
-  Application.CreateForm(TFrmOS, FrmOS);
   Application.Run;
 end.

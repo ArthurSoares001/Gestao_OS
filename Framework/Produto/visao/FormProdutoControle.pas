@@ -28,6 +28,7 @@ type
     procedure fraRodaPeControle1spdExcelClick(Sender: TObject);
     procedure frameCabecalhoControle1edtDescricaoChange(Sender: TObject);
     procedure fraCabecalhoControle1btnNovoClick(Sender: TObject);
+    procedure fraCabecalhoControle1spdProcurarClick(Sender: TObject);
   private
     filtro: TFiltro;
     ProdutoDB: TProdutoPostgreSQL;
@@ -86,6 +87,9 @@ begin
   KeyPreview := True;
   ShowHint := True;
   BorderStyle := bsNone;
+  WindowState := wsMaximized;
+  fraCabecalhoControle1.GBPeriodo.Visible := false;
+  fraCabecalhoControle1.GroupBox1.Visible := false;
 end;
 
 procedure TFrmProdutoControle.chamarFormProduto;
@@ -171,6 +175,14 @@ begin
   finally
     Produto.Free;
   end;
+end;
+
+procedure TFrmProdutoControle.fraCabecalhoControle1spdProcurarClick(
+  Sender: TObject);
+begin
+  filtro.novaInstancia;
+  filtro.setDescricao(fraCabecalhoControle1.edtDescricao.Text);
+  atualizarGrid;
 end;
 
 procedure TFrmProdutoControle.frameCabecalhoControle1edtDescricaoChange(Sender: TObject);

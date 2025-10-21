@@ -13,21 +13,12 @@ uses
 type
   TFrmOS = class(TForm)
     fraformLabel1: TfraformLabel;
-    fraSalvaCancela1: TfraSalvaCancela;
+    Panel1: TPanel;
     lblProdutos: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label2: TLabel;
-    pnlPesquisar: TPanel;
-    BtnPesquisar: TSpeedButton;
     lblFiltro: TLabel;
-    Panel1: TPanel;
-    SpeedButton1: TSpeedButton;
-    pnlValores: TPanel;
-    Label1: TLabel;
-    Label3: TLabel;
-    Label7: TLabel;
-    Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
     lblLogin: TLabel;
@@ -37,36 +28,76 @@ type
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
-    PageControl1: TPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    Label17: TLabel;
-    StgServicos: TStringGrid;
-    BtnAddServico: TBitBtn;
-    BtnRemServico: TBitBtn;
+    pnlPesquisar: TPanel;
+    BtnPesquisar: TSpeedButton;
     Panel2: TPanel;
-    SpeedButton2: TSpeedButton;
-    TabSheet3: TTabSheet;
-    CmbStatus: TComboBox;
-    CmbPrioridade: TComboBox;
-    CmbCliente: TComboBox;
-    CmbTecnico: TComboBox;
-    CmbServicos: TComboBox;
+    SpeedButton1: TSpeedButton;
+    pnlValores: TPanel;
+    Label1: TLabel;
+    Label3: TLabel;
+    Label7: TLabel;
+    Label10: TLabel;
+    Label4: TLabel;
     EdtValorDesconto: TEdit;
     EdtValorAcrescimo: TEdit;
     EdtValorComDesconto: TEdit;
     EdtQuantidade: TEdit;
+    CmbFormaPagto: TComboBox;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    Label17: TLabel;
+    lblRegistroServicos: TLabel;
+    Label9: TLabel;
+    Label20: TLabel;
+    Label21: TLabel;
+    Label23: TLabel;
+    Label22: TLabel;
+    Label24: TLabel;
+    BtnAddServico: TBitBtn;
+    BtnRemServico: TBitBtn;
+    Panel3: TPanel;
+    SpeedButton2: TSpeedButton;
+    CmbServicos: TComboBox;
+    StgServicos: TStringGrid;
+    EdtQuantidadeOSITem: TEdit;
+    EdtPrecoOSItem: TEdit;
+    EdtDescOSITem: TEdit;
+    EdtAcrescOSITem: TEdit;
+    EdtTotalOSITem: TEdit;
+    MemoObs: TMemo;
+    TabSheet2: TTabSheet;
     Label18: TLabel;
-    StgProdutos: TStringGrid;
+    LblRegistroProdutos: TLabel;
+    Label25: TLabel;
+    Label26: TLabel;
+    Label27: TLabel;
+    Label28: TLabel;
+    Label29: TLabel;
+    Label30: TLabel;
     BtnAddProduto: TBitBtn;
     BtnRemProduto: TBitBtn;
-    Panel3: TPanel;
+    Panel4: TPanel;
     SpeedButton3: TSpeedButton;
     CmbProdutos: TComboBox;
+    StgProdutos: TStringGrid;
+    EdtQtdProdOSItem: TEdit;
+    EdtPrecProdOSItem: TEdit;
+    EdtDescProdOSItem: TEdit;
+    EdtAcrescProdOSItem: TEdit;
+    EdtTotalProdOSItem: TEdit;
+    Memo1: TMemo;
+    TabSheet3: TTabSheet;
     Label19: TLabel;
-    StgAnexoOS: TStringGrid;
+    LblRegistroPgto: TLabel;
     BtnAddAnexoOS: TBitBtn;
     BtnRemAnexoOS: TBitBtn;
+    StgAnexoOS: TStringGrid;
+    EdtURLAnexo: TEdit;
+    Button1: TBitBtn;
+    CmbStatus: TComboBox;
+    CmbPrioridade: TComboBox;
+    CmbCliente: TComboBox;
+    CmbTecnico: TComboBox;
     EdtDataEntrada: TEdit;
     EdtDataSaida: TEdit;
     EdtNumOS: TEdit;
@@ -77,35 +108,8 @@ type
     Edit3: TEdit;
     MemoDescProblema: TMemo;
     MemoSolucaoAplic: TMemo;
-    Label4: TLabel;
-    CmbFormaPagto: TComboBox;
-    EdtURLAnexo: TEdit;
-    Button1: TBitBtn;
+    fraSalvaCancela1: TfraSalvaCancela;
     OpenDialog1: TOpenDialog;
-    Label9: TLabel;
-    EdtQuantidadeOSITem: TEdit;
-    Label20: TLabel;
-    EdtPrecoOSItem: TEdit;
-    Label21: TLabel;
-    EdtDescOSITem: TEdit;
-    Label23: TLabel;
-    EdtAcrescOSITem: TEdit;
-    EdtTotalOSITem: TEdit;
-    MemoObs: TMemo;
-    Label22: TLabel;
-    Label24: TLabel;
-    Label25: TLabel;
-    EdtQtdProdOSItem: TEdit;
-    Label26: TLabel;
-    EdtPrecProdOSItem: TEdit;
-    Label27: TLabel;
-    EdtDescProdOSItem: TEdit;
-    Label28: TLabel;
-    EdtAcrescProdOSItem: TEdit;
-    EdtTotalProdOSItem: TEdit;
-    Memo1: TMemo;
-    Label29: TLabel;
-    Label30: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
@@ -141,7 +145,6 @@ type
     produtoDB: IProdutoDB;
     FUpdatingGrids: Boolean; // Variável para evitar loops
     procedure setAtributos;
-    procedure getAtributos;
     procedure atualizarInterface;
     procedure CarregarCombos;
     procedure PreencherCombo(ACombo: TComboBox; AList: TList; AType: string);
@@ -155,6 +158,7 @@ type
     procedure setStatusInterface(statusInterface: TStatusInterface);
     procedure setOS(os: TOS);
     function getOS: TOS;
+    procedure getAtributos;
   end;
 
 var
@@ -175,7 +179,8 @@ begin
   statusOSDB := nil;
   prioridadeOSDB := nil;
   produtoDB := nil;
-  FreeAndNil(os);
+  //FreeAndNil(os);
+  os := nil;
   inherited Destroy;
 end;
 
@@ -661,8 +666,8 @@ var
   Produto: TProduto;
   TemServico: Boolean;
 begin
-  if FUpdatingGrids then
-    Exit;
+  //if FUpdatingGrids then
+  //  Exit;
 
   FUpdatingGrids := True;
   try
@@ -684,6 +689,7 @@ begin
       begin
         Item := (Itens.Item(I) as TOSItem);
         Produto := Item.getProduto as TProduto;
+
         if Assigned(Produto) and (Produto.getTipo = 'S') then
         begin
           TemServico := True;
@@ -866,6 +872,8 @@ end;
 
 procedure TFrmOS.FormShow(Sender: TObject);
 begin
+
+
   limparInterface(Self);
   arredondarInterface(Self);
   if statusInterface in [stConsultar, stAlterar] then

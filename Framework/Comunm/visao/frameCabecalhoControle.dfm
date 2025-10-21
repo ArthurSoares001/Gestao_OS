@@ -1,13 +1,13 @@
 object fraCabecalhoControle: TfraCabecalhoControle
   Left = 0
   Top = 0
-  Width = 1083
+  Width = 1339
   Height = 68
   TabOrder = 0
   object pnCabecalho: TPanel
     Left = 0
     Top = 0
-    Width = 1083
+    Width = 1339
     Height = 65
     Align = alTop
     BevelOuter = bvNone
@@ -113,7 +113,7 @@ object fraCabecalhoControle: TfraCabecalhoControle
     end
     object pnlNovo: TPanel
       AlignWithMargins = True
-      Left = 918
+      Left = 1174
       Top = 18
       Width = 132
       Height = 33
@@ -246,10 +246,11 @@ object fraCabecalhoControle: TfraCabecalhoControle
       ExplicitHeight = 29
     end
     object GBPeriodo: TGroupBox
-      Left = 542
+      Left = 526
       Top = 0
       Width = 275
-      Height = 59
+      Height = 65
+      Align = alLeft
       Caption = 'Per'#237'odo'
       TabOrder = 2
       object LblDe: TLabel
@@ -257,7 +258,7 @@ object fraCabecalhoControle: TfraCabecalhoControle
         Left = 7
         Top = 27
         Width = 13
-        Height = 20
+        Height = 26
         Margins.Left = 5
         Margins.Top = 12
         Margins.Bottom = 10
@@ -270,40 +271,20 @@ object fraCabecalhoControle: TfraCabecalhoControle
         Left = 133
         Top = 27
         Width = 17
-        Height = 20
+        Height = 26
         Margins.Left = 5
         Margins.Top = 12
         Margins.Bottom = 10
         Align = alLeft
         Caption = 'At'#233
-        ExplicitHeight = 13
-      end
-      object EdtDe: TMaskEdit
-        AlignWithMargins = True
-        Left = 26
-        Top = 20
-        Width = 99
-        Height = 29
-        Margins.Top = 5
-        Margins.Bottom = 8
-        Align = alLeft
-        EditMask = '!99/99/0000;1;_'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = 21
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        MaxLength = 10
-        ParentFont = False
-        TabOrder = 1
-        Text = '  /  /    '
+        ExplicitHeight = 20
       end
       object EdtAte: TMaskEdit
         AlignWithMargins = True
         Left = 156
         Top = 20
         Width = 99
-        Height = 29
+        Height = 35
         Margins.Top = 5
         Margins.Bottom = 8
         Align = alLeft
@@ -317,6 +298,28 @@ object fraCabecalhoControle: TfraCabecalhoControle
         ParentFont = False
         TabOrder = 0
         Text = '  /  /    '
+        ExplicitHeight = 29
+      end
+      object EdtDe: TMaskEdit
+        AlignWithMargins = True
+        Left = 26
+        Top = 20
+        Width = 99
+        Height = 35
+        Margins.Top = 5
+        Margins.Bottom = 8
+        Align = alLeft
+        EditMask = '!99/99/0000;1;_'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = 21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        MaxLength = 10
+        ParentFont = False
+        TabOrder = 1
+        Text = '  /  /    '
+        ExplicitHeight = 29
       end
     end
     object CmbTipo: TComboBox
@@ -340,6 +343,65 @@ object fraCabecalhoControle: TfraCabecalhoControle
       Items.Strings = (
         'Nome'
         'ID')
+    end
+    object GroupBox1: TGroupBox
+      Left = 801
+      Top = 0
+      Width = 320
+      Height = 65
+      Align = alLeft
+      TabOrder = 4
+      object Label1: TLabel
+        Left = 6
+        Top = 3
+        Width = 31
+        Height = 13
+        Caption = 'Status'
+      end
+      object Label2: TLabel
+        Left = 163
+        Top = 3
+        Width = 48
+        Height = 13
+        Caption = 'Prioridade'
+      end
+      object cmbPrioridade: TComboBox
+        AlignWithMargins = True
+        Left = 163
+        Top = 20
+        Width = 144
+        Height = 29
+        Margins.Left = 5
+        Margins.Top = 5
+        Margins.Bottom = 1
+        Align = alLeft
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = 21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        Items.Strings = (
+          '')
+      end
+      object cmbStatus: TComboBox
+        AlignWithMargins = True
+        Left = 5
+        Top = 20
+        Width = 150
+        Height = 29
+        Margins.Top = 5
+        Margins.Bottom = 1
+        Align = alLeft
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = 21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 1
+      end
     end
   end
 end

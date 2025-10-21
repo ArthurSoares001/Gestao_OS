@@ -1,7 +1,0 @@
-unit OSPostgreSQL;
-
-interface
-
-implementation
-
-end.
